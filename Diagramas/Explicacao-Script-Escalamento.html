@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Script de Escalamento — ASID 2025/2026</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      line-height: 1.7;
+    }
+
+    /* HEADER */
+    header {
+      background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%);
+      border-bottom: 3px solid #3b82f6;
+      padding: 40px 60px;
+    }
+    header h1 { font-size: 2rem; color: #93c5fd; margin-bottom: 6px; }
+    header p { color: #94a3b8; font-size: 1rem; }
+    .badge {
+      display: inline-block;
+      background: #1e40af;
+      color: #bfdbfe;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.8rem;
+      margin-top: 10px;
+      margin-right: 6px;
+    }
+
+    /* LAYOUT */
+    main { max-width: 1100px; margin: 0 auto; padding: 40px 30px; }
+
+    /* SECTION */
+    section {
+      background: #1e2535;
+      border: 1px solid #2d3748;
+      border-radius: 12px;
+      margin-bottom: 36px;
+      overflow: hidden;
+    }
+    .section-header {
+      background: #162032;
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      border-bottom: 1px solid #2d3748;
+    }
+    .section-number {
+      background: #3b82f6;
+      color: white;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .section-header h2 { font-size: 1.15rem; color: #93c5fd; }
+    .section-header .subtitle { font-size: 0.82rem; color: #64748b; margin-top: 2px; }
+    .section-body { padding: 24px 28px; }
+
+    /* EXPLAIN + CODE side by side */
+    .split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    @media (max-width: 780px) { .split { grid-template-columns: 1fr; } }
+
+    .explain-box {
+      background: #0f1117;
+      border: 1px solid #1e3a5f;
+      border-left: 4px solid #3b82f6;
+      border-radius: 8px;
+      padding: 18px 20px;
+    }
+    .explain-box h3 { color: #60a5fa; font-size: 0.9rem; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.05em; }
+    .explain-box p { color: #cbd5e1; font-size: 0.92rem; margin-bottom: 10px; }
+    .explain-box ul { color: #cbd5e1; font-size: 0.92rem; padding-left: 18px; }
+    .explain-box li { margin-bottom: 6px; }
+
+    /* CODE */
+    pre {
+      background: #0a0e18;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 16px 18px;
+      overflow-x: auto;
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+    code { font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace; }
+
+    /* Syntax highlighting */
+    .kw  { color: #c792ea; }   /* keywords */
+    .fn  { color: #82aaff; }   /* function names */
+    .str { color: #c3e88d; }   /* strings */
+    .cmt { color: #546e7a; font-style: italic; } /* comments */
+    .var { color: #f78c6c; }   /* variables */
+    .num { color: #f78c6c; }   /* numbers */
+    .cmd { color: #89ddff; }   /* kubectl commands */
+
+    /* FLOW DIAGRAM */
+    .flow {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      margin: 20px 0;
+    }
+    .flow-step {
+      background: #1e3a5f;
+      border: 1px solid #3b82f6;
+      border-radius: 8px;
+      padding: 10px 16px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #93c5fd;
+      min-width: 110px;
+    }
+    .flow-arrow {
+      color: #3b82f6;
+      font-size: 1.4rem;
+      margin: 0 6px;
+    }
+
+    /* METRICS TABLE */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.88rem;
+      margin-top: 12px;
+    }
+    th {
+      background: #162032;
+      color: #93c5fd;
+      padding: 10px 14px;
+      text-align: left;
+      border-bottom: 2px solid #3b82f6;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid #1e293b;
+      color: #cbd5e1;
+    }
+    tr:hover td { background: #162032; }
+    .ok   { color: #4ade80; font-weight: 600; }
+    .warn { color: #fbbf24; font-weight: 600; }
+    .fail { color: #f87171; font-weight: 600; }
+
+    /* INFO BOX */
+    .info-box {
+      background: #0c1a2e;
+      border: 1px solid #1e3a5f;
+      border-left: 4px solid #60a5fa;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      color: #93c5fd;
+    }
+    .warn-box {
+      background: #1a1200;
+      border: 1px solid #78350f;
+      border-left: 4px solid #f59e0b;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      color: #fcd34d;
+    }
+    .success-box {
+      background: #052e16;
+      border: 1px solid #166534;
+      border-left: 4px solid #22c55e;
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 0.9rem;
+      color: #86efac;
+    }
+
+    /* FULL CODE SECTION */
+    .full-code-header {
+      background: #0a0e18;
+      padding: 12px 20px;
+      border-bottom: 1px solid #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-r { background: #f87171; }
+    .dot-y { background: #fbbf24; }
+    .dot-g { background: #4ade80; }
+    .file-name { color: #64748b; font-size: 0.82rem; margin-left: 10px; font-family: monospace; }
+
+    /* TOC */
+    .toc {
+      background: #162032;
+      border: 1px solid #2d3748;
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 36px;
+    }
+    .toc h3 { color: #93c5fd; margin-bottom: 14px; font-size: 0.95rem; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 8px; }
+    .toc a {
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.85rem;
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: block;
+      transition: all 0.2s;
+    }
+    .toc a:hover { background: #1e293b; color: #93c5fd; }
+    .toc-num { color: #3b82f6; margin-right: 6px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Script de Testes de Escalabilidade</h1>
+  <p>Arquiteturas de Sistemas de Informação Distribuídos — 2025/2026</p>
+  <div>
+    <span class="badge">Kubernetes</span>
+    <span class="badge">Locust</span>
+    <span class="badge">Docker Desktop</span>
+    <span class="badge">Online Boutique</span>
+  </div>
+</header>
+
+<main>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Índice do Script</h3>
+    <div class="toc-grid">
+      <a href="#objetivo"><span class="toc-num">→</span>Objetivo</a>
+      <a href="#config"><span class="toc-num">0</span>Configuração Global</a>
+      <a href="#prereqs"><span class="toc-num">1</span>Pré-Requisitos</a>
+      <a href="#baseline"><span class="toc-num">2</span>Baseline</a>
+      <a href="#monitoring"><span class="toc-num">3</span>Monitorização Contínua</a>
+      <a href="#locustfile"><span class="toc-num">4</span>Ficheiro Locust</a>
+      <a href="#breaking"><span class="toc-num">5</span>Ponto de Quebra</a>
+      <a href="#report"><span class="toc-num">6</span>Relatório Final</a>
+      <a href="#main"><span class="toc-num">7</span>Main / Modos de Execução</a>
+      <a href="#resultados"><span class="toc-num">8</span>Resultados Obtidos</a>
+    </div>
+  </div>
+
+  <!-- OBJETIVO -->
+  <section id="objetivo">
+    <div class="section-header">
+      <div class="section-number">!</div>
+      <div>
+        <h2>Objetivo do Script</h2>
+        <div class="subtitle">O que faz e porquê</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p style="color:#cbd5e1; margin-bottom:16px;">
+        O script <code style="background:#0a0e18;padding:2px 6px;border-radius:4px;color:#89ddff;">experimentos_escalamento.sh</code>
+        automatiza a medição do <strong style="color:#93c5fd;">ponto de quebra</strong> do sistema Online Boutique em Kubernetes.
+        O objetivo é descobrir a partir de quantos utilizadores simultâneos o sistema começa a degradar —
+        seja por alta latência ou por erros de resposta.
+      </p>
+
+      <div class="flow">
+        <div class="flow-step">Verificar<br>pré-requisitos</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Capturar<br>baseline</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Iniciar<br>monitorização</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">1 user<br>→ 2 → 3 → …</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Detectar<br>QUEBRA</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step">Gerar<br>relatório</div>
+      </div>
+
+      <div class="info-box" style="margin-top:16px;">
+        Cada step adiciona 1 utilizador virtual e corre durante 60 segundos. Entre steps há uma pausa de 15 segundos para o sistema estabilizar. O processo para automaticamente quando detecta degradação.
+      </div>
+    </div>
+  </section>
+
+  <!-- CONFIG GLOBAL -->
+  <section id="config">
+    <div class="section-header">
+      <div class="section-number">0</div>
+      <div>
+        <h2>Configuração Global</h2>
+        <div class="subtitle">Variáveis e inicialização</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="split">
+        <div class="explain-box">
+          <h3>O que faz</h3>
+          <p>Define as variáveis globais usadas por todo o script. Todas podem ser substituídas por variáveis de ambiente antes de correr o script.</p>
+          <ul>
+            <li><strong style="color:#f78c6c;">FRONTEND_URL</strong> — endereço do sistema a testar (por omissão: localhost)</li>
+            <li><strong style="color:#f78c6c;">RESULTS_DIR</strong> — cria uma pasta nova com data/hora para guardar todos os resultados</li>
+            <li><strong style="color:#f78c6c;">log()</strong> — função auxiliar que imprime mensagens com timestamp e guarda no ficheiro run.log</li>
+          </ul>
+          <div class="info-box" style="margin-top:12px;">
+            Cada execução cria uma pasta própria, por exemplo <code>resultados_20260308_180646/</code>, para não sobrescrever resultados anteriores.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">experimentos_escalamento.sh — linhas 13–17</span>
+          </div>
+          <pre><code><span class="cmt"># URL do frontend (pode ser substituído)</span>
+<span class="var">FRONTEND_URL</span>=<span class="str">"${FRONTEND_URL:-http://localhost}"</span>
+
+<span class="cmt"># Pasta de resultados com data/hora única</span>
+<span class="var">RESULTS_DIR</span>=<span class="str">"resultados_$(date +%Y%m%d_%H%M%S)"</span>
+<span class="kw">mkdir</span> -p <span class="str">"$RESULTS_DIR"</span>
+
+<span class="cmt"># Função de logging com timestamp</span>
+<span class="fn">log</span>() {
+  <span class="kw">echo</span> <span class="str">"[$(date +%H:%M:%S)] $*"</span> | <span class="kw">tee</span> -a <span class="str">"$RESULTS_DIR/run.log"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRÉ-REQUISITOS -->
+  <section id="prereqs">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div>
+        <h2>Verificação de Pré-Requisitos</h2>
+        <div class="subtitle">Função: check_prerequisites()</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="split">
+        <div class="explain-box">
+          <h3>O que faz</h3>
+          <p>Antes de iniciar qualquer teste, verifica se as ferramentas necessárias estão disponíveis e funcionais:</p>
+          <ul>
+            <li><strong style="color:#89ddff;">kubectl cluster-info</strong> — confirma que o Kubernetes está acessível. Se falhar, o script termina com erro.</li>
+            <li><strong style="color:#89ddff;">kubectl top nodes</strong> — verifica se o metrics-server está instalado. Se não estiver, instala-o automaticamente e aguarda 60 segundos para arrancar.</li>
+            <li><strong style="color:#89ddff;">which locust / find ~/Library/Python</strong> — localiza o binário do Locust. No macOS, o pip instala o locust em ~/Library/Python e não no PATH padrão do sistema, por isso é necessária esta pesquisa manual.</li>
+          </ul>
+          <div class="warn-box">
+            O Locust é instalado pelo pip em <code>~/Library/Python/3.x/bin/locust</code>, fora do PATH normal do bash/zsh. Por isso o script usa <code>find</code> para localizá-lo.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">linhas 22–45</span>
+          </div>
+          <pre><code><span class="fn">check_prerequisites</span>() {
+  <span class="cmt"># 1. Kubernetes acessível?</span>
+  <span class="cmd">kubectl cluster-info</span> > /dev/null 2>&1 || {
+    <span class="fn">log</span> <span class="str">"ERRO: kubectl não conectado"</span>
+    <span class="kw">exit</span> 1
+  }
+
+  <span class="cmt"># 2. metrics-server instalado?</span>
+  <span class="cmd">kubectl top nodes</span> > /dev/null 2>&1 || {
+    <span class="fn">log</span> <span class="str">"A instalar metrics-server..."</span>
+    <span class="cmd">kubectl apply</span> -f <span class="str">https://...components.yaml</span>
+    <span class="kw">sleep</span> 60
+  }
+
+  <span class="cmt"># 3. Localiza locust (não está no PATH no macOS)</span>
+  <span class="var">LOCUST_BIN</span>=$(<span class="kw">which</span> locust 2>/dev/null)
+  <span class="kw">if</span> [ -z <span class="str">"$LOCUST_BIN"</span> ]; then
+    <span class="var">LOCUST_BIN</span>=$(<span class="kw">find</span> ~/Library/Python \
+      -name <span class="str">"locust"</span> -type f | <span class="kw">head</span> -1)
+  fi
+
+  <span class="cmt"># 4. Se ainda não encontrou, instala</span>
+  <span class="kw">if</span> [ -z <span class="str">"$LOCUST_BIN"</span> ]; then
+    pip3 install locust faker --quiet
+    <span class="var">LOCUST_BIN</span>=$(<span class="kw">find</span> ~/Library/Python \
+      -name <span class="str">"locust"</span> -type f | <span class="kw">head</span> -1)
+  fi
+
+  <span class="kw">export</span> <span class="var">LOCUST_BIN</span>
+  <span class="fn">log</span> <span class="str">"Pré-requisitos OK"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BASELINE -->
+  <section id="baseline">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div>
+        <h2>Captura de Baseline</h2>
+        <div class="subtitle">Função: capture_baseline() — fotografia do cluster sem carga</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="split">
+        <div class="explain-box">
+          <h3>O que faz</h3>
+          <p>Antes de gerar qualquer carga, o script regista o estado inicial do cluster. Isto é essencial para comparar o comportamento do sistema com e sem carga.</p>
+          <ul>
+            <li><strong style="color:#89ddff;">kubectl get deployments -o json</strong> — lista todos os serviços com as suas configurações de CPU e memória (requests e limits)</li>
+            <li><strong style="color:#89ddff;">kubectl top pods</strong> — consumo de CPU e RAM de cada pod em repouso</li>
+            <li><strong style="color:#89ddff;">kubectl top nodes</strong> — consumo do nó Kubernetes</li>
+            <li><strong style="color:#89ddff;">kubectl get hpa</strong> — verifica se existe Horizontal Pod Autoscaler (escalamento automático). Na fase baseline não deve haver nenhum.</li>
+          </ul>
+          <div class="success-box">
+            Todos os ficheiros são guardados em <code>resultados_xxx/baseline/</code> para referência futura na análise dos resultados.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">linhas 50–83</span>
+          </div>
+          <pre><code><span class="fn">capture_baseline</span>() {
+  <span class="kw">local</span> <span class="var">out</span>=<span class="str">"$RESULTS_DIR/baseline"</span>
+  <span class="kw">mkdir</span> -p <span class="str">"$out"</span>
+
+  <span class="cmt"># Configuração de todos os deployments</span>
+  <span class="cmd">kubectl get deployments</span> -o wide \
+    > <span class="str">"$out/deployments.txt"</span>
+
+  <span class="cmt"># Tabela: serviço, réplicas, CPU/RAM req e limit</span>
+  <span class="cmd">kubectl get deployments</span> -o json | python3 -c <span class="str">"
+    # processa JSON e imprime tabela formatada
+    # com CPU request, CPU limit, Mem request, Mem limit
+  "</span> | <span class="kw">tee</span> <span class="str">"$out/resources_config.txt"</span>
+
+  <span class="cmt"># Consumo real de CPU e RAM (sem carga)</span>
+  <span class="cmd">kubectl top pods</span> --sort-by=cpu \
+    > <span class="str">"$out/top_pods_idle.txt"</span>
+  <span class="cmd">kubectl top nodes</span> \
+    > <span class="str">"$out/top_nodes_idle.txt"</span>
+
+  <span class="cmt"># Estado de todos os pods</span>
+  <span class="cmd">kubectl get pods</span> -o wide \
+    > <span class="str">"$out/pods_status.txt"</span>
+
+  <span class="cmt"># Verificação de auto-scaling (HPA)</span>
+  <span class="cmd">kubectl get hpa</span> \
+    > <span class="str">"$out/hpa_inicial.txt"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONITORIZAÇÃO -->
+  <section id="monitoring">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div>
+        <h2>Monitorização Contínua em Background</h2>
+        <div class="subtitle">Funções: start_monitoring() / stop_monitoring()</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="split">
+        <div class="explain-box">
+          <h3>O que faz</h3>
+          <p>Lança um processo filho (em background) que vai recolhendo métricas do cluster de 10 em 10 segundos, <strong style="color:#93c5fd;">enquanto os testes de carga correm em paralelo</strong>.</p>
+          <ul>
+            <li><strong style="color:#89ddff;">kubectl top pods</strong> — a cada 10s, regista CPU e RAM de todos os pods no ficheiro pods_metrics.csv</li>
+            <li><strong style="color:#89ddff;">kubectl get pods</strong> — verifica se algum pod reiniciou (crash/OOMKill) e regista em restarts.log</li>
+            <li><strong style="color:#f78c6c;">& (background)</strong> — o processo de monitorização corre em paralelo ao Locust, sem bloquear os testes</li>
+            <li><strong style="color:#f78c6c;">monitor.pid</strong> — guarda o ID do processo para o poder terminar no fim com stop_monitoring()</li>
+          </ul>
+          <div class="info-box">
+            O sinal <code>&</code> no final do bloco <code>( ... ) &</code> lança o subshell em background. O PID é guardado em <code>$MONITOR_PID</code> para ser terminado mais tarde com <code>kill</code>.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">linhas 88–120</span>
+          </div>
+          <pre><code><span class="fn">start_monitoring</span>() {
+  <span class="kw">local</span> <span class="var">interval</span>=${1:-10}  <span class="cmt"># seg entre snapshots</span>
+  <span class="kw">local</span> <span class="var">out</span>=<span class="str">"$RESULTS_DIR/monitoring"</span>
+  <span class="kw">mkdir</span> -p <span class="str">"$out"</span>
+
+  <span class="cmt"># Subshell em BACKGROUND com &</span>
+  (
+    <span class="var">i</span>=0
+    <span class="kw">while</span> true; do
+      <span class="var">ts</span>=$(<span class="kw">date</span> +%H:%M:%S)
+
+      <span class="cmt"># CPU e RAM de todos os pods → CSV</span>
+      <span class="cmd">kubectl top pods</span> 2>/dev/null | \
+        <span class="kw">awk</span> -v ts=<span class="str">"$ts"</span> -v i=<span class="str">"$i"</span> \
+        <span class="str">'NR>1{print ts","i","$1","$2","$3}'</span> \
+        >> <span class="str">"$out/pods_metrics.csv"</span>
+
+      <span class="cmt"># Detecção de restarts/crashes</span>
+      <span class="cmd">kubectl get pods</span> --no-headers | \
+        <span class="kw">awk</span> -v ts=<span class="str">"$ts"</span> \
+        <span class="str">'$4>0{print ts" RESTART "$1" x"$4}'</span> \
+        >> <span class="str">"$out/restarts.log"</span>
+
+      <span class="var">i</span>=$((<span class="var">i</span>+1))
+      <span class="kw">sleep</span> <span class="str">"$interval"</span>
+    <span class="kw">done</span>
+  ) &  <span class="cmt"># ← corre em paralelo</span>
+
+  <span class="var">MONITOR_PID</span>=$!
+  <span class="kw">echo</span> <span class="var">$MONITOR_PID</span> > <span class="str">"$RESULTS_DIR/monitor.pid"</span>
+}
+
+<span class="fn">stop_monitoring</span>() {
+  <span class="kw">kill</span> <span class="str">"$(cat "$RESULTS_DIR/monitor.pid")"</span>
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOCUST FILE -->
+  <section id="locustfile">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div>
+        <h2>Ficheiro de Testes Locust</h2>
+        <div class="subtitle">Função: create_locustfile() — define o comportamento dos utilizadores virtuais</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p style="color:#cbd5e1; margin-bottom:16px;">
+        O Locust é a ferramenta de load testing usada. O script cria automaticamente um ficheiro Python que define como cada utilizador virtual se comporta — que páginas visita e com que frequência.
+      </p>
+
+      <div class="split">
+        <div class="explain-box">
+          <h3>Parâmetros principais</h3>
+          <ul>
+            <li><strong style="color:#f78c6c;">wait_time = between(0.5, 1)</strong> — cada utilizador espera entre 0.5 e 1 segundo entre pedidos. Simula utilizadores frequentes (ex: Black Friday).</li>
+            <li><strong style="color:#f78c6c;">@task(peso)</strong> — define a frequência relativa de cada ação. O peso 10 significa que "ver produto" é chamado 10x mais do que "checkout".</li>
+          </ul>
+
+          <h3 style="margin-top:14px;">Distribuição de tarefas</h3>
+          <table>
+            <tr><th>Tarefa</th><th>Peso</th><th>% do total</th></tr>
+            <tr><td>browse_product</td><td>10</td><td class="ok">43%</td></tr>
+            <tr><td>index</td><td>5</td><td>22%</td></tr>
+            <tr><td>add_to_cart</td><td>3</td><td>13%</td></tr>
+            <tr><td>set_currency</td><td>2</td><td>9%</td></tr>
+            <tr><td>view_cart</td><td>2</td><td>9%</td></tr>
+            <tr><td>checkout</td><td>1</td><td class="warn">4%</td></tr>
+          </table>
+
+          <div class="warn-box" style="margin-top:12px;">
+            O <strong>checkout</strong> chama internamente 6 microserviços em cadeia (currency, cart, product, shipping, payment, email) — é a operação mais pesada do sistema.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">locustfile.py (gerado automaticamente)</span>
+          </div>
+          <pre><code><span class="kw">from</span> locust <span class="kw">import</span> HttpUser, task, between
+<span class="kw">import</span> random
+
+<span class="var">PRODUCT_IDS</span> = [
+    <span class="str">"OLJCESPC7Z"</span>, <span class="str">"66VCHSJNUP"</span>, <span class="str">"1YMWWN1N4O"</span>,
+    <span class="str">"L9ECAV7KIM"</span>, <span class="str">"2ZYFJ3GM2N"</span>, <span class="str">"0PUK6V6EV0"</span>,
+    <span class="str">"LS4PSXUNUM"</span>, <span class="str">"9SIQT8TOJO"</span>, <span class="str">"6E92ZMYYFZ"</span>
+]
+
+<span class="kw">class</span> <span class="fn">OnlineBoutiqueUser</span>(HttpUser):
+    <span class="cmt"># Espera 0.5–1s entre pedidos (simulação realista)</span>
+    wait_time = between(<span class="num">0.5</span>, <span class="num">1</span>)
+
+    <span class="kw">@task</span>(<span class="num">10</span>)  <span class="cmt"># mais frequente</span>
+    <span class="kw">def</span> <span class="fn">browse_product</span>(self):
+        pid = random.choice(<span class="var">PRODUCT_IDS</span>)
+        self.client.get(f<span class="str">"/product/{pid}"</span>)
+
+    <span class="kw">@task</span>(<span class="num">5</span>)
+    <span class="kw">def</span> <span class="fn">index</span>(self):
+        self.client.get(<span class="str">"/"</span>)
+
+    <span class="kw">@task</span>(<span class="num">3</span>)
+    <span class="kw">def</span> <span class="fn">add_to_cart</span>(self):
+        pid = random.choice(<span class="var">PRODUCT_IDS</span>)
+        self.client.post(<span class="str">"/cart"</span>,
+            data={<span class="str">"product_id"</span>: pid, <span class="str">"quantity"</span>: <span class="str">"1"</span>})
+
+    <span class="kw">@task</span>(<span class="num">1</span>)  <span class="cmt"># menos frequente mas mais pesado</span>
+    <span class="kw">def</span> <span class="fn">checkout</span>(self):
+        pid = random.choice(<span class="var">PRODUCT_IDS</span>)
+        <span class="cmt"># Garante item no carrinho antes do checkout</span>
+        self.client.post(<span class="str">"/cart"</span>,
+            data={<span class="str">"product_id"</span>: pid, <span class="str">"quantity"</span>: <span class="str">"1"</span>})
+        self.client.post(<span class="str">"/cart/checkout"</span>, data={
+            <span class="str">"email"</span>: <span class="str">"test@asid.uc.pt"</span>,
+            <span class="str">"credit_card_number"</span>: <span class="str">"4432801561520454"</span>,
+            <span class="str">"credit_card_cvv"</span>: <span class="str">"672"</span>,
+            <span class="cmt"># ... restantes campos</span>
+        })</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BREAKING POINT -->
+  <section id="breaking">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div>
+        <h2>Algoritmo de Ponto de Quebra</h2>
+        <div class="subtitle">Função: find_breaking_point() — núcleo do script</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p style="color:#cbd5e1; margin-bottom:16px;">
+        Esta é a função principal do script. Começa com 1 utilizador virtual e vai incrementando 1 por step, até o sistema quebrar ou atingir o limite máximo de utilizadores.
+      </p>
+
+      <div style="margin-bottom:20px;">
+        <table>
+          <tr><th>Parâmetro</th><th>Valor padrão</th><th>Significado</th></tr>
+          <tr><td><code>STEP_DURATION</code></td><td>60s</td><td>Duração de cada step com N utilizadores</td></tr>
+          <tr><td><code>COOLDOWN</code></td><td>15s</td><td>Pausa entre steps para o sistema estabilizar</td></tr>
+          <tr><td><code>P99_THRESHOLD</code></td><td>2000ms</td><td>p99 acima deste valor = latência inaceitável</td></tr>
+          <tr><td><code>FAIL_THRESHOLD</code></td><td>5%</td><td>Taxa de erros acima deste valor = quebra</td></tr>
+          <tr><td><code>MAX_USERS</code></td><td>60</td><td>Limite de segurança (para não correr indefinidamente)</td></tr>
+        </table>
+      </div>
+
+      <div class="split">
+        <div class="explain-box">
+          <h3>Critérios de Quebra</h3>
+          <p>Após cada step, um script Python analisa o CSV gerado pelo Locust e verifica duas condições:</p>
+          <ul>
+            <li><strong style="color:#f87171;">QUEBRA_FALHAS</strong> — mais de 5% dos pedidos resultaram em erro HTTP (4xx, 5xx, timeout). Indica que o sistema está a rejeitar pedidos.</li>
+            <li><strong style="color:#f87171;">QUEBRA_LATENCIA</strong> — o percentil 99 da latência ultrapassou 2000ms. Indica que 1% dos utilizadores esperam mais de 2 segundos.</li>
+          </ul>
+          <div class="info-box" style="margin-top:12px;">
+            <strong>p50/p90/p99</strong> são percentis de latência. Por exemplo, p99=500ms significa que 99% dos pedidos foram respondidos em menos de 500ms. O p99 é o indicador mais sensível — sobe muito antes do p50.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">linhas 344–428</span>
+          </div>
+          <pre><code><span class="kw">for</span> users <span class="kw">in</span> $(<span class="kw">seq</span> 1 1 <span class="str">"$MAX_USERS"</span>); <span class="kw">do</span>
+
+  <span class="cmt"># Corre Locust headless durante STEP_DURATION</span>
+  <span class="str">"$LOCUST_BIN"</span> \
+    --locustfile <span class="str">"$RESULTS_DIR/locustfile.py"</span> \
+    --host <span class="str">"$FRONTEND_URL"</span> \
+    --users <span class="str">"$users"</span> \
+    --spawn-rate <span class="str">"$users"</span> \
+    --run-time <span class="str">"${STEP_DURATION}s"</span> \
+    --headless \
+    --csv <span class="str">"$out/locust"</span> \
+    --html <span class="str">"$out/report.html"</span>
+
+  <span class="cmt"># Snapshot de CPU/RAM após o step</span>
+  <span class="cmd">kubectl top pods</span> > <span class="str">"$out/top_pods.txt"</span>
+
+  <span class="cmt"># Analisa CSV com Python: p99 e taxa de falhas</span>
+  result=$(<span class="kw">python3</span> - <span class="str">"$out/locust_stats.csv"</span> \
+    <span class="str">"$P99_THRESHOLD"</span> <span class="str">"$FAIL_THRESHOLD"</span> << <span class="str">'PYEOF'</span>
+  <span class="cmt"># se fail_pct >= 5% → QUEBRA_FALHAS</span>
+  <span class="cmt"># se p99 >= 2000ms  → QUEBRA_LATENCIA</span>
+  <span class="cmt"># senão             → OK</span>
+PYEOF)
+
+  <span class="cmt"># Para se encontrou quebra</span>
+  <span class="kw">if</span> [[ <span class="str">"$status"</span> == QUEBRA* ]]; <span class="kw">then</span>
+    <span class="fn">log</span> <span class="str">"PONTO DE QUEBRA: ${users} users"</span>
+    <span class="kw">break</span>
+  <span class="kw">fi</span>
+
+  <span class="cmt"># Pausa para o sistema estabilizar</span>
+  <span class="kw">sleep</span> <span class="str">"$COOLDOWN"</span>
+<span class="kw">done</span></code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RELATÓRIO -->
+  <section id="report">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div>
+        <h2>Relatório Final</h2>
+        <div class="subtitle">Função: generate_report()</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <div class="split">
+        <div class="explain-box">
+          <h3>O que produz</h3>
+          <p>No final de todos os steps, consolida os resultados num ficheiro de texto <code>RESUMO_EXPERIMENTOS.txt</code>. Para cada fase executada mostra:</p>
+          <ul>
+            <li>Total de pedidos realizados</li>
+            <li>Número e percentagem de falhas</li>
+            <li>Latências p50, p90, p99</li>
+            <li>Throughput (RPS)</li>
+          </ul>
+          <div class="success-box">
+            O Locust também gera automaticamente um <strong>report.html</strong> interactivo por step, com gráficos de latência e throughput ao longo do tempo.
+          </div>
+        </div>
+        <div>
+          <div class="full-code-header">
+            <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+            <span class="file-name">Ficheiros gerados por execução</span>
+          </div>
+          <pre><code>resultados_20260308_180646/
+├── run.log                    <span class="cmt"># log completo</span>
+├── progresso_incremental.csv  <span class="cmt"># resumo por step</span>
+├── RESUMO_EXPERIMENTOS.txt    <span class="cmt"># relatório final</span>
+├── baseline/
+│   ├── resources_config.txt   <span class="cmt"># CPU/RAM de cada serviço</span>
+│   ├── top_pods_idle.txt      <span class="cmt"># consumo sem carga</span>
+│   └── hpa_inicial.txt        <span class="cmt"># auto-scaling config</span>
+├── monitoring/
+│   ├── pods_metrics.csv       <span class="cmt"># CPU/RAM ao longo do tempo</span>
+│   └── restarts.log           <span class="cmt"># crashes detectados</span>
+├── step_1users/
+│   ├── locust_stats.csv       <span class="cmt"># métricas por endpoint</span>
+│   ├── locust_failures.csv    <span class="cmt"># erros detalhados</span>
+│   ├── report.html            <span class="cmt"># relatório visual</span>
+│   └── top_pods.txt           <span class="cmt"># CPU/RAM após step</span>
+├── step_2users/
+│   └── ...
+└── step_N users/
+    └── ...</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN -->
+  <section id="main">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div>
+        <h2>Modos de Execução</h2>
+        <div class="subtitle">Função: main() — como invocar o script</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <table style="margin-bottom:20px;">
+        <tr><th>Comando</th><th>O que faz</th></tr>
+        <tr>
+          <td><code style="color:#89ddff;">./experimentos_escalamento.sh incremental</code></td>
+          <td>Modo principal — 1 user, 2, 3... até quebrar. Recomendado.</td>
+        </tr>
+        <tr>
+          <td><code style="color:#89ddff;">./experimentos_escalamento.sh baseline</code></td>
+          <td>Só captura o estado inicial do cluster (sem testes de carga).</td>
+        </tr>
+        <tr>
+          <td><code style="color:#89ddff;">./experimentos_escalamento.sh monitor</code></td>
+          <td>Só activa a monitorização contínua (útil para observar o cluster manualmente).</td>
+        </tr>
+        <tr>
+          <td><code style="color:#89ddff;">./experimentos_escalamento.sh report</code></td>
+          <td>Gera o resumo final a partir de resultados já existentes.</td>
+        </tr>
+      </table>
+
+      <div class="explain-box">
+        <h3>Variáveis opcionais</h3>
+        <p>Podem ser passadas como prefixo ao comando para ajustar o comportamento:</p>
+        <pre style="margin-top:8px;"><code><span class="cmt"># Teste mais longo com mais utilizadores e critérios mais permissivos</span>
+<span class="var">MAX_USERS</span>=80 \
+<span class="var">STEP_DURATION</span>=90 \
+<span class="var">P99_THRESHOLD</span>=3000 \
+<span class="var">FAIL_THRESHOLD</span>=2 \
+./experimentos_escalamento.sh incremental</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADOS -->
+  <section id="resultados">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div>
+        <h2>Resultados Obtidos</h2>
+        <div class="subtitle">Teste incremental — MacBook M4, Docker Desktop, Online Boutique</div>
+      </div>
+    </div>
+    <div class="section-body">
+      <p style="color:#cbd5e1; margin-bottom:16px;">
+        Configuração: <code>wait_time = between(0.5, 1)</code> | <code>STEP_DURATION = 60s</code> | <code>P99_THRESHOLD = 2000ms</code> | <code>FAIL_THRESHOLD = 5%</code>
+      </p>
+
+      <table>
+        <tr>
+          <th>Users</th>
+          <th>p50 (ms)</th>
+          <th>p90 (ms)</th>
+          <th>p99 (ms)</th>
+          <th>RPS</th>
+          <th>Falhas</th>
+          <th>Status</th>
+        </tr>
+        <tr>
+          <td>1</td><td>23</td><td>36</td><td>120</td><td>1.4</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>2</td><td>22</td><td>38</td><td>60</td><td>2.7</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>3</td><td>18</td><td>34</td><td>110</td><td>4.2</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>4</td><td>19</td><td>35</td><td>110</td><td>5.4</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>5</td><td>18</td><td>35</td><td>100</td><td>6.7</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>6</td><td>17</td><td>31</td><td>97</td><td>8.0</td><td>0</td>
+          <td class="ok">✓ OK</td>
+        </tr>
+        <tr>
+          <td>...</td><td>...</td><td>...</td><td>...</td><td>...</td><td>...</td>
+          <td class="warn">Em curso</td>
+        </tr>
+      </table>
+
+      <div class="info-box" style="margin-top:16px;">
+        <strong>Nota:</strong> O MacBook M4 é um hardware muito potente. O ponto de quebra é esperado a partir dos 15–25 utilizadores, quando o CPU do frontend (limitado a 200m = 0.2 cores) começa a saturar e o p99 ultrapassa os 2000ms.
+      </div>
+
+      <div class="explain-box" style="margin-top:16px;">
+        <h3>Limites de CPU por serviço (configuração Kubernetes)</h3>
+        <table style="margin-top:8px;">
+          <tr><th>Serviço</th><th>CPU Limit</th><th>RAM Limit</th><th>Risco</th></tr>
+          <tr><td>frontend</td><td>200m</td><td>128Mi</td><td class="fail">Alto — recebe todos os pedidos</td></tr>
+          <tr><td>checkoutservice</td><td>200m</td><td>128Mi</td><td class="fail">Alto — orquestra 6 chamadas</td></tr>
+          <tr><td>productcatalogservice</td><td>200m</td><td>128Mi</td><td class="warn">Médio — chamado 43% das vezes</td></tr>
+          <tr><td>cartservice</td><td>500m</td><td>256Mi</td><td class="ok">Baixo — já aumentado</td></tr>
+          <tr><td>redis-cart</td><td>125m</td><td>256Mi</td><td class="ok">Baixo</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer style="text-align:center; padding:30px; color:#334155; font-size:0.82rem; border-top:1px solid #1e293b; margin-top:20px;">
+  ASID 2025/2026 — Tema 2: Escalabilidade Horizontal e Custo Marginal &nbsp;|&nbsp; Online Boutique (Google) &nbsp;|&nbsp; Kubernetes + Docker Desktop
+</footer>
+
+</body>
+</html>
