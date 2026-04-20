@@ -1,0 +1,49 @@
+================================================================================
+ASID 2025/2026 — C1 Comparativo (1 réplica, mesmo locustfile do C2)
+Gerado em: 2026-04-19 17:06:32
+================================================================================
+
+Users         p50      p90      p99   Falhas   Falhas%        RPS  Estado
+----------------------------------------------------------------------
+15             20       30       62        0      0.0% 4.799277781575371  OK
+20             18       31       52        0      0.0% 6.35575001349022  OK
+25             18       31       69        0      0.0% 7.982700081177197  OK
+
+CPU/RAM (snapshots após cada nível de carga)
+----------------------------------------------------------------------
+  --- 15 users ---
+  adservice-574bff445c-k5l76               13m   288Mi
+  cartservice-db96d6fcc-tsdhc              14m   139Mi
+  checkoutservice-5b6d96c9b7-fwtng         2m    36Mi
+  currencyservice-7c8fc8fc9c-rtbz4         24m   113Mi
+  emailservice-66944ff59-zvg4w             4m    56Mi
+  frontend-7bd6f45654-dnhzb                27m   42Mi
+  paymentservice-9bfb7bf5-9mdwz            2m    122Mi
+  productcatalogservice-65bbf699df-d9cxl   12m   42Mi
+  recommendationservice-7444754ff5-kk4vc   19m   80Mi
+  redis-cart-c8ff86559-gpcc7               3m    36Mi
+  shippingservice-f956b6d9f-ml5cg          2m    30Mi
+  --- 20 users ---
+  adservice-574bff445c-k5l76               35m   282Mi
+  cartservice-db96d6fcc-tsdhc              14m   140Mi
+  checkoutservice-5b6d96c9b7-fwtng         2m    36Mi
+  currencyservice-7c8fc8fc9c-rtbz4         35m   114Mi
+  emailservice-66944ff59-zvg4w             4m    56Mi
+  frontend-7bd6f45654-dnhzb                34m   42Mi
+  paymentservice-9bfb7bf5-9mdwz            3m    122Mi
+  productcatalogservice-65bbf699df-d9cxl   15m   42Mi
+  recommendationservice-7444754ff5-kk4vc   23m   80Mi
+  redis-cart-c8ff86559-gpcc7               3m    36Mi
+  shippingservice-f956b6d9f-ml5cg          3m    30Mi
+  --- 25 users ---
+  adservice-574bff445c-k5l76               13m   282Mi
+  cartservice-db96d6fcc-tsdhc              23m   140Mi
+  checkoutservice-5b6d96c9b7-fwtng         4m    36Mi
+  currencyservice-7c8fc8fc9c-rtbz4         47m   116Mi
+  emailservice-66944ff59-zvg4w             5m    56Mi
+  frontend-7bd6f45654-dnhzb                50m   42Mi
+  paymentservice-9bfb7bf5-9mdwz            3m    123Mi
+  productcatalogservice-65bbf699df-d9cxl   21m   42Mi
+  recommendationservice-7444754ff5-kk4vc   31m   80Mi
+  redis-cart-c8ff86559-gpcc7               4m    36Mi
+  shippingservice-f956b6d9f-ml5cg          4m    30Mi

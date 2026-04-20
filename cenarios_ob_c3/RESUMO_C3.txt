@@ -1,0 +1,109 @@
+================================================================================
+ASID 2025/2026 — C3: Escalamento Uniforme (todos stateless × 3)
+Gerado em: 2026-04-19 18:16:37
+================================================================================
+
+Users         p50      p90      p99   Falhas   Falhas%        RPS  Estado
+----------------------------------------------------------------------
+15             21       38      200        0      0.0% 4.783163398708739  OK
+20             19       32       96        0      0.0% 6.574074985329558  OK
+25             19       31      110        0      0.0% 7.92392707129427  OK
+
+CPU/RAM por pod (após cada nível de carga)
+----------------------------------------------------------------------
+  --- 15 users ---
+  adservice-574bff445c-2zzqg               5m    147Mi
+  adservice-574bff445c-4w7zh               16m   194Mi
+  adservice-574bff445c-k5l76               7m    275Mi
+  cartservice-db96d6fcc-6kndn              10m   127Mi
+  cartservice-db96d6fcc-tsdhc              13m   145Mi
+  cartservice-db96d6fcc-x6v6f              5m    98Mi
+  checkoutservice-5b6d96c9b7-fwtng         3m    37Mi
+  checkoutservice-5b6d96c9b7-lwnbx         1m    15Mi
+  checkoutservice-5b6d96c9b7-tvvwl         1m    15Mi
+  currencyservice-7c8fc8fc9c-6tsnv         18m   100Mi
+  currencyservice-7c8fc8fc9c-rtbz4         15m   124Mi
+  currencyservice-7c8fc8fc9c-s92sq         6m    72Mi
+  emailservice-66944ff59-62x8j             5m    56Mi
+  emailservice-66944ff59-xh284             4m    56Mi
+  emailservice-66944ff59-zvg4w             5m    56Mi
+  frontend-7bd6f45654-dnhzb                15m   43Mi
+  frontend-7bd6f45654-jwp2b                11m   21Mi
+  frontend-7bd6f45654-xmsf8                6m    21Mi
+  paymentservice-9bfb7bf5-9mdwz            3m    126Mi
+  paymentservice-9bfb7bf5-w2dt7            6m    68Mi
+  paymentservice-9bfb7bf5-x4kz9            4m    66Mi
+  productcatalogservice-65bbf699df-2hv25   1m    19Mi
+  productcatalogservice-65bbf699df-8ztwv   3m    19Mi
+  productcatalogservice-65bbf699df-d9cxl   11m   43Mi
+  recommendationservice-7444754ff5-kk4vc   18m   80Mi
+  recommendationservice-7444754ff5-w69fs   7m    54Mi
+  recommendationservice-7444754ff5-w769g   4m    51Mi
+  redis-cart-c8ff86559-gpcc7               3m    36Mi
+  shippingservice-f956b6d9f-g5j6b          2m    15Mi
+  shippingservice-f956b6d9f-m2h7g          2m    15Mi
+  shippingservice-f956b6d9f-ml5cg          2m    31Mi
+  --- 20 users ---
+  adservice-574bff445c-2zzqg               6m    153Mi
+  adservice-574bff445c-4w7zh               22m   216Mi
+  adservice-574bff445c-k5l76               9m    275Mi
+  cartservice-db96d6fcc-6kndn              11m   131Mi
+  cartservice-db96d6fcc-tsdhc              10m   145Mi
+  cartservice-db96d6fcc-x6v6f              3m    108Mi
+  checkoutservice-5b6d96c9b7-fwtng         4m    37Mi
+  checkoutservice-5b6d96c9b7-lwnbx         1m    16Mi
+  checkoutservice-5b6d96c9b7-tvvwl         1m    15Mi
+  currencyservice-7c8fc8fc9c-6tsnv         27m   105Mi
+  currencyservice-7c8fc8fc9c-rtbz4         12m   124Mi
+  currencyservice-7c8fc8fc9c-s92sq         4m    75Mi
+  emailservice-66944ff59-62x8j             4m    56Mi
+  emailservice-66944ff59-xh284             4m    56Mi
+  emailservice-66944ff59-zvg4w             5m    56Mi
+  frontend-7bd6f45654-dnhzb                9m    43Mi
+  frontend-7bd6f45654-jwp2b                13m   21Mi
+  frontend-7bd6f45654-xmsf8                19m   21Mi
+  paymentservice-9bfb7bf5-9mdwz            3m    126Mi
+  paymentservice-9bfb7bf5-w2dt7            3m    69Mi
+  paymentservice-9bfb7bf5-x4kz9            3m    66Mi
+  productcatalogservice-65bbf699df-2hv25   3m    21Mi
+  productcatalogservice-65bbf699df-8ztwv   8m    19Mi
+  productcatalogservice-65bbf699df-d9cxl   10m   43Mi
+  recommendationservice-7444754ff5-kk4vc   15m   80Mi
+  recommendationservice-7444754ff5-w69fs   16m   54Mi
+  recommendationservice-7444754ff5-w769g   4m    51Mi
+  redis-cart-c8ff86559-gpcc7               3m    36Mi
+  shippingservice-f956b6d9f-g5j6b          1m    15Mi
+  shippingservice-f956b6d9f-m2h7g          2m    16Mi
+  shippingservice-f956b6d9f-ml5cg          2m    31Mi
+  --- 25 users ---
+  adservice-574bff445c-2zzqg               6m    157Mi
+  adservice-574bff445c-4w7zh               14m   228Mi
+  adservice-574bff445c-k5l76               7m    275Mi
+  cartservice-db96d6fcc-6kndn              10m   132Mi
+  cartservice-db96d6fcc-tsdhc              17m   145Mi
+  cartservice-db96d6fcc-x6v6f              2m    108Mi
+  checkoutservice-5b6d96c9b7-fwtng         6m    37Mi
+  checkoutservice-5b6d96c9b7-lwnbx         1m    16Mi
+  checkoutservice-5b6d96c9b7-tvvwl         1m    15Mi
+  currencyservice-7c8fc8fc9c-6tsnv         26m   110Mi
+  currencyservice-7c8fc8fc9c-rtbz4         17m   125Mi
+  currencyservice-7c8fc8fc9c-s92sq         2m    75Mi
+  emailservice-66944ff59-62x8j             3m    56Mi
+  emailservice-66944ff59-xh284             4m    56Mi
+  emailservice-66944ff59-zvg4w             6m    56Mi
+  frontend-7bd6f45654-dnhzb                16m   43Mi
+  frontend-7bd6f45654-jwp2b                17m   22Mi
+  frontend-7bd6f45654-xmsf8                16m   22Mi
+  paymentservice-9bfb7bf5-9mdwz            4m    126Mi
+  paymentservice-9bfb7bf5-w2dt7            2m    69Mi
+  paymentservice-9bfb7bf5-x4kz9            2m    66Mi
+  productcatalogservice-65bbf699df-2hv25   3m    21Mi
+  productcatalogservice-65bbf699df-8ztwv   7m    19Mi
+  productcatalogservice-65bbf699df-d9cxl   14m   43Mi
+  recommendationservice-7444754ff5-kk4vc   22m   80Mi
+  recommendationservice-7444754ff5-w69fs   14m   54Mi
+  recommendationservice-7444754ff5-w769g   3m    51Mi
+  redis-cart-c8ff86559-gpcc7               4m    36Mi
+  shippingservice-f956b6d9f-g5j6b          1m    16Mi
+  shippingservice-f956b6d9f-m2h7g          3m    16Mi
+  shippingservice-f956b6d9f-ml5cg          3m    31Mi

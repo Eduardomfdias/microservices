@@ -1,0 +1,89 @@
+[16:56:54] ==============================================
+[16:56:54] C1 COMPARATIVO — 1 réplica, locustfile v2
+[16:56:54] Cargas fixas: 15 20 25 users
+[16:56:54] Resultados em: cenarios_ob_c1comp_20260419_165654
+[16:56:54] ==============================================
+[16:56:54] A verificar pré-requisitos...
+[16:56:54] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[16:56:54] Pré-requisitos OK (inclui metrics-server)
+[16:56:54] loadgenerator pausado
+[16:56:54] === C1comp: a garantir 1 réplica em todos os serviços ===
+[16:56:55] Todos os serviços com 1 réplica
+[16:56:55] === BASELINE ===
+[16:56:55] Baseline em cenarios_ob_c1comp_20260419_165654/baseline/
+[16:56:55] locustfile.py criado (3 perfis — idêntico ao C2)
+[16:56:55] A iniciar monitorização (10s) → cenarios_ob_c1comp_20260419_165654/monitoring/
+[16:56:55] Monitor PID: 23631
+[16:56:55] ========================================================
+[16:56:55] C1comp — 15 users (warm-up 30s + medição 120s)
+[16:56:55] ========================================================
+[16:56:56]   Warm-up: 30s...
+[16:57:26]   Medição: 120s...
+[16:59:27] 
+[16:59:27] === RESULTADOS — 15 users ===
+  p50=   20ms  p90=   30ms  p99=   62ms  falhas=0 (0.0%)  rps=4.799277781575371
+[16:59:27]   CPU/RAM após medição:
+    adservice-574bff445c-k5l76                         CPU=13m      RAM=288Mi
+    cartservice-db96d6fcc-tsdhc                        CPU=14m      RAM=139Mi
+    checkoutservice-5b6d96c9b7-fwtng                   CPU=2m       RAM=36Mi
+    currencyservice-7c8fc8fc9c-rtbz4                   CPU=24m      RAM=113Mi
+    emailservice-66944ff59-zvg4w                       CPU=4m       RAM=56Mi
+    frontend-7bd6f45654-dnhzb                          CPU=27m      RAM=42Mi
+    paymentservice-9bfb7bf5-9mdwz                      CPU=2m       RAM=122Mi
+    productcatalogservice-65bbf699df-d9cxl             CPU=12m      RAM=42Mi
+    recommendationservice-7444754ff5-kk4vc             CPU=19m      RAM=80Mi
+    redis-cart-c8ff86559-gpcc7                         CPU=3m       RAM=36Mi
+    shippingservice-f956b6d9f-ml5cg                    CPU=2m       RAM=30Mi
+[16:59:27] 
+[16:59:27] Cooldown: 60s...
+[17:00:28] ========================================================
+[17:00:28] C1comp — 20 users (warm-up 30s + medição 120s)
+[17:00:28] ========================================================
+[17:00:28]   Warm-up: 30s...
+[17:00:59]   Medição: 120s...
+[17:03:00] 
+[17:03:00] === RESULTADOS — 20 users ===
+  p50=   18ms  p90=   31ms  p99=   52ms  falhas=0 (0.0%)  rps=6.35575001349022
+[17:03:00]   CPU/RAM após medição:
+    adservice-574bff445c-k5l76                         CPU=35m      RAM=282Mi
+    cartservice-db96d6fcc-tsdhc                        CPU=14m      RAM=140Mi
+    checkoutservice-5b6d96c9b7-fwtng                   CPU=2m       RAM=36Mi
+    currencyservice-7c8fc8fc9c-rtbz4                   CPU=35m      RAM=114Mi
+    emailservice-66944ff59-zvg4w                       CPU=4m       RAM=56Mi
+    frontend-7bd6f45654-dnhzb                          CPU=34m      RAM=42Mi
+    paymentservice-9bfb7bf5-9mdwz                      CPU=3m       RAM=122Mi
+    productcatalogservice-65bbf699df-d9cxl             CPU=15m      RAM=42Mi
+    recommendationservice-7444754ff5-kk4vc             CPU=23m      RAM=80Mi
+    redis-cart-c8ff86559-gpcc7                         CPU=3m       RAM=36Mi
+    shippingservice-f956b6d9f-ml5cg                    CPU=3m       RAM=30Mi
+[17:03:00] 
+[17:03:00] Cooldown: 60s...
+[17:04:00] ========================================================
+[17:04:00] C1comp — 25 users (warm-up 30s + medição 120s)
+[17:04:00] ========================================================
+[17:04:01]   Warm-up: 30s...
+[17:04:31]   Medição: 120s...
+[17:06:32] 
+[17:06:32] === RESULTADOS — 25 users ===
+  p50=   18ms  p90=   31ms  p99=   69ms  falhas=0 (0.0%)  rps=7.982700081177197
+[17:06:32]   CPU/RAM após medição:
+    adservice-574bff445c-k5l76                         CPU=13m      RAM=282Mi
+    cartservice-db96d6fcc-tsdhc                        CPU=23m      RAM=140Mi
+    checkoutservice-5b6d96c9b7-fwtng                   CPU=4m       RAM=36Mi
+    currencyservice-7c8fc8fc9c-rtbz4                   CPU=47m      RAM=116Mi
+    emailservice-66944ff59-zvg4w                       CPU=5m       RAM=56Mi
+    frontend-7bd6f45654-dnhzb                          CPU=50m      RAM=42Mi
+    paymentservice-9bfb7bf5-9mdwz                      CPU=3m       RAM=123Mi
+    productcatalogservice-65bbf699df-d9cxl             CPU=21m      RAM=42Mi
+    recommendationservice-7444754ff5-kk4vc             CPU=31m      RAM=80Mi
+    redis-cart-c8ff86559-gpcc7                         CPU=4m       RAM=36Mi
+    shippingservice-f956b6d9f-ml5cg                    CPU=4m       RAM=30Mi
+[17:06:32] 
+[17:06:32] Monitorização parada
+[17:06:32] Resumo: cenarios_ob_c1comp_20260419_165654/RESUMO_C1comp.txt
+[17:06:32] loadgenerator retomado
+[17:06:32] 
+[17:06:32] ==============================================
+[17:06:32] C1comp CONCLUÍDO — cenarios_ob_c1comp_20260419_165654
+[17:06:32] Próximo passo: ./c2.sh (já com metrics-server activo)
+[17:06:32] ==============================================

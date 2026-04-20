@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ASID 2025/2026 — Resultados Experimentais C1, C2 e C3</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 13px;
+      background: #f5f6fa;
+      color: #2d3436;
+      padding: 36px;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+      border-left: 5px solid #1a1a2e;
+      padding-left: 16px;
+    }
+
+    .page-header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .page-header .meta {
+      font-size: 12px;
+      color: #636e72;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.07);
+      margin-bottom: 28px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 11px 18px;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 9px;
+      border-radius: 10px;
+    }
+
+    .tag-exp {
+      background: #b2bec3;
+      color: #1a1a2e;
+    }
+
+    .tag-c1 {
+      background: #74b9ff;
+      color: #1a1a2e;
+    }
+
+    .tag-c2 {
+      background: #55efc4;
+      color: #1a1a2e;
+    }
+
+    .tag-c3 {
+      background: #ffeaa7;
+      color: #1a1a2e;
+    }
+
+    .tag-obs {
+      background: #fd79a8;
+      color: #1a1a2e;
+    }
+
+    .tag-comp {
+      background: #a29bfe;
+      color: #1a1a2e;
+    }
+
+    .narrative {
+      padding: 16px 20px;
+      font-size: 12.5px;
+      color: #2d3436;
+      background: #fafbfc;
+      border-bottom: 1px solid #edf0f4;
+      line-height: 1.75;
+    }
+
+    .narrative p {
+      margin-bottom: 8px;
+    }
+
+    .narrative p:last-child {
+      margin-bottom: 0;
+    }
+
+    .narrative strong {
+      color: #1a1a2e;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      background: #f0f3f8;
+      color: #2d3436;
+      font-weight: 600;
+      font-size: 11.5px;
+      padding: 9px 14px;
+      text-align: center;
+      border-bottom: 2px solid #dfe6e9;
+    }
+
+    thead th.left {
+      text-align: left;
+    }
+
+    tbody td {
+      padding: 8px 14px;
+      text-align: center;
+      border-bottom: 1px solid #f0f3f8;
+      font-size: 12.5px;
+    }
+
+    tbody td.left {
+      text-align: left;
+      font-size: 12px;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background: #f8f9fc;
+    }
+
+    .warn-row td {
+      background: #fffbea;
+    }
+
+    .break-row td {
+      background: #fff0f0;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 2px 9px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .ok {
+      background: #d4edda;
+      color: #155724;
+    }
+
+    .warning {
+      background: #fff3cd;
+      color: #7a5f00;
+    }
+
+    .brk {
+      background: #f8d7da;
+      color: #721c24;
+    }
+
+    .better {
+      color: #00b894;
+      font-weight: 700;
+    }
+
+    .worse {
+      color: #d63031;
+      font-weight: 700;
+    }
+
+    .insight {
+      padding: 14px 20px;
+      background: #eaf4fb;
+      border-top: 1px solid #d0e8f5;
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    .insight strong {
+      color: #0984e3;
+    }
+
+    .warn-insight {
+      padding: 14px 20px;
+      background: #fff9e6;
+      border-top: 1px solid #ffeaa7;
+      font-size: 12px;
+      line-height: 1.75;
+    }
+
+    .warn-insight strong {
+      color: #e17055;
+    }
+
+    .table-note {
+      padding: 7px 14px;
+      font-size: 11px;
+      color: #636e72;
+      background: #fafbfc;
+      border-top: 1px solid #f0f3f8;
+    }
+
+    /* CPU distribution grid */
+    .cpu-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid #edf0f4;
+    }
+
+    .cpu-col {
+      padding: 14px 18px;
+      border-right: 1px solid #edf0f4;
+      font-size: 12px;
+    }
+
+    .cpu-col:last-child {
+      border-right: none;
+    }
+
+    .cpu-col h4 {
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #1a1a2e;
+    }
+
+    .cpu-bar-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      font-size: 11px;
+    }
+
+    .cpu-bar-label {
+      width: 110px;
+      color: #636e72;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .cpu-bar-bg {
+      flex: 1;
+      background: #edf0f4;
+      border-radius: 3px;
+      height: 8px;
+    }
+
+    .cpu-bar-fill {
+      height: 8px;
+      border-radius: 3px;
+    }
+
+    .cpu-val {
+      width: 36px;
+      text-align: right;
+      font-weight: 600;
+      color: #2d3436;
+    }
+
+    /* Profile grid */
+    .profile-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border-top: 1px solid #edf0f4;
+    }
+
+    .profile-col {
+      padding: 14px 18px;
+      border-right: 1px solid #edf0f4;
+      font-size: 12px;
+    }
+
+    .profile-col:last-child {
+      border-right: none;
+    }
+
+    .profile-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a1a2e;
+      margin-bottom: 4px;
+    }
+
+    .profile-weight {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-bottom: 8px;
+    }
+
+    .w-casual {
+      background: #dfe6e9;
+      color: #2d3436;
+    }
+
+    .w-normal {
+      background: #d0eaff;
+      color: #1a5276;
+    }
+
+    .w-power {
+      background: #fde8d8;
+      color: #784212;
+    }
+
+    .profile-detail {
+      font-size: 11.5px;
+      color: #636e72;
+      line-height: 1.7;
+    }
+
+    .profile-detail strong {
+      color: #2d3436;
+    }
+
+    .spawn-box {
+      padding: 12px 18px;
+      background: #fafbfc;
+      border-top: 1px solid #edf0f4;
+      font-size: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    /* Section numbering */
+    .sec-num {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    footer {
+      margin-top: 24px;
+      font-size: 11px;
+      color: #b2bec3;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- HEADER                                             -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="page-header">
+      <h1>ASID 2025/2026 — Escalabilidade Horizontal e Custo Marginal em Microserviços</h1>
+      <div class="meta">
+        Universidade do Minho &nbsp;·&nbsp; MEGSI &nbsp;·&nbsp; Tema 2;
+
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 1. MODELO DE CARGA                                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="sec-num">1</span> Modelo de Carga — Locust</div>
+      <div class="narrative">
+        <p>
+          A carga é gerada pelo <strong>Locust</strong>, que simula utilizadores virtuais independentes.
+          Cada utilizador executa pedidos em ciclo contínuo com um <strong>tempo de espera (think time)</strong>
+          entre ações — <strong>N utilizadores ativos não equivalem a N pedidos simultâneos</strong>.
+          A 25 utilizadores o sistema gera ~8 req/s, não 25 req/s.
+        </p>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-col">
+          <div class="profile-name">CasualUser</div>
+          <div><span class="profile-weight w-casual">30 % do tráfego</span></div>
+          <div class="profile-detail">
+            <strong>Think time:</strong> 5–15 s<br>
+            <strong>Ações:</strong> browse produtos, homepage, moeda<br>
+            <strong>Nunca faz checkout</strong>
+          </div>
+        </div>
+        <div class="profile-col">
+          <div class="profile-name">NormalUser</div>
+          <div><span class="profile-weight w-normal">50 % do tráfego</span></div>
+          <div class="profile-detail">
+            <strong>Think time:</strong> 2–6 s<br>
+            <strong>Ações:</strong> browse, add-to-cart, view-cart, checkout ocasional, moeda
+          </div>
+        </div>
+        <div class="profile-col">
+          <div class="profile-name">PowerUser</div>
+          <div><span class="profile-weight w-power">20 % do tráfego</span></div>
+          <div class="profile-detail">
+            <strong>Think time:</strong> 0.5–2 s<br>
+            <strong>Ações:</strong> browse, add-to-cart, checkout frequente — gera proporção de pedidos
+            desproporcionalmente alta
+          </div>
+        </div>
+      </div>
+      <div class="spawn-box">
+        <span><strong>Pesos:</strong> browse×10 · view-cart×3 · add-to-cart×2 · moeda×2 · homepage×1 · checkout×1</span>
+        <span><strong>Spawn rate:</strong> 2 users/s</span>
+        <span><strong>Método:</strong> warm-up 30 s + medição 120 s por nível</span>
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 2. DESCRIÇÃO DOS CENÁRIOS                          -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">2</span> Desenho Experimental — Cenários C1, C2 e C3
+        <span class="tag tag-c1">C1</span>
+        <span class="tag tag-c2">C2</span>
+        <span class="tag tag-c3">C3</span>
+      </div>
+      <div class="narrative">
+        <p>
+          Os três cenários foram desenhados para <strong>isolar progressivamente</strong> o efeito do escalamento
+          horizontal.
+          Todos usam o <strong>mesmo locustfile</strong> (3 perfis), as <strong>mesmas cargas fixas</strong> (15, 20, 25
+          users),
+          o <strong>mesmo método</strong> (warm-up 30 s + medição 120 s, spawn rate 2/s) e os mesmos
+          <strong>critérios de quebra</strong> (p99 &gt; 2000 ms ou falhas &gt; 5 %).
+          A <strong>única variável</strong> entre cenários é o número de réplicas.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Cenário</th>
+            <th>O que foi feito</th>
+            <th>Réplicas</th>
+            <th>+ vs C1</th>
+            <th class="left">Objetivo</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left"><strong>C1</strong> — Baseline</td>
+            <td>Todos os serviços com 1 réplica</td>
+            <td>1 × 11 + Redis</td>
+            <td>0</td>
+            <td class="left">Referência de desempenho. Identificar ponto de saturação natural.</td>
+          </tr>
+          <tr>
+            <td class="left"><strong>C2</strong> — Seletivo</td>
+            <td>Apenas productcatalogservice → 3 réplicas</td>
+            <td>pcs: 3; restantes: 1</td>
+            <td>+2</td>
+            <td class="left">Escalar o candidato a bottleneck (×6 chamadas por browse).</td>
+          </tr>
+          <tr>
+            <td class="left"><strong>C3</strong> — Uniforme</td>
+            <td>Todos os 10 stateless → 3 réplicas</td>
+            <td>stateless: 3; Redis: 1</td>
+            <td>+20</td>
+            <td class="left">Testar se escalar tudo produz ganhos ou rendimentos decrescentes.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="insight">
+        <strong>Diferenças-chave:</strong>
+        <strong>C1→C2:</strong> +2 réplicas. Testa H1 (melhoria parcial) e H6 (afinidade gRPC).
+        &nbsp;·&nbsp;
+        <strong>C2→C3:</strong> +18 réplicas. Testa H3 (rendimentos decrescentes) e H4 (custo marginal crescente).
+        &nbsp;·&nbsp;
+        <strong>Constante:</strong> redis-cart mantém 1 réplica em todos os cenários (stateful, single-threaded).
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 3. RESULTADOS C1                                   -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">3</span> Resultados C1 — Baseline
+        <span class="tag tag-c1">1 réplica por serviço · c1comp.sh</span>
+      </div>
+      <div class="narrative">
+        <p>
+          <strong>Configuração:</strong> 1 réplica por serviço (configuração original).
+          O sistema manteve-se <strong>estável</strong> nos 3 níveis, com zero falhas e p99 abaixo de 70 ms.
+          O RPS escala linearmente com o número de utilizadores.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Users</th>
+            <th>p50 (ms)</th>
+            <th>p90 (ms)</th>
+            <th>p99 (ms)</th>
+            <th>Falhas</th>
+            <th>Falhas %</th>
+            <th>RPS</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">15</td>
+            <td>20</td>
+            <td>30</td>
+            <td>62</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>4.80</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">20</td>
+            <td>18</td>
+            <td>31</td>
+            <td>52</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>6.36</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">25</td>
+            <td>18</td>
+            <td>31</td>
+            <td>69</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>7.98</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-note">
+        Resultados em <code>cenarios_ob_c1comp/</code> &nbsp;·&nbsp;
+        CPU top a 25u: frontend 50m · currencyservice 47m · recommendationsvc 31m · productcatalog 21m
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 4. RESULTADOS C2                                   -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">4</span> Resultados C2 — Escalamento Seletivo
+        <span class="tag tag-c2">productcatalogservice ×3 · restantes ×1 · c2.sh</span>
+      </div>
+      <div class="narrative">
+        <p>
+          <strong>Configuração:</strong> productcatalogservice escalado para <strong>3 réplicas</strong>,
+          restantes serviços mantêm 1. Zero falhas. A mediana (p50) melhorou <strong>~22%</strong> a 25 users.
+          No entanto, o p99 apresenta picos esporádicos mais altos que o C1.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Users</th>
+            <th>p50 (ms)</th>
+            <th>p90 (ms)</th>
+            <th>p99 (ms)</th>
+            <th>Falhas</th>
+            <th>Falhas %</th>
+            <th>RPS</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">15</td>
+            <td>16</td>
+            <td>27</td>
+            <td>170</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>4.92</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">20</td>
+            <td>16</td>
+            <td>25</td>
+            <td>86</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>6.42</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">25</td>
+            <td>14</td>
+            <td>25</td>
+            <td>290</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>7.94</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-note">
+        Resultados em <code>cenarios_ob_c2/</code> &nbsp;·&nbsp;
+        CPU top a 25u: frontend 70m · currencyservice 55m · productcatalog #1 31m · #2 2m · #3 1m
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 5. RESULTADOS C3                                   -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">5</span> Resultados C3 — Escalamento Uniforme
+        <span class="tag tag-c3">Todos stateless ×3 · redis-cart ×1 · c3.sh</span>
+      </div>
+      <div class="narrative">
+        <p>
+          <strong>Configuração:</strong> todos os 10 serviços stateless com <strong>3 réplicas</strong>;
+          redis-cart mantém 1 (stateful). Total: +20 réplicas face ao C1.
+          <strong>Sem melhorias significativas</strong> face ao C2 apesar das +18 réplicas adicionais.
+          Distribuição de CPU entre réplicas <strong>muito desigual</strong> na maioria dos serviços.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Users</th>
+            <th>p50 (ms)</th>
+            <th>p90 (ms)</th>
+            <th>p99 (ms)</th>
+            <th>Falhas</th>
+            <th>Falhas %</th>
+            <th>RPS</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">15</td>
+            <td>21</td>
+            <td>38</td>
+            <td>200</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>4.78</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">20</td>
+            <td>19</td>
+            <td>32</td>
+            <td>96</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>6.57</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">25</td>
+            <td>19</td>
+            <td>31</td>
+            <td>110</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>7.92</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-note">
+        Resultados em <code>cenarios_ob_c3/</code> &nbsp;·&nbsp;
+        redis-cart mantém-se a 4m CPU — sem sinais de saturação neste nível de carga
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 6. COMPARAÇÃO C1 vs C2 vs C3                       -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">6</span> Comparação C1 · C2 · C3 a 25 users
+        <span class="tag tag-comp">Tabela comparativa</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Métrica</th>
+            <th>C1 (Baseline)</th>
+            <th>C2 (Seletivo)</th>
+            <th>C3 (Uniforme)</th>
+            <th>Melhor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left"><strong>Réplicas adicionadas</strong></td>
+            <td>0</td>
+            <td>+2</td>
+            <td>+20</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td class="left"><strong>p50 (ms)</strong></td>
+            <td>18</td>
+            <td class="better">14</td>
+            <td>19</td>
+            <td><span class="tag tag-c2">C2 −22%</span></td>
+          </tr>
+          <tr>
+            <td class="left"><strong>p90 (ms)</strong></td>
+            <td>31</td>
+            <td class="better">25</td>
+            <td>31</td>
+            <td><span class="tag tag-c2">C2 −19%</span></td>
+          </tr>
+          <tr>
+            <td class="left"><strong>p99 (ms)</strong></td>
+            <td class="better">69</td>
+            <td class="worse">290</td>
+            <td>110</td>
+            <td><span class="tag tag-c1">C1</span></td>
+          </tr>
+          <tr>
+            <td class="left"><strong>RPS</strong></td>
+            <td>7.98</td>
+            <td>7.94</td>
+            <td>7.92</td>
+            <td>≈ iguais</td>
+          </tr>
+          <tr>
+            <td class="left"><strong>Falhas</strong></td>
+            <td>0</td>
+            <td>0</td>
+            <td>0</td>
+            <td>Todos</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Sub-tabelas lado a lado: p50, p99, RPS por nível -->
+      <div class="cpu-grid" style="border-top:2px solid #dfe6e9">
+        <div class="cpu-col" style="padding:14px">
+          <h4>p50 (ms) por nível</h4>
+          <table>
+            <thead>
+              <tr>
+                <th class="left">Users</th>
+                <th>C1</th>
+                <th>C2</th>
+                <th>C3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left">15</td>
+                <td>20</td>
+                <td class="better">16</td>
+                <td>21</td>
+              </tr>
+              <tr>
+                <td class="left">20</td>
+                <td>18</td>
+                <td class="better">16</td>
+                <td>19</td>
+              </tr>
+              <tr>
+                <td class="left">25</td>
+                <td>18</td>
+                <td class="better">14</td>
+                <td>19</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cpu-col" style="padding:14px">
+          <h4>p99 (ms) por nível</h4>
+          <table>
+            <thead>
+              <tr>
+                <th class="left">Users</th>
+                <th>C1</th>
+                <th>C2</th>
+                <th>C3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left">15</td>
+                <td class="better">62</td>
+                <td>170</td>
+                <td class="worse">200</td>
+              </tr>
+              <tr>
+                <td class="left">20</td>
+                <td class="better">52</td>
+                <td>86</td>
+                <td>96</td>
+              </tr>
+              <tr>
+                <td class="left">25</td>
+                <td class="better">69</td>
+                <td class="worse">290</td>
+                <td>110</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="cpu-col" style="padding:14px">
+          <h4>RPS por nível</h4>
+          <table>
+            <thead>
+              <tr>
+                <th class="left">Users</th>
+                <th>C1</th>
+                <th>C2</th>
+                <th>C3</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="left">15</td>
+                <td>4.80</td>
+                <td>4.92</td>
+                <td>4.78</td>
+              </tr>
+              <tr>
+                <td class="left">20</td>
+                <td>6.36</td>
+                <td>6.42</td>
+                <td>6.57</td>
+              </tr>
+              <tr>
+                <td class="left">25</td>
+                <td>7.98</td>
+                <td>7.94</td>
+                <td>7.92</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="insight">
+        <strong>Throughput:</strong> ≈ idêntico nos 3 cenários (~8 RPS a 25u). A carga de 25 users não satura o sistema
+        — o escalamento não produz ganhos porque o bottleneck não foi atingido.
+        &nbsp;·&nbsp;
+        <strong>Mediana:</strong> C2 é o melhor (14 ms vs 18–19 ms), beneficiando da distribuição de carga no
+        productcatalogservice.
+        &nbsp;·&nbsp;
+        <strong>Cauda (p99):</strong> paradoxalmente, C1 tem os melhores p99 — as réplicas adicionais introduzem
+        variabilidade (startup, afinidade gRPC).
+        &nbsp;·&nbsp;
+        <strong>Custo marginal:</strong> ∆RPS ≈ 0 em todos os cenários → custo marginal nulo ou negativo. Confirma H3 e
+        H4.
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 7. DISTRIBUIÇÃO DE CPU + AFINIDADE gRPC            -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">7</span> Distribuição de CPU por réplica a 25 users
+        <span class="tag tag-obs">Afinidade de conexão gRPC (H6)</span>
+      </div>
+      <div class="narrative">
+        <p>
+          O gRPC sobre HTTP/2 usa conexões <strong>persistentes e multiplexadas</strong>.
+          Uma vez estabelecida uma conexão a uma réplica, todos os pedidos nessa conexão
+          continuam a ir para a mesma réplica. Novas réplicas só recebem tráfego quando
+          novas conexões são abertas — causando <strong>distribuição desigual de carga</strong>.
+        </p>
+      </div>
+      <div class="cpu-grid">
+        <!-- C1 -->
+        <div class="cpu-col">
+          <h4>C1 — 1 réplica por serviço</h4>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">frontend</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:100%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">50m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">currencyservice</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:94%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">47m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">recommendationsvc</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:62%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">31m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">productcatalog</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:42%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">21m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">cartservice</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:46%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">23m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">redis-cart</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:8%;background:#74b9ff"></div>
+            </div>
+            <span class="cpu-val">4m</span>
+          </div>
+        </div>
+        <!-- C2 -->
+        <div class="cpu-col">
+          <h4>C2 — productcatalog ×3</h4>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">frontend</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:100%;background:#55efc4"></div>
+            </div>
+            <span class="cpu-val">70m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">currencyservice</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:79%;background:#55efc4"></div>
+            </div>
+            <span class="cpu-val">55m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">recommendationsvc</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:67%;background:#55efc4"></div>
+            </div>
+            <span class="cpu-val">47m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">productcatalog #1</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:44%;background:#55efc4"></div>
+            </div>
+            <span class="cpu-val">31m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label" style="color:#d63031">productcatalog #2</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:3%;background:#d63031"></div>
+            </div>
+            <span class="cpu-val" style="color:#d63031">2m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label" style="color:#d63031">productcatalog #3</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:1%;background:#d63031"></div>
+            </div>
+            <span class="cpu-val" style="color:#d63031">1m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">redis-cart</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:7%;background:#55efc4"></div>
+            </div>
+            <span class="cpu-val">5m</span>
+          </div>
+        </div>
+        <!-- C3 -->
+        <div class="cpu-col">
+          <h4>C3 — todos stateless ×3</h4>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">frontend (×3)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:70%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">49m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">currencyservice (×3)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:64%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">45m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">recommendationsvc (×3)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:55%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">39m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">productcatalog (×3)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:34%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">24m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">cartservice (×3)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:41%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">29m</span>
+          </div>
+          <div class="cpu-bar-row">
+            <span class="cpu-bar-label">redis-cart (×1)</span>
+            <div class="cpu-bar-bg">
+              <div class="cpu-bar-fill" style="width:6%;background:#ffeaa7"></div>
+            </div>
+            <span class="cpu-val">4m</span>
+          </div>
+        </div>
+      </div>
+      <div class="warn-insight">
+        <strong>Observação — afinidade gRPC no C2:</strong>
+        A réplica original do productcatalogservice absorveu <strong>31m de CPU</strong> (94% da carga),
+        enquanto as duas réplicas novas ficaram em 2m e 1m.
+        No C3, o padrão repete-se noutros serviços (ex: currencyservice 26m + 17m + 2m).
+        Isto confirma H6: o balanceamento gRPC/HTTP2 é <strong>não uniforme</strong>,
+        limitando a eficácia real do scale-out horizontal.
+      </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 8. C1 EXPLORATÓRIO (REFERÊNCIA HISTÓRICA)          -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header">
+        <span class="sec-num">8</span> Referência: C1 Exploratório (locustfile original)
+        <span class="tag tag-exp">1 perfil · wait 0.5–1 s · step-up 5→30 users</span>
+      </div>
+      <div class="narrative">
+        <p>
+          Execução exploratória inicial com um locustfile de perfil único e tempos de espera curtos (0.5–1 s),
+          que gerava carga mais intensa por utilizador. Usada para identificar o <strong>ponto de saturação</strong>.
+          O sistema <strong>colapsou a 30 users</strong> (47.6% de falhas).
+          Estes dados <strong>não são comparáveis</strong> com C2/C3 (locustfile diferente) — servem apenas de
+          referência.
+        </p>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th class="left">Users</th>
+            <th>p50 (ms)</th>
+            <th>p90 (ms)</th>
+            <th>p99 (ms)</th>
+            <th>Falhas</th>
+            <th>Falhas %</th>
+            <th>RPS</th>
+            <th>Estado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="left">5</td>
+            <td>25</td>
+            <td>36</td>
+            <td>130</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>1.71</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">10</td>
+            <td>21</td>
+            <td>36</td>
+            <td>77</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>3.41</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr>
+            <td class="left">15</td>
+            <td>22</td>
+            <td>35</td>
+            <td>120</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>4.98</td>
+            <td><span class="pill ok">OK</span></td>
+          </tr>
+          <tr class="warn-row">
+            <td class="left">20</td>
+            <td>26</td>
+            <td>120</td>
+            <td>410</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>6.60</td>
+            <td><span class="pill warning">Aviso</span></td>
+          </tr>
+          <tr class="warn-row">
+            <td class="left">25</td>
+            <td>21</td>
+            <td>65</td>
+            <td>420</td>
+            <td>0</td>
+            <td>0.0 %</td>
+            <td>8.35</td>
+            <td><span class="pill warning">Aviso</span></td>
+          </tr>
+          <tr class="break-row">
+            <td class="left">30</td>
+            <td>13</td>
+            <td>210</td>
+            <td>910</td>
+            <td>247</td>
+            <td>47.6 %</td>
+            <td>8.79</td>
+            <td><span class="pill brk">SATURAÇÃO</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="table-note">Critério de quebra: p99 &gt; 2000 ms ou falhas &gt; 5 % &nbsp;·&nbsp; Locustfile diferente
+        (1 perfil, não comparável com C1/C2/C3)</div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════ -->
+    <!-- 9. PRÓXIMOS PASSOS                                 -->
+    <!-- ═══════════════════════════════════════════════════ -->
+    <div class="section">
+      <div class="section-header"><span class="sec-num">9</span> Próximos passos</div>
+      <div class="narrative">
+        <p>
+          <strong>1. Calcular custo proxy C (CPU_time + RAM_time)</strong> para cada cenário e normalizar pelo número de
+          pedidos com sucesso.
+        </p>
+        <p>
+          <strong>2. Testar cargas superiores (30, 35, 40 users)</strong> para encontrar o ponto de quebra do C2 e C3 e
+          verificar se o escalamento desloca efetivamente o ponto de saturação.
+        </p>
+        <p>
+          <strong>3. Confirmar no Jaeger a ordem das chamadas no W3</strong> (payment antes/depois de ship; EmptyCart
+          após checkout).
+        </p>
+        <p>
+          <strong>4. Redação do relatório final (formato ACM)</strong> com discussão de leitura dupla: desempenho +
+          arquitetural.
+        </p>
+      </div>
+    </div>
+
+    <footer>
+      Dados recolhidos em 2026-04-19 &nbsp;·&nbsp;
+      Ambiente: Docker Desktop · Kubernetes · macOS Apple Silicon &nbsp;·&nbsp;
+      Ferramenta de carga: Locust &nbsp;·&nbsp;
+      Resultados: <code>cenarios_ob_c1comp/</code> · <code>cenarios_ob_c2/</code> · <code>cenarios_ob_c3/</code>
+    </footer>
+
+  </div>
+</body>
+
+</html>

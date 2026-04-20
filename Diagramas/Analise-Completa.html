@@ -65,7 +65,8 @@
 <h1 id="arq">1 — Arquitetura dos Microserviços</h1>
 
 <p>
-  O <strong>Online Boutique</strong> é uma aplicação de e-commerce composta por <strong>11 microserviços independentes</strong>,
+  O <strong>Online Boutique</strong> é uma aplicação de e-commerce composta por <strong>12 microserviços</strong>
+  (11 na configuração base + 1 opcional para Google Cloud),
   cada um desenvolvido numa linguagem diferente e com uma responsabilidade única.
   Esta abordagem — conhecida como arquitetura de microserviços — permite que cada componente seja desenvolvido,
   testado, escalado e atualizado de forma independente, sem afetar os restantes.
@@ -106,14 +107,21 @@ flowchart LR
         EMAIL["emailservice\nPython :5000"]:::svc
     end
 
+    subgraph OPT["Serviço opcional (GCP)"]
+        SA["shoppingassistant\nPython :8080\n(Gemini + AlloyDB)"]:::ext
+    end
+
     REDIS[("redis-cart\n:6379")]:::db
+    ALLOYDB[("AlloyDB\n+ Gemini API")]:::db
 
     U -->|HTTP :80| FE
     LG -->|HTTP| FE
     FE -->|gRPC| PC & CART & CH & CUR & REC & SH & AD
+    FE -->|HTTP opcional| SA
     CH -->|gRPC| PC & CART & CUR & SH & PAY & EMAIL
     REC -->|gRPC| PC
     CART -->|TCP| REDIS
+    SA -->|Cloud API| ALLOYDB
 </div>
 
 <div class="info">
@@ -132,10 +140,11 @@ flowchart LR
     <tr><td>cartservice</td><td><span class="badge cs">C#</span></td><td>7070</td><td>Gere o carrinho de compras persistido no Redis</td></tr>
     <tr><td>currencyservice</td><td><span class="badge node">Node.js</span></td><td>7000</td><td>Converte preços entre moedas usando taxas do Banco Central Europeu</td></tr>
     <tr><td>paymentservice</td><td><span class="badge node">Node.js</span></td><td>50051</td><td>Processa o pagamento com cartão de crédito (simulado)</td></tr>
-    <tr><td>emailservice</td><td><span class="badge py">Python</span></td><td>5000</td><td>Envia email de confirmação de encomenda (simulado)</td></tr>
+    <tr><td>emailservice</td><td><span class="badge py">Python</span></td><td>5000 <small>(container: 8080)</small></td><td>Envia email de confirmação de encomenda (simulado)</td></tr>
     <tr><td>recommendationservice</td><td><span class="badge py">Python</span></td><td>8080</td><td>Sugere produtos relacionados com base no carrinho atual</td></tr>
     <tr><td>adservice</td><td><span class="badge java">Java</span></td><td>9555</td><td>Serve anúncios contextuais baseados nas palavras-chave da página</td></tr>
     <tr><td>loadgenerator</td><td><span class="badge py">Python</span></td><td>—</td><td>Simula utilizadores reais com Locust para testes de carga</td></tr>
+    <tr><td>shoppingassistantservice</td><td><span class="badge py">Python</span></td><td>8080</td><td>Assistente de compras por IA com Google Gemini + AlloyDB (opcional, apenas GCP — sem manifesto K8s padrão)</td></tr>
     <tr><td>redis-cart</td><td>—</td><td>6379</td><td>Base de dados em memória para armazenar os carrinhos de compras</td></tr>
   </tbody>
 </table>
@@ -223,7 +232,7 @@ flowchart LR
   configurações". O Kubernetes lê o ficheiro e trata de garantir esse estado — se um pod falhar, é recriado automaticamente.
 </p>
 <p>
-  Neste projeto existem <strong>11 ficheiros YAML</strong> em <code>kubernetes-manifests/</code>.
+  Neste projeto existem <strong>12 ficheiros YAML</strong> em <code>kubernetes-manifests/</code> (11 manifestos de serviço + <code>kustomization.yaml</code>).
   O ficheiro <code>release/kubernetes-manifests.yaml</code> é a junção de todos eles num único ficheiro.
   Um único comando aplica tudo: <code>kubectl apply -f release/kubernetes-manifests.yaml</code>.
 </p>
@@ -309,7 +318,7 @@ flowchart TD
     <tr><td>shippingservice.yaml</td><td>✅</td><td>✅ :50051</td><td>—</td><td>✅</td></tr>
     <tr><td>recommendationservice.yaml</td><td>✅</td><td>✅ :8080</td><td>—</td><td>✅</td></tr>
     <tr><td>adservice.yaml</td><td>✅</td><td>✅ :9555</td><td>—</td><td>✅</td></tr>
-    <tr><td>loadgenerator.yaml</td><td>✅</td><td>—</td><td>—</td><td>—</td></tr>
+    <tr><td>loadgenerator.yaml</td><td>✅</td><td>—</td><td>—</td><td>✅</td></tr>
   </tbody>
 </table>
 
@@ -493,6 +502,7 @@ flowchart LR
     <tr><td>paymentservice</td><td>Nenhum</td><td>checkout</td><td>🟢 Baixo</td></tr>
     <tr><td>emailservice</td><td>Nenhum</td><td>checkout</td><td>🟢 Baixo (não bloqueia checkout)</td></tr>
     <tr><td>adservice</td><td>Nenhum</td><td>frontend</td><td>🟢 Baixo (degradação suave)</td></tr>
+    <tr><td>shoppingassistantservice</td><td>AlloyDB + Gemini API (Google Cloud)</td><td>frontend (opcional)</td><td>🟡 N/A — serviço opcional, apenas em GCP; não afeta o deployment base</td></tr>
   </tbody>
 </table>
 

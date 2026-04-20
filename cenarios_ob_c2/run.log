@@ -1,0 +1,166 @@
+[17:55:12] ==============================================
+[17:55:12] CENÁRIO C2 — ESCALAMENTO SELETIVO
+[17:55:12] productcatalogservice: 3 réplicas
+[17:55:12] Cargas fixas: 15 20 25 users
+[17:55:12] Resultados em: cenarios_ob_c2
+[17:55:12] ==============================================
+[17:55:12] A verificar pré-requisitos...
+[17:55:12] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[17:55:12] Pré-requisitos OK
+[17:55:12] loadgenerator nativo pausado
+[17:55:12] === C2: A escalar productcatalogservice → 3 réplicas ===
+[17:55:12] A aguardar que as 3 réplicas fiquem prontas...
+[17:55:13] productcatalogservice: 3/3 réplicas prontas
+[17:55:13] productcatalogservice: 3/3 réplicas prontas
+[17:55:13] === BASELINE: captura estado inicial ===
+[17:55:13] === BASELINE: captura estado inicial ===
+[17:55:14] Baseline em cenarios_ob_c2/baseline/
+[17:55:14] Baseline em cenarios_ob_c2/baseline/
+[17:55:14] locustfile.py criado (3 perfis: CasualUser/NormalUser/PowerUser)
+[17:55:14] locustfile.py criado (3 perfis: CasualUser/NormalUser/PowerUser)
+[17:55:14] A iniciar monitorização (10s) → cenarios_ob_c2/monitoring/
+[17:55:14] A iniciar monitorização (10s) → cenarios_ob_c2/monitoring/
+[17:55:14] Monitor PID: 32119
+[17:55:14] Monitor PID: 32120
+[17:55:14] ========================================================
+[17:55:14] ========================================================
+[17:55:14] C2 — 15 utilizadores (warm-up 30s + medição 120s)
+[17:55:14] C2 — 15 utilizadores (warm-up 30s + medição 120s)
+[17:55:14] ========================================================
+[17:55:14] ========================================================
+[17:55:14]   Redis metrics (15users_before) — pod: redis-cart-c8ff86559-gpcc7
+[17:55:14]   Redis metrics (15users_before) — pod: redis-cart-c8ff86559-gpcc7
+[17:55:15]   Redis metrics guardadas em redis_metrics/redis_15users_before.txt
+[17:55:15]   Redis metrics guardadas em redis_metrics/redis_15users_before.txt
+[17:55:15]   Warm-up: 30s a 15 users...
+[17:55:15]   Warm-up: 30s a 15 users...
+[17:55:46]   Medição: 120s a 15 users...
+[17:55:46]   Medição: 120s a 15 users...
+[17:57:47]   Redis metrics (15users_after) — pod: redis-cart-c8ff86559-gpcc7
+[17:57:47]   Redis metrics (15users_after) — pod: redis-cart-c8ff86559-gpcc7
+[17:57:48]   Redis metrics guardadas em redis_metrics/redis_15users_after.txt
+[17:57:48] 
+[17:57:48] === RESULTADOS — 15 users ===
+[17:57:48]   Redis metrics guardadas em redis_metrics/redis_15users_after.txt
+[17:57:48] 
+[17:57:48] === RESULTADOS — 15 users ===
+  /                                               p50=   17ms  p90=   27ms  p99=   28ms  falhas=    0 (  0.0%)  rps=0.1423666443854465
+  /cart                                           p50=   14ms  p90=   23ms  p99=  120ms  falhas=    0 (  0.0%)  rps=0.6364626454878785
+  /cart [add]                                     p50=   18ms  p90=   31ms  p99=  110ms  falhas=    0 (  0.0%)  rps=0.8793233917924635
+  /cart/checkout                                  p50=   18ms  p90=   25ms  p99=  340ms  falhas=    0 (  0.0%)  rps=0.41035091616981634
+  /product/[id]                                   p50=   15ms  p90=   25ms  p99=  170ms  falhas=    0 (  0.0%)  rps=2.4202329545525902
+  /setCurrency                                    p50=   22ms  p90=   32ms  p99=  860ms  falhas=    0 (  0.0%)  rps=0.4270999331563395
+  Aggregated                                      p50=   16ms  p90=   27ms  p99=  170ms  falhas=    0 (  0.0%)  rps=4.915836485544535
+  /                                               p50=   17ms  p90=   27ms  p99=   28ms  falhas=    0 (  0.0%)  rps=0.1423666443854465
+  /cart                                           p50=   14ms  p90=   23ms  p99=  120ms  falhas=    0 (  0.0%)  rps=0.6364626454878785
+  /cart [add]                                     p50=   18ms  p90=   31ms  p99=  110ms  falhas=    0 (  0.0%)  rps=0.8793233917924635
+  /cart/checkout                                  p50=   18ms  p90=   25ms  p99=  340ms  falhas=    0 (  0.0%)  rps=0.41035091616981634
+  /product/[id]                                   p50=   15ms  p90=   25ms  p99=  170ms  falhas=    0 (  0.0%)  rps=2.4202329545525902
+  /setCurrency                                    p50=   22ms  p90=   32ms  p99=  860ms  falhas=    0 (  0.0%)  rps=0.4270999331563395
+  Aggregated                                      p50=   16ms  p90=   27ms  p99=  170ms  falhas=    0 (  0.0%)  rps=4.915836485544535
+[17:57:48] 
+[17:57:48]   HTML: cenarios_ob_c2/load_15users/report.html
+[17:57:48] 
+[17:57:48]   CSV:  cenarios_ob_c2/load_15users/locust_stats.csv
+[17:57:48]   HTML: cenarios_ob_c2/load_15users/report.html
+[17:57:48] Cooldown entre execuções: 60s...
+[17:57:48]   CSV:  cenarios_ob_c2/load_15users/locust_stats.csv
+[17:57:48] Cooldown entre execuções: 60s...
+[17:58:48] ========================================================
+[17:58:48] ========================================================
+[17:58:48] C2 — 20 utilizadores (warm-up 30s + medição 120s)
+[17:58:48] C2 — 20 utilizadores (warm-up 30s + medição 120s)
+[17:58:48] ========================================================
+[17:58:48] ========================================================
+[17:58:49]   Redis metrics (20users_before) — pod: redis-cart-c8ff86559-gpcc7
+[17:58:49]   Redis metrics (20users_before) — pod: redis-cart-c8ff86559-gpcc7
+[17:58:49]   Redis metrics guardadas em redis_metrics/redis_20users_before.txt
+[17:58:49]   Redis metrics guardadas em redis_metrics/redis_20users_before.txt
+[17:58:49]   Warm-up: 30s a 20 users...
+[17:58:49]   Warm-up: 30s a 20 users...
+[17:59:20]   Medição: 120s a 20 users...
+[17:59:20]   Medição: 120s a 20 users...
+[18:01:21]   Redis metrics (20users_after) — pod: redis-cart-c8ff86559-gpcc7
+[18:01:21]   Redis metrics (20users_after) — pod: redis-cart-c8ff86559-gpcc7
+[18:01:22]   Redis metrics guardadas em redis_metrics/redis_20users_after.txt
+[18:01:22]   Redis metrics guardadas em redis_metrics/redis_20users_after.txt
+[18:01:22] 
+[18:01:22] 
+[18:01:22] === RESULTADOS — 20 users ===
+[18:01:22] === RESULTADOS — 20 users ===
+[18:01:22] 
+[18:01:22] 
+[18:01:22]   HTML: cenarios_ob_c2/load_20users/report.html
+[18:01:22]   HTML: cenarios_ob_c2/load_20users/report.html
+[18:01:22]   CSV:  cenarios_ob_c2/load_20users/locust_stats.csv
+[18:01:22]   CSV:  cenarios_ob_c2/load_20users/locust_stats.csv
+[18:01:22] Cooldown entre execuções: 60s...
+[18:01:22] Cooldown entre execuções: 60s...
+[18:02:22] ========================================================
+[18:02:22] ========================================================
+[18:02:22] C2 — 25 utilizadores (warm-up 30s + medição 120s)
+[18:02:22] C2 — 25 utilizadores (warm-up 30s + medição 120s)
+[18:02:22] ========================================================
+[18:02:22] ========================================================
+[18:02:22]   Redis metrics (25users_before) — pod: redis-cart-c8ff86559-gpcc7
+[18:02:22]   Redis metrics (25users_before) — pod: redis-cart-c8ff86559-gpcc7
+[18:02:23]   Redis metrics guardadas em redis_metrics/redis_25users_before.txt
+[18:02:23]   Redis metrics guardadas em redis_metrics/redis_25users_before.txt
+[18:02:23]   Warm-up: 30s a 25 users...
+[18:02:23]   Warm-up: 30s a 25 users...
+[18:02:53]   Medição: 120s a 25 users...
+[18:02:53]   Medição: 120s a 25 users...
+[18:04:54]   Redis metrics (25users_after) — pod: redis-cart-c8ff86559-gpcc7
+[18:04:54]   Redis metrics (25users_after) — pod: redis-cart-c8ff86559-gpcc7
+[18:04:55]   Redis metrics guardadas em redis_metrics/redis_25users_after.txt
+[18:04:55] 
+[18:04:55] === RESULTADOS — 25 users ===
+  /                                               p50=   19ms  p90=   82ms  p99=   98ms  falhas=    0 (  0.0%)  rps=0.2092881061802941
+  /cart                                           p50=   12ms  p90=   20ms  p99=   64ms  falhas=    0 (  0.0%)  rps=1.1887564431040705
+  /cart [add]                                     p50=   17ms  p90=   30ms  p99=  510ms  falhas=    0 (  0.0%)  rps=1.272471685576188
+  /cart/checkout                                  p50=   17ms  p90=   22ms  p99=   96ms  falhas=    0 (  0.0%)  rps=0.5441490760687646
+  /product/[id]                                   p50=   12ms  p90=   23ms  p99=  320ms  falhas=    0 (  0.0%)  rps=3.959730968931164
+  /setCurrency                                    p50=   19ms  p90=   32ms  p99=  290ms  falhas=    0 (  0.0%)  rps=0.7701802307434822
+  Aggregated                                      p50=   14ms  p90=   25ms  p99=  290ms  falhas=    0 (  0.0%)  rps=7.944576510603963
+[18:04:55] 
+[18:04:55]   Redis metrics guardadas em redis_metrics/redis_25users_after.txt
+[18:04:55]   HTML: cenarios_ob_c2/load_25users/report.html
+[18:04:55] 
+[18:04:55]   CSV:  cenarios_ob_c2/load_25users/locust_stats.csv
+[18:04:55] === RESULTADOS — 25 users ===
+[18:04:55] Monitorização parada
+[18:04:55] A gerar resumo C2...
+  /                                               p50=   19ms  p90=   82ms  p99=   98ms  falhas=    0 (  0.0%)  rps=0.2092881061802941
+  /cart                                           p50=   12ms  p90=   20ms  p99=   64ms  falhas=    0 (  0.0%)  rps=1.1887564431040705
+  /cart [add]                                     p50=   17ms  p90=   30ms  p99=  510ms  falhas=    0 (  0.0%)  rps=1.272471685576188
+  /cart/checkout                                  p50=   17ms  p90=   22ms  p99=   96ms  falhas=    0 (  0.0%)  rps=0.5441490760687646
+  /product/[id]                                   p50=   12ms  p90=   23ms  p99=  320ms  falhas=    0 (  0.0%)  rps=3.959730968931164
+  /setCurrency                                    p50=   19ms  p90=   32ms  p99=  290ms  falhas=    0 (  0.0%)  rps=0.7701802307434822
+  Aggregated                                      p50=   14ms  p90=   25ms  p99=  290ms  falhas=    0 (  0.0%)  rps=7.944576510603963
+[18:04:55] 
+[18:04:55] Resumo: cenarios_ob_c2/RESUMO_C2.txt
+[18:04:55]   HTML: cenarios_ob_c2/load_25users/report.html
+[18:04:55]   CSV:  cenarios_ob_c2/load_25users/locust_stats.csv
+[18:04:55] Monitorização parada
+[18:04:55] A gerar resumo C2...
+[18:04:55] loadgenerator nativo retomado
+[18:04:55] Resumo: cenarios_ob_c2/RESUMO_C2.txt
+[18:04:55] 
+[18:04:55] ==============================================
+[18:04:55] C2 CONCLUÍDO — resultados em: cenarios_ob_c2
+[18:04:55] ==============================================
+[18:04:55] 
+[18:04:55] PRÓXIMO PASSO: analisar resultados antes de avançar para C3
+[18:04:55]   Ver HTML: open cenarios_ob_c2/load_25users/report.html
+[18:04:55]   Ver CSV:  cenarios_ob_c2/load_25users/locust_stats.csv
+[18:04:55]   Redis:    cenarios_ob_c2/redis_metrics/
+[18:04:55] loadgenerator nativo retomado
+[18:04:55] 
+[18:04:55] ==============================================
+[18:04:55] C2 CONCLUÍDO — resultados em: cenarios_ob_c2
+[18:04:55] ==============================================
+[18:04:55] 
+[18:04:55] PRÓXIMO PASSO: analisar resultados antes de avançar para C3
+[18:04:55]   Ver HTML: open cenarios_ob_c2/load_25users/report.html
+[18:04:55]   Ver CSV:  cenarios_ob_c2/load_25users/locust_stats.csv
+[18:04:55]   Redis:    cenarios_ob_c2/redis_metrics/

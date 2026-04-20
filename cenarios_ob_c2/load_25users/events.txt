@@ -1,0 +1,20 @@
+58m         Normal   Pulled              pod/loadgenerator-57fc5754d-5v49q             Successfully pulled image "busybox:latest" in 1.35s (1.35s including waiting). Image size: 1911327 bytes.
+58m         Normal   Created             pod/loadgenerator-57fc5754d-5v49q             Created container: frontend-check
+58m         Normal   Started             pod/loadgenerator-57fc5754d-5v49q             Started container frontend-check
+58m         Normal   Pulled              pod/loadgenerator-57fc5754d-5v49q             Container image "loadgenerator" already present on machine
+58m         Normal   Created             pod/loadgenerator-57fc5754d-5v49q             Created container: main
+58m         Normal   Started             pod/loadgenerator-57fc5754d-5v49q             Started container main
+9m44s       Normal   ScalingReplicaSet   deployment/loadgenerator                      Scaled down replica set loadgenerator-57fc5754d from 1 to 0
+9m44s       Normal   SuccessfulCreate    replicaset/productcatalogservice-65bbf699df   Created pod: productcatalogservice-65bbf699df-2hv25
+9m44s       Normal   Killing             pod/loadgenerator-57fc5754d-5v49q             Stopping container main
+9m44s       Normal   Scheduled           pod/productcatalogservice-65bbf699df-2hv25    Successfully assigned default/productcatalogservice-65bbf699df-2hv25 to docker-desktop
+9m44s       Normal   SuccessfulDelete    replicaset/loadgenerator-57fc5754d            Deleted pod: loadgenerator-57fc5754d-5v49q
+9m44s       Normal   ScalingReplicaSet   deployment/productcatalogservice              Scaled up replica set productcatalogservice-65bbf699df from 1 to 3
+9m44s       Normal   SuccessfulCreate    replicaset/productcatalogservice-65bbf699df   Created pod: productcatalogservice-65bbf699df-8ztwv
+9m44s       Normal   Scheduled           pod/productcatalogservice-65bbf699df-8ztwv    Successfully assigned default/productcatalogservice-65bbf699df-8ztwv to docker-desktop
+9m43s       Normal   Pulled              pod/productcatalogservice-65bbf699df-2hv25    Container image "productcatalogservice" already present on machine
+9m43s       Normal   Created             pod/productcatalogservice-65bbf699df-8ztwv    Created container: server
+9m43s       Normal   Started             pod/productcatalogservice-65bbf699df-8ztwv    Started container server
+9m43s       Normal   Pulled              pod/productcatalogservice-65bbf699df-8ztwv    Container image "productcatalogservice" already present on machine
+9m43s       Normal   Started             pod/productcatalogservice-65bbf699df-2hv25    Started container server
+9m43s       Normal   Created             pod/productcatalogservice-65bbf699df-2hv25    Created container: server
