@@ -1,0 +1,135 @@
+[20:22:50] ==============================================
+[20:22:50] C1 EXAUSTIVO — 1 réplica, locustfile 3 perfis
+[20:22:50] Níveis: 25 50 75 100 125 150
+[20:22:50] Resultados em: cenarios_ob_c1_exaustivo
+[20:22:50] ==============================================
+[20:22:50] A verificar pré-requisitos...
+[20:22:51] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[20:22:51] Pré-requisitos OK
+deployment.apps/loadgenerator scaled
+[20:22:51] loadgenerator pausado
+[20:22:51] === C1: a garantir 1 réplica em todos os serviços ===
+deployment.apps/adservice scaled
+deployment.apps/cartservice scaled
+deployment.apps/checkoutservice scaled
+deployment.apps/currencyservice scaled
+deployment.apps/emailservice scaled
+deployment.apps/frontend scaled
+deployment.apps/paymentservice scaled
+deployment.apps/productcatalogservice scaled
+deployment.apps/recommendationservice scaled
+deployment.apps/shippingservice scaled
+deployment "frontend" successfully rolled out
+[20:22:51] Todos os serviços com 1 réplica
+  adservice: 1/1
+  cartservice: 1/1
+  checkoutservice: 1/1
+  currencyservice: 1/1
+  emailservice: 1/1
+  frontend: 1/1
+  loadgenerator: 0/0
+  paymentservice: 1/1
+  productcatalogservice: 1/1
+  recommendationservice: 1/1
+  redis-cart: 1/1
+  shippingservice: 1/1
+Servico                            Replicas  CPU_req     CPU_lim     Mem_req     Mem_lim
+-----------------------------------------------------------------------------------------------
+adservice                          1         200m        300m        180Mi       300Mi
+cartservice                        1         200m        300m        256Mi       512Mi
+checkoutservice                    1         100m        200m        64Mi        128Mi
+currencyservice                    1         100m        200m        64Mi        128Mi
+emailservice                       1         100m        200m        64Mi        128Mi
+frontend                           1         100m        200m        64Mi        128Mi
+loadgenerator                      0         300m        500m        256Mi       512Mi
+paymentservice                     1         100m        200m        64Mi        128Mi
+productcatalogservice              1         100m        200m        64Mi        128Mi
+recommendationservice              1         100m        200m        220Mi       450Mi
+redis-cart                         1         70m         125m        200Mi       256Mi
+shippingservice                    1         100m        200m        64Mi        128Mi
+[20:22:52] Baseline capturado em cenarios_ob_c1_exaustivo/baseline/
+[20:22:52] locustfile.py criado (3 perfis)
+[20:22:52] A iniciar monitorização contínua (10s) → cenarios_ob_c1_exaustivo/monitoring/pods_metrics.csv
+[20:22:52] Monitor PID: 20482
+[20:22:52] ========================================================
+[20:22:52] C1 Exaustivo — 25 users (warm-up 30s + medição 120s)
+[20:22:52] ========================================================
+[20:22:52]   Warm-up: 30s...
+[20:23:23]   Medição: 120s...
+[20:25:24]   RESULTADO: p50=47ms  p90=130ms  p99=660ms  falhas=0(0.0%)  rps=71.81978156861992  [Aviso]
+[20:25:24]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=43m      RAM=280Mi
+    cartservice-765b6959c9-bcmfz                       CPU=82m      RAM=150Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=21m      RAM=37Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=154m     RAM=126Mi
+    emailservice-66944ff59-xd6ch                       CPU=11m      RAM=57Mi
+    frontend-7bd6f45654-8lrp5                          CPU=196m     RAM=50Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=8m       RAM=126Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=93m      RAM=43Mi
+    recommendationservice-7444754ff5-fthxq             CPU=163m     RAM=81Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=7m       RAM=36Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=17m      RAM=30Mi
+[20:25:24] Cooldown: 60s antes de 50 users...
+[20:26:24] ========================================================
+[20:26:24] C1 Exaustivo — 50 users (warm-up 30s + medição 120s)
+[20:26:24] ========================================================
+[20:26:24]   Warm-up: 30s...
+[20:26:55]   Medição: 120s...
+[20:28:56]   RESULTADO: p50=160ms  p90=280ms  p99=1500ms  falhas=0(0.0%)  rps=88.08886549574704  [Aviso]
+[20:28:56]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=36m      RAM=280Mi
+    cartservice-765b6959c9-bcmfz                       CPU=62m      RAM=153Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=16m      RAM=37Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=187m     RAM=127Mi
+    emailservice-66944ff59-xd6ch                       CPU=9m       RAM=57Mi
+    frontend-7bd6f45654-8lrp5                          CPU=131m     RAM=53Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=6m       RAM=126Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=61m      RAM=43Mi
+    recommendationservice-7444754ff5-fthxq             CPU=131m     RAM=81Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=5m       RAM=36Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=11m      RAM=31Mi
+[20:28:56] Cooldown: 60s antes de 75 users...
+[20:29:56] ========================================================
+[20:29:56] C1 Exaustivo — 75 users (warm-up 30s + medição 120s)
+[20:29:56] ========================================================
+[20:29:57]   Warm-up: 30s...
+[20:30:27]   Medição: 120s...
+[20:32:28]   RESULTADO: p50=330ms  p90=520ms  p99=1800ms  falhas=2822(23.5%)  rps=100.43337803320469  [QUEBRA]
+[20:32:28]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=55m      RAM=281Mi
+    cartservice-765b6959c9-bcmfz                       CPU=86m      RAM=153Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=23m      RAM=37Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=173m     RAM=126Mi
+    emailservice-66944ff59-xd6ch                       CPU=13m      RAM=57Mi
+    frontend-7bd6f45654-8lrp5                          CPU=199m     RAM=54Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=9m       RAM=126Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=90m      RAM=43Mi
+    recommendationservice-7444754ff5-fthxq             CPU=200m     RAM=82Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=8m       RAM=36Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=17m      RAM=31Mi
+[20:32:28] *** QUEBRA DETECTADA a 75 users — a terminar ***
+./c1_exaustivo.sh: line 112: 20482 Terminated: 15          ( current_label="idle"; while true; do
+    ts=$(date +%H:%M:%S); [ -f "$RESULTS_DIR/monitoring/.current_label" ] && current_label=$(cat "$RESULTS_DIR/monitoring/.current_label"); kubectl -n "$NAMESPACE" top pods --no-headers 2> /dev/null | awk -v ts="$ts" -v lbl="$current_label" '{
+          cpu=$2; ram=$3;
+          gsub(/m/,"",cpu); gsub(/Mi/,"",ram);
+          print ts","lbl","$1","cpu","ram
+        }' >> "$out/pods_metrics.csv"; kubectl -n "$NAMESPACE" get pods --no-headers 2> /dev/null | awk -v ts="$ts" '$4>0{print ts" RESTART pod="$1" restarts="$4}' >> "$out/restarts.log"; sleep 10;
+done )
+[20:32:28] Monitorização parada
+======================================================================
+ASID 2025/2026 — C1 Exaustivo (1 réplica — baseline)
+Critério de quebra: p99 > 2000ms  OU  falhas > 5%
+======================================================================
+ Users     p50     p90      p99   Falhas   Falhas%       RPS  Estado
+----------------------------------------------------------------------
+    25      47     130      660        0      0.0%  71.81978156861992  Aviso  ◄ aviso
+    50     160     280     1500        0      0.0%  88.08886549574704  Aviso  ◄ aviso
+    75     330     520     1800     2822     23.5%  100.43337803320469  QUEBRA ◄ QUEBRA
+
+→ Ponto de quebra: 75 users
+[20:32:28] Resumo: cenarios_ob_c1_exaustivo/RESUMO_C1_exaustivo.txt
+deployment.apps/loadgenerator scaled
+[20:32:28] 
+[20:32:28] ==============================================
+[20:32:28] C1 Exaustivo CONCLUÍDO — cenarios_ob_c1_exaustivo
+[20:32:28] ==============================================

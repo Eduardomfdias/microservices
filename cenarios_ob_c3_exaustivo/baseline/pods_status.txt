@@ -1,0 +1,32 @@
+NAME                                     READY   STATUS    RESTARTS       AGE   IP          NODE             NOMINATED NODE   READINESS GATES
+adservice-574bff445c-dq4dw               1/1     Running   0              16h   10.1.1.19   docker-desktop   <none>           <none>
+adservice-574bff445c-jc7m4               1/1     Running   0              25m   10.1.1.40   docker-desktop   <none>           <none>
+adservice-574bff445c-tbr78               1/1     Running   0              25m   10.1.1.39   docker-desktop   <none>           <none>
+cartservice-765b6959c9-bcmfz             1/1     Running   0              15h   10.1.1.32   docker-desktop   <none>           <none>
+cartservice-765b6959c9-n6fwn             1/1     Running   0              25m   10.1.1.42   docker-desktop   <none>           <none>
+cartservice-765b6959c9-qnq65             1/1     Running   0              25m   10.1.1.41   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-6fth9         1/1     Running   0              25m   10.1.1.43   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-9bqv8         1/1     Running   0              16h   10.1.1.21   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-j6swl         1/1     Running   0              25m   10.1.1.44   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-9dtdc         1/1     Running   4 (15m ago)    16h   10.1.1.22   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-fknl8         1/1     Running   1 (9m9s ago)   25m   10.1.1.45   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-vt2gd         1/1     Running   0              25m   10.1.1.46   docker-desktop   <none>           <none>
+emailservice-66944ff59-8jhrl             1/1     Running   4 (24m ago)    25m   10.1.1.49   docker-desktop   <none>           <none>
+emailservice-66944ff59-xd6ch             1/1     Running   1 (16h ago)    16h   10.1.1.23   docker-desktop   <none>           <none>
+emailservice-66944ff59-xhss4             1/1     Running   2 (24m ago)    25m   10.1.1.47   docker-desktop   <none>           <none>
+frontend-7bd6f45654-8lrp5                1/1     Running   0              16h   10.1.1.24   docker-desktop   <none>           <none>
+frontend-7bd6f45654-kpk99                1/1     Running   0              25m   10.1.1.50   docker-desktop   <none>           <none>
+frontend-7bd6f45654-zl99v                1/1     Running   0              25m   10.1.1.48   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-gfxs2            1/1     Running   0              16h   10.1.1.25   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-s8hj7            1/1     Running   0              25m   10.1.1.52   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-t6d8q            1/1     Running   0              25m   10.1.1.51   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-cv7w7   1/1     Running   0              40m   10.1.1.36   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-jvkg4   1/1     Running   0              40m   10.1.1.37   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-vsc98   1/1     Running   0              16h   10.1.1.28   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-9t2qj   1/1     Running   0              25m   10.1.1.55   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-fthxq   1/1     Running   1 (5m1s ago)   16h   10.1.1.27   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-sg55v   1/1     Running   0              25m   10.1.1.53   docker-desktop   <none>           <none>
+redis-cart-c8ff86559-lhjtw               1/1     Running   0              16h   10.1.1.10   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-cdqmk          1/1     Running   0              25m   10.1.1.56   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-scpqb          1/1     Running   0              25m   10.1.1.54   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-z5rrl          1/1     Running   0              16h   10.1.1.26   docker-desktop   <none>           <none>

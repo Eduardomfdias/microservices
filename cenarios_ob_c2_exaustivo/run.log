@@ -1,0 +1,63 @@
+[09:56:04] ==============================================
+[09:56:04] C2 EXAUSTIVO — productcatalogservice ×3
+[09:56:04] Níveis: 25 50 75 100 125 150
+[09:56:04] Resultados em: cenarios_ob_c2_exaustivo
+[09:56:04] ==============================================
+[09:56:04] A verificar pré-requisitos...
+[09:56:04] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[09:56:04] Pré-requisitos OK
+[09:56:04] loadgenerator pausado
+[09:56:04] === C2: productcatalogservice → 3 réplicas; restantes → 1 ===
+[09:56:07] C2 configurado (productcatalogservice ×3)
+[09:56:08] Baseline capturado em cenarios_ob_c2_exaustivo/baseline/
+[09:56:08] locustfile.py criado (3 perfis)
+[09:56:08] A iniciar monitorização contínua (10s) → cenarios_ob_c2_exaustivo/monitoring/pods_metrics.csv
+[09:56:08] Monitor PID: 24409
+[09:56:08] ========================================================
+[09:56:08] C2 Exaustivo — 25 users (warm-up 30s + medição 120s)
+[09:56:08] ========================================================
+[09:56:08]   Warm-up: 30s...
+[09:56:39]   Medição: 120s...
+[09:58:40]   RESULTADO: p50=50ms  p90=140ms  p99=460ms  falhas=0(0.0%)  rps=71.01233948871189  [Aviso]
+[09:58:40]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=41m      RAM=280Mi
+    cartservice-765b6959c9-bcmfz                       CPU=88m      RAM=156Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=21m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=165m     RAM=127Mi
+    emailservice-66944ff59-xd6ch                       CPU=11m      RAM=57Mi
+    frontend-7bd6f45654-8lrp5                          CPU=194m     RAM=51Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=8m       RAM=125Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=1m       RAM=16Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=1m       RAM=18Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=94m      RAM=44Mi
+    recommendationservice-7444754ff5-fthxq             CPU=170m     RAM=81Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=7m       RAM=36Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=18m      RAM=33Mi
+[09:58:40] Cooldown: 60s antes de 50 users...
+[09:59:40] ========================================================
+[09:59:40] C2 Exaustivo — 50 users (warm-up 30s + medição 120s)
+[09:59:40] ========================================================
+[09:59:40]   Warm-up: 30s...
+[10:00:11]   Medição: 120s...
+[10:02:12]   RESULTADO: p50=160ms  p90=390ms  p99=3700ms  falhas=2533(27.9%)  rps=76.13443917932999  [QUEBRA]
+[10:02:12]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=48m      RAM=281Mi
+    cartservice-765b6959c9-bcmfz                       CPU=104m     RAM=159Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=27m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=174m     RAM=118Mi
+    emailservice-66944ff59-xd6ch                       CPU=13m      RAM=57Mi
+    frontend-7bd6f45654-8lrp5                          CPU=199m     RAM=52Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=9m       RAM=125Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=1m       RAM=17Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=1m       RAM=18Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=92m      RAM=43Mi
+    recommendationservice-7444754ff5-fthxq             CPU=199m     RAM=81Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=8m       RAM=36Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=18m      RAM=33Mi
+[10:02:12] *** QUEBRA DETECTADA a 50 users — a terminar ***
+[10:02:12] Monitorização parada
+[10:02:12] Resumo: cenarios_ob_c2_exaustivo/RESUMO_C2_exaustivo.txt
+[10:02:12] 
+[10:02:12] ==============================================
+[10:02:12] C2 Exaustivo CONCLUÍDO — cenarios_ob_c2_exaustivo
+[10:02:12] ==============================================

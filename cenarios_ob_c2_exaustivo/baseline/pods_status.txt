@@ -1,0 +1,14 @@
+NAME                                     READY   STATUS    RESTARTS      AGE   IP          NODE             NOMINATED NODE   READINESS GATES
+adservice-574bff445c-dq4dw               1/1     Running   0             15h   10.1.1.19   docker-desktop   <none>           <none>
+cartservice-765b6959c9-bcmfz             1/1     Running   0             14h   10.1.1.32   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-9bqv8         1/1     Running   0             15h   10.1.1.21   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-9dtdc         1/1     Running   2 (13h ago)   15h   10.1.1.22   docker-desktop   <none>           <none>
+emailservice-66944ff59-xd6ch             1/1     Running   1 (15h ago)   15h   10.1.1.23   docker-desktop   <none>           <none>
+frontend-7bd6f45654-8lrp5                1/1     Running   0             15h   10.1.1.24   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-gfxs2            1/1     Running   0             15h   10.1.1.25   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-cv7w7   1/1     Running   0             3s    10.1.1.36   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-jvkg4   1/1     Running   0             3s    10.1.1.37   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-vsc98   1/1     Running   0             15h   10.1.1.28   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-fthxq   1/1     Running   0             15h   10.1.1.27   docker-desktop   <none>           <none>
+redis-cart-c8ff86559-lhjtw               1/1     Running   0             15h   10.1.1.10   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-z5rrl          1/1     Running   0             15h   10.1.1.26   docker-desktop   <none>           <none>

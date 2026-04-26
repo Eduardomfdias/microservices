@@ -1,0 +1,316 @@
+[10:11:17] ==============================================
+[10:11:17] C3 EXAUSTIVO — todos stateless ×3
+[10:11:17] Níveis: 25 50 75 100 125 150
+[10:11:17] Resultados em: cenarios_ob_c3_exaustivo
+[10:11:17] ==============================================
+[10:11:17] A verificar pré-requisitos...
+[10:11:17] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[10:11:17] Pré-requisitos OK
+deployment.apps/loadgenerator scaled
+[10:11:17] loadgenerator pausado
+[10:11:17] === C3: todos stateless → 3 réplicas; redis-cart mantém 1 ===
+deployment.apps/adservice scaled
+deployment.apps/cartservice scaled
+deployment.apps/checkoutservice scaled
+deployment.apps/currencyservice scaled
+deployment.apps/emailservice scaled
+deployment.apps/frontend scaled
+deployment.apps/paymentservice scaled
+deployment.apps/productcatalogservice scaled
+deployment.apps/recommendationservice scaled
+deployment.apps/shippingservice scaled
+Waiting for deployment "frontend" rollout to finish: 1 out of 3 new replicas have been updated...
+Waiting for deployment "frontend" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "frontend" rollout to finish: 2 of 3 updated replicas are available...
+deployment "frontend" successfully rolled out
+[10:11:42] C3 configurado (todos stateless ×3; redis-cart ×1)
+  adservice: 3/1
+  cartservice: 3/1
+  checkoutservice: 3/3
+  currencyservice: 3/3
+  emailservice: 3/1
+  frontend: 3/3
+  loadgenerator: 0/0
+  paymentservice: 3/3
+  productcatalogservice: 3/3
+  recommendationservice: 3/1
+  redis-cart: 1/1
+  shippingservice: 3/3
+Servico                            Replicas  CPU_req     CPU_lim     Mem_req     Mem_lim
+-----------------------------------------------------------------------------------------------
+adservice                          3         200m        300m        180Mi       300Mi
+cartservice                        3         200m        300m        256Mi       512Mi
+checkoutservice                    3         100m        200m        64Mi        128Mi
+currencyservice                    3         100m        200m        64Mi        128Mi
+emailservice                       3         100m        200m        64Mi        128Mi
+frontend                           3         100m        200m        64Mi        128Mi
+loadgenerator                      0         300m        500m        256Mi       512Mi
+paymentservice                     3         100m        200m        64Mi        128Mi
+productcatalogservice              3         100m        200m        64Mi        128Mi
+recommendationservice              3         100m        200m        220Mi       450Mi
+redis-cart                         1         70m         125m        200Mi       256Mi
+shippingservice                    3         100m        200m        64Mi        128Mi
+[10:11:42] Baseline capturado em cenarios_ob_c3_exaustivo/baseline/
+[10:11:42] locustfile.py criado (3 perfis)
+[10:11:42] A iniciar monitorização contínua (10s) → cenarios_ob_c3_exaustivo/monitoring/pods_metrics.csv
+[10:11:42] Monitor PID: 26309
+[10:11:42] ========================================================
+[10:11:42] C3 Exaustivo — 25 users (warm-up 30s + medição 120s)
+[10:11:42] ========================================================
+[10:11:44]   Warm-up: 30s...
+[10:12:15]   Medição: 120s...
+[10:14:17]   RESULTADO: p50=20ms  p90=110ms  p99=720ms  falhas=0(0.0%)  rps=74.9717163838963  [Aviso]
+[10:14:17]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=55m      RAM=280Mi
+    adservice-574bff445c-jc7m4                         CPU=4m       RAM=149Mi
+    adservice-574bff445c-tbr78                         CPU=4m       RAM=158Mi
+    cartservice-765b6959c9-bcmfz                       CPU=118m     RAM=159Mi
+    cartservice-765b6959c9-n6fwn                       CPU=32m      RAM=95Mi
+    cartservice-765b6959c9-qnq65                       CPU=30m      RAM=97Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=7m       RAM=19Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=19m      RAM=37Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=15Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=130m     RAM=113Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=133m     RAM=106Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=1m       RAM=78Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=13m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=2m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=145m     RAM=51Mi
+    frontend-7bd6f45654-kpk99                          CPU=110m     RAM=23Mi
+    frontend-7bd6f45654-zl99v                          CPU=95m      RAM=23Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=7m       RAM=125Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=6m       RAM=69Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=2m       RAM=76Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=3m       RAM=18Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=46m      RAM=21Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=106m     RAM=43Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=75m      RAM=54Mi
+    recommendationservice-7444754ff5-fthxq             CPU=147m     RAM=81Mi
+    recommendationservice-7444754ff5-sg55v             CPU=3m       RAM=51Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=9m       RAM=36Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=11m      RAM=16Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=15Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=13m      RAM=33Mi
+[10:14:17] Cooldown: 60s antes de 50 users...
+[10:15:17] ========================================================
+[10:15:17] C3 Exaustivo — 50 users (warm-up 30s + medição 120s)
+[10:15:17] ========================================================
+[10:15:17]   Warm-up: 30s...
+[10:15:48]   Medição: 120s...
+[10:17:49]   RESULTADO: p50=140ms  p90=370ms  p99=560ms  falhas=0(0.0%)  rps=99.40942205507194  [Aviso]
+[10:17:49]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=79m      RAM=281Mi
+    adservice-574bff445c-jc7m4                         CPU=4m       RAM=156Mi
+    adservice-574bff445c-tbr78                         CPU=4m       RAM=165Mi
+    cartservice-765b6959c9-bcmfz                       CPU=157m     RAM=160Mi
+    cartservice-765b6959c9-n6fwn                       CPU=3m       RAM=111Mi
+    cartservice-765b6959c9-qnq65                       CPU=9m       RAM=109Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=9m       RAM=19Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=25m      RAM=37Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=15Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=168m     RAM=126Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=188m     RAM=111Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=2m       RAM=79Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=16m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=3m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=175m     RAM=53Mi
+    frontend-7bd6f45654-kpk99                          CPU=174m     RAM=24Mi
+    frontend-7bd6f45654-zl99v                          CPU=129m     RAM=26Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=9m       RAM=125Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=6m       RAM=72Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=2m       RAM=76Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=3m       RAM=18Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=67m      RAM=21Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=139m     RAM=43Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=120m     RAM=54Mi
+    recommendationservice-7444754ff5-fthxq             CPU=200m     RAM=81Mi
+    recommendationservice-7444754ff5-sg55v             CPU=3m       RAM=51Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=11m      RAM=36Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=14m      RAM=16Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=15Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=15m      RAM=33Mi
+[10:17:49] Cooldown: 60s antes de 75 users...
+[10:18:49] ========================================================
+[10:18:49] C3 Exaustivo — 75 users (warm-up 30s + medição 120s)
+[10:18:49] ========================================================
+[10:18:50]   Warm-up: 30s...
+[10:19:21]   Medição: 120s...
+[10:21:23]   RESULTADO: p50=210ms  p90=700ms  p99=1100ms  falhas=13(0.1%)  rps=103.08422106924243  [Aviso]
+[10:21:23]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=84m      RAM=281Mi
+    adservice-574bff445c-jc7m4                         CPU=3m       RAM=161Mi
+    adservice-574bff445c-tbr78                         CPU=3m       RAM=171Mi
+    cartservice-765b6959c9-bcmfz                       CPU=147m     RAM=161Mi
+    cartservice-765b6959c9-n6fwn                       CPU=2m       RAM=112Mi
+    cartservice-765b6959c9-qnq65                       CPU=2m       RAM=110Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=8m       RAM=19Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=27m      RAM=37Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=16Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=158m     RAM=127Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=199m     RAM=118Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=2m       RAM=81Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=16m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=3m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=167m     RAM=55Mi
+    frontend-7bd6f45654-kpk99                          CPU=188m     RAM=25Mi
+    frontend-7bd6f45654-zl99v                          CPU=142m     RAM=27Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=10m      RAM=125Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=5m       RAM=73Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=2m       RAM=77Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=2m       RAM=18Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=73m      RAM=22Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=141m     RAM=44Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=141m     RAM=54Mi
+    recommendationservice-7444754ff5-fthxq             CPU=199m     RAM=82Mi
+    recommendationservice-7444754ff5-sg55v             CPU=3m       RAM=51Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=11m      RAM=36Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=16m      RAM=17Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=16Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=15m      RAM=33Mi
+[10:21:23] Cooldown: 60s antes de 100 users...
+[10:22:23] ========================================================
+[10:22:23] C3 Exaustivo — 100 users (warm-up 30s + medição 120s)
+[10:22:23] ========================================================
+[10:22:24]   Warm-up: 30s...
+[10:22:54]   Medição: 120s...
+[10:24:56]   RESULTADO: p50=240ms  p90=710ms  p99=1000ms  falhas=0(0.0%)  rps=124.21128645605259  [Aviso]
+[10:24:56]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=89m      RAM=282Mi
+    adservice-574bff445c-jc7m4                         CPU=2m       RAM=166Mi
+    adservice-574bff445c-tbr78                         CPU=2m       RAM=175Mi
+    cartservice-765b6959c9-bcmfz                       CPU=126m     RAM=164Mi
+    cartservice-765b6959c9-n6fwn                       CPU=1m       RAM=112Mi
+    cartservice-765b6959c9-qnq65                       CPU=1m       RAM=110Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=11m      RAM=20Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=34m      RAM=38Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=16Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=2m       RAM=85Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=199m     RAM=126Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=30m      RAM=98Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=20m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=3m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=152m     RAM=55Mi
+    frontend-7bd6f45654-kpk99                          CPU=186m     RAM=29Mi
+    frontend-7bd6f45654-zl99v                          CPU=133m     RAM=28Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=12m      RAM=126Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=6m       RAM=74Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=2m       RAM=77Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=3m       RAM=20Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=73m      RAM=22Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=133m     RAM=44Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=177m     RAM=55Mi
+    recommendationservice-7444754ff5-fthxq             CPU=200m     RAM=82Mi
+    recommendationservice-7444754ff5-sg55v             CPU=3m       RAM=51Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=10m      RAM=36Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=16m      RAM=17Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=16Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=17m      RAM=33Mi
+[10:24:56] Cooldown: 60s antes de 125 users...
+[10:25:56] ========================================================
+[10:25:56] C3 Exaustivo — 125 users (warm-up 30s + medição 120s)
+[10:25:56] ========================================================
+[10:25:57]   Warm-up: 30s...
+[10:26:27]   Medição: 120s...
+[10:28:28]   RESULTADO: p50=310ms  p90=970ms  p99=1300ms  falhas=76(0.5%)  rps=123.37295360913524  [Aviso]
+[10:28:28]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=95m      RAM=282Mi
+    adservice-574bff445c-jc7m4                         CPU=7m       RAM=170Mi
+    adservice-574bff445c-tbr78                         CPU=7m       RAM=179Mi
+    cartservice-765b6959c9-bcmfz                       CPU=147m     RAM=163Mi
+    cartservice-765b6959c9-n6fwn                       CPU=2m       RAM=113Mi
+    cartservice-765b6959c9-qnq65                       CPU=2m       RAM=111Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=8m       RAM=20Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=31m      RAM=38Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=16Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=109m     RAM=104Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=2m       RAM=82Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=194m     RAM=110Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=19m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=3m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=166m     RAM=56Mi
+    frontend-7bd6f45654-kpk99                          CPU=188m     RAM=31Mi
+    frontend-7bd6f45654-zl99v                          CPU=130m     RAM=28Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=11m      RAM=126Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=4m       RAM=77Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=2m       RAM=78Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=3m       RAM=20Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=66m      RAM=22Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=141m     RAM=43Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=184m     RAM=55Mi
+    recommendationservice-7444754ff5-fthxq             CPU=200m     RAM=82Mi
+    recommendationservice-7444754ff5-sg55v             CPU=3m       RAM=51Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=12m      RAM=37Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=14m      RAM=17Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=16Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=18m      RAM=33Mi
+[10:28:28] Cooldown: 60s antes de 150 users...
+[10:29:28] ========================================================
+[10:29:28] C3 Exaustivo — 150 users (warm-up 30s + medição 120s)
+[10:29:28] ========================================================
+[10:29:29]   Warm-up: 30s...
+[10:29:59]   Medição: 120s...
+[10:32:01]   RESULTADO: p50=350ms  p90=1200ms  p99=1500ms  falhas=0(0.0%)  rps=130.52609786354526  [Aviso]
+[10:32:01]   CPU/RAM após medição:
+    adservice-574bff445c-dq4dw                         CPU=96m      RAM=283Mi
+    adservice-574bff445c-jc7m4                         CPU=3m       RAM=173Mi
+    adservice-574bff445c-tbr78                         CPU=3m       RAM=182Mi
+    cartservice-765b6959c9-bcmfz                       CPU=156m     RAM=163Mi
+    cartservice-765b6959c9-n6fwn                       CPU=1m       RAM=113Mi
+    cartservice-765b6959c9-qnq65                       CPU=2m       RAM=111Mi
+    checkoutservice-5b6d96c9b7-6fth9                   CPU=9m       RAM=20Mi
+    checkoutservice-5b6d96c9b7-9bqv8                   CPU=29m      RAM=38Mi
+    checkoutservice-5b6d96c9b7-j6swl                   CPU=1m       RAM=16Mi
+    currencyservice-7c8fc8fc9c-9dtdc                   CPU=129m     RAM=111Mi
+    currencyservice-7c8fc8fc9c-fknl8                   CPU=2m       RAM=83Mi
+    currencyservice-7c8fc8fc9c-vt2gd                   CPU=199m     RAM=124Mi
+    emailservice-66944ff59-8jhrl                       CPU=3m       RAM=56Mi
+    emailservice-66944ff59-xd6ch                       CPU=16m      RAM=57Mi
+    emailservice-66944ff59-xhss4                       CPU=3m       RAM=56Mi
+    frontend-7bd6f45654-8lrp5                          CPU=139m     RAM=56Mi
+    frontend-7bd6f45654-kpk99                          CPU=197m     RAM=32Mi
+    frontend-7bd6f45654-zl99v                          CPU=146m     RAM=31Mi
+    paymentservice-9bfb7bf5-gfxs2                      CPU=10m      RAM=126Mi
+    paymentservice-9bfb7bf5-s8hj7                      CPU=4m       RAM=77Mi
+    paymentservice-9bfb7bf5-t6d8q                      CPU=1m       RAM=80Mi
+    productcatalogservice-65bbf699df-cv7w7             CPU=3m       RAM=20Mi
+    productcatalogservice-65bbf699df-jvkg4             CPU=74m      RAM=22Mi
+    productcatalogservice-65bbf699df-vsc98             CPU=130m     RAM=44Mi
+    recommendationservice-7444754ff5-9t2qj             CPU=197m     RAM=55Mi
+    recommendationservice-7444754ff5-sg55v             CPU=79m      RAM=59Mi
+    redis-cart-c8ff86559-lhjtw                         CPU=13m      RAM=37Mi
+    shippingservice-f956b6d9f-cdqmk                    CPU=17m      RAM=17Mi
+    shippingservice-f956b6d9f-scpqb                    CPU=1m       RAM=16Mi
+    shippingservice-f956b6d9f-z5rrl                    CPU=14m      RAM=33Mi
+./c3_exaustivo.sh: line 110: 26309 Terminated: 15          ( current_label="idle"; while true; do
+    ts=$(date +%H:%M:%S); [ -f "$RESULTS_DIR/monitoring/.current_label" ] && current_label=$(cat "$RESULTS_DIR/monitoring/.current_label"); kubectl -n "$NAMESPACE" top pods --no-headers 2> /dev/null | awk -v ts="$ts" -v lbl="$current_label" '{
+          cpu=$2; ram=$3;
+          gsub(/m/,"",cpu); gsub(/Mi/,"",ram);
+          print ts","lbl","$1","cpu","ram
+        }' >> "$out/pods_metrics.csv"; kubectl -n "$NAMESPACE" get pods --no-headers 2> /dev/null | awk -v ts="$ts" '$4>0{print ts" RESTART pod="$1" restarts="$4}' >> "$out/restarts.log"; sleep 10;
+done )
+[10:32:01] Monitorização parada
+======================================================================
+ASID 2025/2026 — C3 Exaustivo (todos stateless ×3; redis-cart ×1)
+Critério de quebra: p99 > 2000ms  OU  falhas > 5%
+======================================================================
+ Users     p50     p90      p99   Falhas   Falhas%       RPS  Estado
+----------------------------------------------------------------------
+    25      20     110      720        0      0.0%  74.9717163838963  Aviso  ◄ aviso
+    50     140     370      560        0      0.0%  99.40942205507194  Aviso  ◄ aviso
+    75     210     700     1100       13      0.1%  103.08422106924243  Aviso  ◄ aviso
+   100     240     710     1000        0      0.0%  124.21128645605259  Aviso  ◄ aviso
+   125     310     970     1300       76      0.5%  123.37295360913524  Aviso  ◄ aviso
+   150     350    1200     1500        0      0.0%  130.52609786354526  Aviso  ◄ aviso
+
+→ Sistema estável até ao máximo testado
+[10:32:01] Resumo: cenarios_ob_c3_exaustivo/RESUMO_C3_exaustivo.txt
+deployment.apps/loadgenerator scaled
+[10:32:01] 
+[10:32:01] ==============================================
+[10:32:01] C3 Exaustivo CONCLUÍDO — cenarios_ob_c3_exaustivo
+[10:32:01] ==============================================
