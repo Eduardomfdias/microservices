@@ -6,7 +6,7 @@
 % Compilar no Overleaf ou com: pdflatex + bibtex + pdflatex x2
 % ============================================================
 
-\documentclass[manuscript,screen=true,review=false]{acmart}
+\documentclass[acmsmall,screen=true,nonacm]{acmart}
 
 % --- Pacotes adicionais ---
 \usepackage[portuguese]{babel}
@@ -17,6 +17,10 @@
 \usepackage{xcolor}
 \usepackage{tabularx}
 \usepackage{array}
+\usepackage{etoolbox}
+% Letra menor em todas as tabelas (floats table/table*)
+\AtBeginEnvironment{table}{\small}
+\AtBeginEnvironment{table*}{\small}
 
 % --- Configuração ACM ---
 \acmConference[ASID 2025/2026]{Arquiteturas de Sistemas de Informação Distribuídos}{Maio 2026}{Universidade do Minho, Braga, Portugal}
@@ -26,26 +30,32 @@
 \acmISBN{}
 \acmDOI{}
 
-% --- Remover cabeçalho de copyright (relatório académico) ---
-\settopmatter{printacmref=false}
+% --- Suprimir todos os rodapés ACM (relatório académico) ---
+\settopmatter{printacmref=false,printfolios=true}
 \renewcommand\footnotetextcopyrightpermission[1]{}
 \pagestyle{plain}
+% Remover "Manuscript submitted to ACM" e lista de autores no rodapé
+\makeatletter
+\gdef\@acmSubmittedContent{}
+\gdef\@shortauthors{}
+\makeatother
+\renewcommand{\shortauthors}{}
 
 % --- Autores ---
 \author{Eduardo Dias}
-\affiliation{\institution{Universidade do Minho}\city{Braga}\country{Portugal}}
+\affiliation{\institution{Universidade do Minho}\country{Portugal}}
 \email{pg61463@alunos.uminho.pt}
 
 \author{Nuno Martinho}
-\affiliation{\institution{Universidade do Minho}\city{Braga}\country{Portugal}}
+\affiliation{\institution{Universidade do Minho}\country{Portugal}}
 \email{pg47542@alunos.uminho.pt}
 
 \author{Clementina Kulivala}
-\affiliation{\institution{Universidade do Minho}\city{Braga}\country{Portugal}}
+\affiliation{\institution{Universidade do Minho}\country{Portugal}}
 \email{pg58760@alunos.uminho.pt}
 
 \author{Golda Kangunga}
-\affiliation{\institution{Universidade do Minho}\city{Braga}\country{Portugal}}
+\affiliation{\institution{Universidade do Minho}\country{Portugal}}
 \email{pg58761@alunos.uminho.pt}
 
 % --- Título ---
@@ -60,6 +70,48 @@ Este artigo estuda o impacto da escalabilidade horizontal sobre o desempenho e o
 \keywords{microserviços, escalabilidade horizontal, custo marginal, gRPC, \textit{connection affinity}, Kubernetes, testes de carga}
 
 \begin{document}
+
+% ============================================================
+% CAPA PERSONALIZADA
+% ============================================================
+\begin{titlepage}
+\thispagestyle{empty}
+\begin{center}
+\vspace*{1.5cm}
+
+{\large \textbf{Universidade do Minho}}\\[0.3cm]
+{\normalsize Mestrado em Engenharia e Gestão de Sistemas de Informação}
+
+\vspace{2.5cm}
+
+{\LARGE \textbf{Relatório Final}}\\[0.6cm]
+{\large Tema 2 — Escalabilidade Horizontal e Custo Marginal\\[0.2cm]
+em Microserviços}
+
+\vspace{2.5cm}
+
+\begin{tabular}{rl}
+\textbf{Membros do Grupo:} & PG61463 – Eduardo Dias \\[0.2cm]
+ & PG47542 – Nuno Martinho \\[0.2cm]
+ & PG58760 – Clementina Kulivala \\[0.2cm]
+ & PG58761 – Golda Kangunga \\
+\end{tabular}
+
+\vspace{2cm}
+
+\begin{tabular}{rl}
+\textbf{Unidade Curricular:} & Arquiteturas de Sistemas de Informação Distribuídos (ASID) \\[0.2cm]
+\textbf{Ano letivo:} & 2025/2026 — 2.º Semestre \\[0.2cm]
+\textbf{Sistema em estudo:} & Online Boutique (Google Microservices Demo) \\[0.2cm]
+\textbf{Data:} & Maio de 2026 \\
+\end{tabular}
+
+\end{center}
+\end{titlepage}
+
+% ============================================================
+% INÍCIO DO ARTIGO (título ACM, resumo, palavras-chave)
+% ============================================================
 \maketitle
 
 % ============================================================
@@ -68,7 +120,7 @@ Este artigo estuda o impacto da escalabilidade horizontal sobre o desempenho e o
 
 A escalabilidade horizontal — adicionar réplicas de serviços em vez de aumentar os recursos de uma instância — é uma das promessas centrais das arquiteturas de microserviços. Em teoria, duplicar o número de réplicas de um serviço deveria duplicar a sua capacidade. Na prática, múltiplos fatores arquiteturais limitam este ganho: dependências de componentes \textit{stateful} partilhados, balanceamento de carga ao nível de conexão em vez de pedido, e rendimentos marginais decrescentes quando o \textit{bottleneck} se desloca para outro serviço após o escalamento.
 
-Este trabalho analisa de que forma diferentes estratégias de escalabilidade horizontal afetam o desempenho e o custo marginal do \textit{Online Boutique}~\cite{onlineboutique}, uma aplicação de e-commerce \textit{open-source} com 11 microserviços disponibilizada pela Google como referência de boas práticas. A escolha justifica-se por reunir características relevantes para o tema: comunicação via gRPC~\cite{grpc}, serviços \textit{stateless} e \textit{stateful}, dependências em cascata e suporte nativo a observabilidade via OpenTelemetry~\cite{otel} e Jaeger~\cite{jaeger}.
+Este trabalho analisa de que forma diferentes estratégias de escalabilidade horizontal afetam o desempenho e o custo marginal do \textit{Online Boutique}~\cite{onlineboutique}, uma aplicação de comércio eletrónico de código aberto com 11 microserviços disponibilizada pela Google como referência de boas práticas. A escolha justifica-se por reunir características relevantes para o tema: comunicação via gRPC~\cite{grpc}, serviços \textit{stateless} e \textit{stateful}, dependências em cascata e suporte nativo a observabilidade via OpenTelemetry~\cite{otel} e Jaeger~\cite{jaeger}.
 
 As questões de investigação que orientam o estudo são:
 \begin{itemize}
@@ -79,6 +131,23 @@ As questões de investigação que orientam o estudo são:
 \end{itemize}
 
 % ============================================================
+\subsection{Enquadramento Teórico}
+\label{sec:teoria}
+% ============================================================
+
+\textbf{Microserviços e escalabilidade horizontal.} As arquiteturas de microserviços estruturam uma aplicação como um conjunto de serviços independentemente implantáveis que comunicam por protocolos leves~\cite{fowler,newman}. A principal promessa arquitetural é a capacidade de escalar, implantar e evoluir cada serviço de forma autónoma. O \textbf{escalamento horizontal} (\textit{scale-out}) — adicionar réplicas em vez de aumentar recursos de uma instância — é a estratégia preferida porque não tem teto físico e aumenta a disponibilidade. Porém, a Lei de Amdahl~\cite{amdahl} quantifica um limite fundamental: se uma fração $s$ do trabalho é serial, o speedup máximo é $1/s$, independentemente do número de réplicas. Neste estudo, derivou-se empiricamente $s \approx 0{,}654$ (Secção~\ref{subsec:amdahl}), imposta pelo protocolo de comunicação — não apenas pelo código.
+
+\textbf{gRPC, HTTP/2 e \textit{connection affinity}.} O gRPC~\cite{grpc} usa HTTP/2 como transporte, com conexões persistentes e multiplexadas. Ao contrário do HTTP/1.1, onde cada pedido pode ser roteado independentemente, os pedidos gRPC partilham conexões de longa duração — o balanceamento de carga ao nível TCP (L4) distribui conexões, não pedidos. Uma vez estabelecida uma conexão a uma réplica, todos os pedidos nessa conexão permanecem nela~\cite{grpcloadbalancing,k8sgrpc}. Este fenómeno, documentado na literatura técnica sobre gRPC em Kubernetes, é o mecanismo central que explica os resultados dos cenários C2 e C4 deste estudo.
+
+\textbf{Kubernetes e balanceamento de carga.} O Kubernetes opera ao nível L4 através do kube-proxy (iptables/IPVS), adequado para HTTP/1.1 mas insuficiente para gRPC. A resolução requer balanceamento ao nível L7 (pedido), tipicamente fornecido por um \textit{service mesh} (Istio, Linkerd) ou por balanceamento do lado do cliente. O \textit{Horizontal Pod Autoscaler} (HPA)~\cite{k8shpa} oferece escalamento reativo, mas pressupõe que o escalamento é eficaz — pressuposto questionado pelos resultados deste estudo.
+
+\textbf{Componentes stateful e limite de escalabilidade.} A distinção entre serviços stateless e backends stateful é central na análise de escalabilidade. Serviços stateless podem ser replicados sem coordenação; backends stateful (bases de dados, caches) concentram estado e contenção, e a sua escalabilidade requer estratégias distintas (\textit{sharding}, replicação com consistência eventual). O \texttt{redis-cart} deste sistema é \textit{single-threaded} e não beneficia de escalamento horizontal simples, ao contrário dos 11 serviços aplicacionais.
+
+\textbf{Observabilidade.} A identificação de bottlenecks em sistemas distribuídos requer os três pilares de observabilidade: métricas agregadas (\texttt{kubectl top}), \textit{traces} distribuídos (Jaeger/OpenTelemetry) e \textit{logs}. Neste estudo, os traces Jaeger confirmaram o fan-out ×6 de W1 e a sequencialidade total de W3; sem observabilidade, a seleção do candidato a bottleneck teria de assentar em suposições arquiteturais — exatamente o que levou o C4 a falhar.
+
+\textbf{Comparação com sistemas de produção.} A \textbf{Netflix} resolveu o mesmo problema de \textit{connection affinity} com balanceamento do lado do cliente (Ribbon/Envoy). A \textbf{Twitter/X} enfrentou os mesmos limites de componentes stateful (Redis) ao migrar para microserviços, recorrendo a \textit{sharding} e separação de leituras/escritas. A \textbf{Amazon} opera com escalamento por serviço independente, mas enfatiza que o escalamento de um serviço aumenta a carga nos seus dependentes — exatamente o efeito cascata observado no C4 deste estudo.
+
+% ============================================================
 \section{Arquitetura do Sistema}
 % ============================================================
 
@@ -86,21 +155,7 @@ O \textit{Online Boutique} é composto por 11 microserviços e um componente \te
 
 \textbf{Nota conceptual importante:} o \texttt{cartservice} é um serviço aplicacional \textit{stateless} que depende de um \textit{backend stateful} partilhado (\texttt{redis-cart}). Escalar réplicas do \texttt{cartservice} não escala o recurso que concentra o estado e a contenção. Esta distinção é central para a interpretação dos resultados.
 
-\begin{figure}[h]
-  \centering
-  % TODO: inserir figura do inventário de serviços
-  \includegraphics[width=\linewidth]{figuras/inventario_servicos.png}
-  \caption{Inventário dos 11 microserviços do \textit{Online Boutique}: linguagem, tipo e responsabilidade.}
-  \label{fig:inventario}
-\end{figure}
-
-\begin{figure}[h]
-  \centering
-  % TODO: inserir diagrama de dependências
-  \includegraphics[width=\linewidth]{figuras/diagrama_dependencias.png}
-  \caption{Diagrama de dependências entre serviços. O \texttt{productcatalogservice} e o \texttt{redis-cart} são os candidatos principais a pontos de saturação, por razões distintas (fan-out vs.\ contenção de estado).}
-  \label{fig:dependencias}
-\end{figure}
+% TODO: inserir diagrama de inventário de serviços e diagrama de dependências (figuras arquitecturais a preparar pelo grupo)
 
 \subsection{Workflows Analisados}
 
@@ -112,13 +167,7 @@ Foram selecionados três \textit{workflows} que cobrem padrões distintos de esc
 
 \textbf{W3 — Checkout} (\texttt{POST /cart/checkout}): o \texttt{checkoutservice} orquestra 6 serviços em sequência — a latência total é a soma das latências individuais, sem paralelismo. A operação EmptyCart ocorre no final, após \textit{checkout} bem-sucedido (confirmado no Jaeger).
 
-\begin{figure}[h]
-  \centering
-  % TODO: inserir diagramas de sequência W1/W2/W3
-  \includegraphics[width=\linewidth]{figuras/sequencia_w1_w2_w3.png}
-  \caption{Diagramas de sequência de W1 (Browse), W2 (Add to Cart) e W3 (Checkout). W1 tem fan-out paralelo; W3 é totalmente sequencial.}
-  \label{fig:sequencias}
-\end{figure}
+% TODO: inserir diagramas de sequência W1/W2/W3 (figuras arquitecturais a preparar pelo grupo)
 
 \subsection{Tabela Chamada $\rightarrow$ Dependências $\rightarrow$ Risco}
 
@@ -175,13 +224,17 @@ ST3 — \texttt{frontend} & Stateless & C3 (uniforme) & Ponto de entrada único.
 
 A decisão arquitetural central deste estudo é a \textbf{estratégia de escalamento horizontal}: escalar \emph{seletivamente} apenas o(s) serviço(s) candidatos a \textit{bottleneck} (C2), por oposição a escalar \emph{uniformemente} todos os serviços \textit{stateless} (C3). Esta decisão é avaliada experimentalmente nos cenários descritos na Secção~\ref{sec:metodologia}.
 
+A motivação para estudar esta decisão decorre de uma tensão arquitetural real: o escalamento seletivo é aparentemente mais eficiente (menos réplicas, menor custo), mas exige identificação prévia do bottleneck; o escalamento uniforme é operacionalmente mais simples mas ignora diferenças de carga entre serviços. A escolha entre estas estratégias tem impacto direto nos quatro atributos de qualidade em avaliação — \textbf{Performance}, \textbf{Availability}, \textbf{Deployability} e \textbf{Cost}.
+
+Um fator arquitetural crítico condiciona ambas as estratégias: a \textit{connection affinity} do gRPC/HTTP2~\cite{grpcloadbalancing,k8sgrpc}. O gRPC usa conexões persistentes e multiplexadas — uma vez estabelecida uma conexão a uma réplica, todos os pedidos nessa conexão continuam a ir para a mesma réplica. Novas réplicas só recebem tráfego quando novas conexões são abertas. Este comportamento, documentado na literatura técnica sobre balanceamento gRPC em Kubernetes~\cite{k8sgrpc}, limita estruturalmente a eficácia do escalamento horizontal simples (\texttt{kubectl scale}) em sistemas gRPC, independentemente da estratégia adotada.
+
 \subsection{Alternativas Consideradas}
 
 \textbf{Auto-scaling horizontal (HPA por CPU/memória).} O Kubernetes \textit{Horizontal Pod Autoscaler}~\cite{k8shpa} ajusta o número de réplicas automaticamente com base em métricas. Melhora a \textbf{Performance} ao reagir à carga real; melhora a \textbf{Availability} sob carga variável; aumenta a complexidade de \textbf{Deployability} (requer configuração de métricas, limiares e políticas de \textit{cooldown}); o \textbf{Cost} é variável — potencialmente menor em períodos calmos, mas com risco de \textit{over-provisioning} em rajadas.
 
 \textbf{Caching no productcatalogservice.} Introduzir uma cache em memória ou via Redis eliminaria o fan-out de 6 chamadas por browse, reduzindo drasticamente a pressão no serviço. Melhoria substancial de \textbf{Performance} sem adição de réplicas; \textbf{Availability} pode ser afetada por inconsistências de TTL; exige alteração de código (\textbf{Deployability} média); \textbf{Cost} potencialmente muito inferior ao escalamento (sem réplicas extras).
 
-\textbf{Service mesh com balanceamento por pedido (Istio/Linkerd).} Um \textit{service mesh}~\cite{servicemesh} substitui o balanceamento por conexão do gRPC/HTTP2 por balanceamento por pedido, resolvendo o \textit{connection affinity} identificado em H6. Melhoria de \textbf{Performance} ao distribuir carga uniformemente entre réplicas; melhoria de \textbf{Availability} com \textit{circuit breaking} e \textit{retry}; aumento significativo de complexidade operacional (\textbf{Deployability}); overhead de CPU/memória do sidecar impacta o \textbf{Cost}.
+\textbf{Service mesh com balanceamento por pedido (Istio/Linkerd).} Um \textit{service mesh}~\cite{servicemesh} introduz um proxy \textit{sidecar} (ex: Envoy) em cada pod, funcionando como middleware acima do Kubernetes ao nível L7. Este middleware intercepta todo o tráfego gRPC e substitui o balanceamento por conexão por balanceamento por pedido (\textit{round-robin} ou \textit{least-connections}), resolvendo estruturalmente a \textit{connection affinity} identificada em H6~\cite{k8sgrpc}. Impacto nos atributos de qualidade: melhoria substancial de \textbf{Performance} ao distribuir carga uniformemente — as réplicas novas passariam a receber tráfego imediatamente, sem aguardar novas conexões; melhoria de \textbf{Availability} com \textit{circuit breaking}, \textit{retry} automático e deteção de réplicas degradadas; aumento significativo de complexidade operacional (\textbf{Deployability}) — o service mesh adiciona um componente de infraestrutura com a sua própria curva de aprendizagem, configuração e potencial de falha; overhead de CPU/memória do sidecar ($\sim$20--50~m por pod) impacta o \textbf{Cost}. Esta é a alternativa não implementada com maior potencial para resolver o problema central identificado neste estudo.
 
 \textbf{Escalamento vertical (ajuste de limites de recursos).} Aumentar CPU/RAM dos pods existentes em vez de adicionar réplicas. Simplicidade máxima de \textbf{Deployability}; \textbf{Performance} limitada pelo teto do nó; \textbf{Availability} sem melhoria (sem redundância); \textbf{Cost} proporcional aos recursos alocados.
 
@@ -194,7 +247,7 @@ A decisão arquitetural central deste estudo é a \textbf{estratégia de escalam
 \toprule
 \textbf{Atributo} & \textbf{Seletivo (C2)} & \textbf{Uniforme (C3)} \\
 \midrule
-Performance & Ganho na latência mediana (−22\% p50). Risco: se o bottleneck não for o serviço escalado, pode degradar (C2 < C1 nos exaustivos) & Maior ponto de saturação (150u vs 75u). Sem melhoria na mediana. \\
+Performance & Ganho na latência mediana ($-22\%$ p50). Risco: se o bottleneck não for o serviço escalado, pode degradar (C2 < C1 nos exaustivos) & Maior ponto de saturação (150u vs 75u). Sem melhoria na mediana. \\
 \addlinespace
 Availability & Serviços não escalados permanecem pontos únicos de falha & Redundância em todos os stateless; redis-cart é o único ponto único \\
 \addlinespace
@@ -224,7 +277,7 @@ H2 & Após aliviar o productcatalog, o redis-cart emerge como limitação em W2/
 H3 & Ganho por réplica diminui com o deslocamento do bottleneck & C1→C2→C3 & \checkmark\ Confirmada \\
 H4 & Custo marginal cresce quando réplicas deixam de produzir ganhos proporcionais & C2 vs C3 & \checkmark\ Confirmada \\
 H5 & Escalamento horizontal é mais eficaz em stateless do que com dependência stateful & C2/C3 vs redis & $\circ$\ Inconclusiva \\
-H6 & Connection affinity gRPC/HTTP2 limita a eficácia do scale-out & C2 CPU/réplica & \checkmark\ Confirmada \\
+H6 & Connection affinity gRPC/HTTP2 limita a eficácia do escalamento horizontal & C2 CPU/réplica & \checkmark\ Confirmada \\
 \bottomrule
 \end{tabular}%
 }
@@ -249,7 +302,9 @@ A carga foi gerada com Locust~\cite{locust} (Python), ferramenta incluída no pr
 
 \textbf{Locustfile exaustivo} (think times agressivos): CasualUser~20\%/0,5--1s, NormalUser~50\%/0,2--0,5s, PowerUser~30\%/0,1--0,2s. A 25 utilizadores gera $\approx$72~RPS. Permite encontrar o ponto de saturação real.
 
-Pesos das tarefas (ambos): \texttt{browse×10 · view-cart×3 · add-to-cart×2 · moeda×2 · homepage×1 · checkout×1}. O \textit{checkout} usa \texttt{catch\_response=True} para não contaminar as métricas com falhas provenientes do \textit{add-to-cart}. O \texttt{loadgenerator} nativo foi pausado (\texttt{kubectl scale --replicas=0}) em todas as execuções.
+A existência de dois perfis distintos reflete papéis complementares: o comparativo permite comparar C1, C2 e C3 em condições controladas e equivalentes, a carga sub-saturação; o exaustivo procura forçar a saturação para identificar o ponto de rutura real de cada cenário. As inferências sobre throughput máximo sustentável e custo por pedido provêm exclusivamente do segundo perfil. \textbf{Os resultados dos dois conjuntos de testes não são diretamente comparáveis entre si} — locustfiles diferentes, objetivos diferentes.
+
+Pesos das tarefas (ambos): \texttt{browse×10 · view-cart×3 · add-to-cart×2 · moeda×2 · homepage×1 · checkout×1}. O workload não representa um único workflow isolado, mas uma composição de operações sobre a aplicação cuja interpretação deve ser feita à luz de W1 (principal driver de fan-out sobre o \texttt{productcatalogservice}), W2 (workflow associado ao carrinho e ao backend stateful) e W3 (workflow transacional de maior complexidade e latência acumulada). O \textit{checkout} usa \texttt{catch\_response=True} para não contaminar as métricas com falhas provenientes do \textit{add-to-cart}. O \texttt{loadgenerator} nativo foi pausado (\texttt{kubectl scale --replicas=0}) em todas as execuções.
 
 \subsection{Cenários Experimentais}
 
@@ -267,11 +322,34 @@ C3 & Todos stateless: 3; redis-cart: 1 & +20 & Escalar tudo; rendimentos margina
 \end{tabular}
 \end{table}
 
-\textbf{Parâmetros de execução:} warm-up 30s + medição 120s por nível de carga; spawn rate 2 utilizadores/s; cooldown 60s entre níveis; critério de quebra: p99~>~2000ms OU falhas~>~5\%.
+\textbf{Parâmetros de execução:} warm-up de 30~s (permite estabilização inicial do sistema antes da recolha); janela de medição de 120~s por nível (observar o sistema num período relativamente estável); spawn rate 2~utilizadores/s (evitar subida demasiado brusca da carga); cooldown 60~s entre níveis. O critério de quebra (p99~>~2000~ms OU falhas~>~5\%) é um limiar operacional consistente para identificar degradação severa e tornar comparável o ponto de rutura entre cenários — não representa um Service Level Agreement real da aplicação.
 
-\textbf{Testes comparativos:} cargas fixas 15, 20, 25 utilizadores; locustfile realista; cada execução independente com cluster em estado limpo.
+\textbf{Testes comparativos:} cargas fixas 15, 20, 25 utilizadores; locustfile realista; cada execução independente com cluster em estado limpo. Este isolamento entre execuções permite comparação rigorosa entre cenários à mesma carga.
 
-\textbf{Testes exaustivos:} step-up 25→50→75→100→125→150 utilizadores; locustfile agressivo; execução até ao critério de quebra ser atingido.
+\textbf{Testes exaustivos:} carga crescente 25→50→75→100→125→150 utilizadores dentro da \emph{mesma execução}; locustfile agressivo; execução até ao critério de quebra ser atingido. O \textit{cooldown} de 60~s reduz a transição abrupta mas não elimina efeitos herdados do nível anterior (conexões gRPC aquecidas, JIT compilado). O ponto de saturação assim obtido deve ser interpretado como indicativo de tendência de degradação, não como equivalente a execuções independentes por nível de carga.
+
+\subsection{Contexto Histórico — C1 Exploratório}
+
+Antes dos testes comparativos foi executado um teste exploratório de C1 com um \textit{locustfile} simplificado (1 perfil, \texttt{wait\_time} entre(0{,}5,1)) com carga crescente progressiva, para identificar o ponto de saturação do sistema e calibrar os níveis de carga. \textbf{Estes resultados não são comparáveis com os testes comparativos} — locustfile diferente, metodologia diferente.
+
+\begin{table}[h]
+\caption{C1 Exploratório (locustfile simplificado, carga crescente). Saturação a 30 utilizadores com 47{,}6\% de falhas — motivou a escolha de 15/20/25 utilizadores para os testes comparativos.}
+\label{tab:c1exp}
+\begin{tabular}{lrrrrrrl}
+\toprule
+\textbf{Users} & \textbf{p50} & \textbf{p90} & \textbf{p99} & \textbf{Falhas\%} & \textbf{RPS} & \textbf{Estado} \\
+\midrule
+5  & 25ms & 36ms  & 130ms & 0{,}0\% & 1{,}71 & OK \\
+10 & 21ms & 36ms  & 77ms  & 0{,}0\% & 3{,}41 & OK \\
+15 & 22ms & 35ms  & 120ms & 0{,}0\% & 4{,}98 & OK \\
+20 & 26ms & 120ms & 410ms & 0{,}0\% & 6{,}60 & Aviso — p90 sobe 3× \\
+25 & 21ms & 65ms  & 420ms & 0{,}0\% & 8{,}35 & Aviso \\
+\textbf{30} & \textbf{13ms} & \textbf{210ms} & \textbf{910ms} & \textbf{47{,}6\%} & \textbf{8{,}79} & \textbf{SATURAÇÃO} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A degradação do p90 entre 15 e 20 utilizadores (36\,ms~$\rightarrow$~120\,ms, aumento de 3$\times$) e a posterior saturação a 30 utilizadores (47{,}6\% de falhas HTTP~422, maioritariamente no \textit{checkout} em cascata a partir de falhas no \textit{add-to-cart}) motivaram a escolha dos níveis 15, 20 e 25 utilizadores para os testes comparativos — abrangendo o intervalo de degradação progressiva até ao limite antes da quebra, sem atingir saturação completa.
 
 \subsection{Métricas Recolhidas}
 
@@ -287,12 +365,34 @@ C_{proxy} = \frac{1}{2} \cdot CPU_{time} + \frac{1}{2} \cdot RAM_{time}
 
 onde $CPU_{time} = \overline{cpu_{m}} / 1000 \times t_{s}$ (CPU-segundos por réplica) e $RAM_{time} = \overline{ram_{MiB}} \times t_{s}$ (MiB-segundos por réplica), somados sobre todas as réplicas do cenário. O custo por pedido com sucesso é $C_{proxy} / pedidos_{sucesso}$, permitindo comparar cenários com throughputs diferentes.
 
+\textbf{Nota sobre as métricas:} $CM_{throughput}$ mede o ganho de \textit{throughput} por réplica adicional — é um indicador de eficiência de escalamento, não de custo diretamente. O custo marginal é capturado pelo $C_{proxy}$ e pelo custo por pedido. Os pesos $\alpha = \beta = 0{,}5$ são uma escolha metodológica simplificadora para construir um indicador comparável entre cenários — as duas grandezas (CPU-s e MiB-s) têm unidades distintas e a sua soma não tem significado físico direto fora deste contexto comparativo. O $C_{proxy}$ é um índice relativo, não uma grandeza monetária ou física absoluta.
+
+Os valores de CPU e RAM foram obtidos a partir dos ficheiros \texttt{pods\_after.txt} (medição pontual \texttt{kubectl top} no final de cada nível de carga), usando a média das três medições (15/20/25 utilizadores) × 120\,s de janela de medição por nível. A Tabela~\ref{tab:custo} apresenta os resultados calculados.
+
+\begin{table}[h]
+\caption{Custo proxy calculado para C1, C2 e C3 (testes comparativos, 15/20/25 utilizadores, $t_{total}=360$\,s). Unidades: CPU\_time em CPU-s; RAM\_time em MiB-s; C\_proxy = 0{,}5$\times$CPU\_time + 0{,}5$\times$RAM\_time; custo/pedido em unidades proxy por pedido com sucesso.}
+\label{tab:custo}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrrrrrrr}
+\toprule
+\textbf{Cenário} & \textbf{+Rép.} & \textbf{CPU\_time} & \textbf{RAM\_time} & \textbf{C\_proxy} & \textbf{Req OK} & \textbf{Custo/req} & \textbf{$\Delta$Custo/req} & \textbf{$CM_{tp}$} \\
+\midrule
+C1 — Baseline & 0   & 59{,}8  & 353\,640 & 176\,850 & 2285 & 77{,}4 & — (ref.) & — \\
+C2 — Seletivo & +2  & 86{,}3  & 370\,560 & 185\,323 & 2301 & 80{,}5 & $+$4\%  & $-$0{,}02 \\
+C3 — Uniforme & +20 & 84{,}2  & 817\,320 & 408\,702 & 2300 & 177{,}7 & $+$130\% & $-$0{,}003 \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\textbf{Leitura:} o C2 adicionou 2 réplicas e aumentou o custo por pedido apenas 4\% — mas sem qualquer ganho de throughput ($CM_{tp}=-0{,}02$~RPS/réplica). O C3 adicionou 20 réplicas (+182\% de pods) e o custo por pedido subiu 130\% — com throughput marginalmente inferior ao C1 ($CM_{tp}=-0{,}003$~RPS/réplica). O RAM\_time domina o custo proxy porque a RAM alocada é proporcional ao número de réplicas, enquanto a CPU real consumida é condicionada pela \textit{connection affinity} (réplicas ociosas consomem pouca CPU mas continuam a ocupar RAM).
+
 % ============================================================
 \section{Resultados — Testes Comparativos}
 \label{sec:comparativos}
 % ============================================================
 
-Os testes comparativos usaram o locustfile realista a 15, 20 e 25 utilizadores. A carga de 25 utilizadores não saturou nenhum dos três cenários.
+Os testes comparativos usaram o locustfile realista a 15, 20 e 25 utilizadores. A carga de 25 utilizadores não saturou nenhum dos três cenários. A Tabela~\ref{tab:comparativos} apresenta os resultados agregados; a Tabela~\ref{tab:cpu} detalha a distribuição de CPU por réplica.
 
 \begin{table}[h]
 \caption{Resultados comparativos C1, C2 e C3 (testes com locustfile realista). A carga de 25 utilizadores não satura nenhum cenário — o throughput é praticamente idêntico ($\approx$8~RPS).}
@@ -319,13 +419,50 @@ Os testes comparativos usaram o locustfile realista a 15, 20 e 25 utilizadores. 
 \end{tabular}
 \end{table}
 
-\textbf{Throughput:} praticamente idêntico nos 3 cenários ($\approx$7,9--8,0~RPS a 25 utilizadores). O escalamento não produz ganho de throughput porque o sistema não está saturado — confirma H3 e H4 nesta gama de carga.
+Como se observa na Tabela~\ref{tab:comparativos}, os resultados revelam três padrões consistentes.
 
-\textbf{Latência mediana (p50):} o C2 apresenta a melhor mediana (14ms a 25u, $-22\%$ face ao C1). Este ganho deve-se à distribuição de carga no \texttt{productcatalogservice} quando novas conexões são abertas.
+\textbf{Throughput:} praticamente idêntico nos 3 cenários ($\approx$7,9--8,0~RPS a 25 utilizadores). O escalamento não produz ganho de throughput porque o sistema não está saturado — resultado consistente com H3 e H4 nesta gama de carga.
 
-\textbf{Latência cauda (p99):} paradoxalmente, o C1 tem os melhores p99. O C2 e C3 mostram picos mais altos (290ms e 110ms vs.\ 69ms no C1 a 25u), causados pela \textit{connection affinity} gRPC (réplicas novas menos ``aquecidas'') — indício de H6.
+\textbf{Latência mediana (p50):} o C2 apresenta a melhor mediana (14~ms a 25u, $-22\%$ face ao C1). Este ganho é compatível com uma distribuição parcial de carga no \texttt{productcatalogservice} quando novas conexões são abertas.
 
-\textbf{Distribuição de CPU por réplica (C2, a 25u):} \texttt{productcatalogservice} \#1: 31m | \#2: 2m | \#3: 1m — distribuição de 91\%/6\%/3\%. As duas réplicas novas ficaram praticamente inativas porque as conexões HTTP/2 existentes permaneceram na réplica original.
+\textbf{Latência cauda (p99):} o C1 tem os melhores p99. O C2 e C3 mostram picos mais altos (290~ms e 110~ms vs.\ 69~ms no C1 a 25u) — padrão consistente com réplicas novas menos ``aquecidas'' (JIT não otimizado, caches frias) e com a hipótese de H6.
+
+Como se observa na Tabela~\ref{tab:cpu}, a distribuição de CPU no C2 revela: \texttt{productcatalogservice} \#1: 31m | \#2: 2m | \#3: 1m — distribuição de 91\%/6\%/3\%. As duas réplicas novas ficaram praticamente inativas porque as conexões HTTP/2 existentes permaneceram na réplica original — observação fortemente sugerida pela hipótese H6 (\textit{connection affinity} gRPC/HTTP2).
+
+\begin{table}[h]
+\caption{Distribuição de CPU por serviço e por réplica nos três cenários a 25 utilizadores (valores \texttt{kubectl top}, em millicores). Evidencia a \textit{connection affinity} gRPC (H6): réplicas novas ficam subutilizadas enquanto a original acumula carga.}
+\label{tab:cpu}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{lrrr}
+\toprule
+\textbf{Serviço} & \textbf{C1 — 1 réplica} & \textbf{C2 — productcatalog ×3} & \textbf{C3 — todos stateless ×3} \\
+\midrule
+frontend            & 50m & 70m (1 réplica) & $\sim$16m + 17m + 16m (bem distribuído) \\
+currencyservice     & 47m & 55m (1 réplica) & $\sim$26m + 17m + 2m (desigual) \\
+recommendationservice & 31m & 47m (1 réplica) & $\sim$39m distribuídos (3 réplicas) \\
+productcatalogservice & 21m & \#1: 31m | \#2: 2m | \#3: 1m & $\sim$14m + 7m + 3m (desigual) \\
+cartservice         & 23m & 23m (1 réplica) & $\sim$29m distribuídos (3 réplicas) \\
+redis-cart (stateful) & 4m & 5m (sem alteração) & 4m (sem alteração) \\
+\bottomrule
+\end{tabular}%
+}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_distribuicao_cpu_c2.pdf}
+  \caption{Distribuição de CPU entre as 3 réplicas do \texttt{productcatalogservice} em C2 a 25u. A réplica original absorve 97,9\% do tráfego — evidência empírica da \textit{connection affinity} gRPC/HTTP2 (H6).}
+  \label{fig:distrib-cpu}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_cpu_servicos.pdf}
+  \caption{CPU total por serviço (millicores) no ponto de saturação de cada cenário. C3 mostra total das 3 réplicas por serviço; C4 revela o \texttt{cartservice} como novo bottleneck (115~m).}
+  \label{fig:cpu-servicos}
+\end{figure}
+
+O \texttt{frontend} é o único serviço que distribui bem a carga em C3 ($\sim$16m+17m+16m), porque recebe conexões HTTP/1.1 externas — sem persistência HTTP/2, cada pedido pode ser roteado independentemente. Todos os outros serviços exibem distribuição desigual entre réplicas, resultado consistente com a \textit{connection affinity} como fenómeno estrutural do gRPC/HTTP2 e não específico de um serviço em particular.
 
 % ============================================================
 \section{Resultados — Testes Exaustivos}
@@ -373,27 +510,160 @@ Os testes exaustivos usaram o locustfile agressivo para encontrar o ponto de sat
 75 & 210ms & 700ms & 1100ms & 0,1\% & 103,1 & Aviso \\
 100 & 240ms & 710ms & 1000ms & 0,0\% & 124,2 & Aviso \\
 125 & 310ms & 970ms & 1300ms & 0,5\% & 123,4 & Aviso \\
-150 (step-up) & 350ms & 1200ms & 1500ms & 0,0\% & 130,5 & Aviso \\
-\textbf{150 (cold start)} & \textbf{340ms} & \textbf{1500ms} & \textbf{2500ms} & \textbf{0,0\%} & \textbf{109,1} & \textbf{QUEBRA} \\
+150 (incremental) & 350ms & 1200ms & 1500ms & 0,0\% & 130,5 & Aviso \\
+\textbf{150 (arranque a frio)} & \textbf{340ms} & \textbf{1500ms} & \textbf{2500ms} & \textbf{0,0\%} & \textbf{109,1} & \textbf{QUEBRA} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
 \begin{table}[h]
-\caption{Comparação dos pontos de saturação entre cenários (testes exaustivos).}
-\label{tab:saturacao}
-\begin{tabular}{lrrrr}
+\caption{Resultados exaustivos C4 (frontend ×3 + currencyservice ×3). Quebra imediata a 25 utilizadores com 77,1\% de falhas — pior de todos os cenários.}
+\label{tab:c4ex}
+\begin{tabular}{lrrrrrr}
 \toprule
-\textbf{Cenário} & \textbf{+Rép.} & \textbf{Quebra} & \textbf{RPS máx.} & \textbf{Conclusão} \\
+\textbf{Users} & \textbf{p50} & \textbf{p90} & \textbf{p99} & \textbf{Falhas\%} & \textbf{RPS} & \textbf{Estado} \\
 \midrule
-C1 — Baseline & 0 & 75u & 100,4 & Referência \\
-C2 — Seletivo & +2 & \textbf{50u} & 76,1 & Pior que C1 \\
-C3 — Uniforme & +20 & $\sim$150u & 130,5 & $\sim$2$\times$ mais que C1 \\
+\textbf{25} & \textbf{6ms} & \textbf{120ms} & \textbf{2300ms} & \textbf{77,1\%} & \textbf{66,8} & \textbf{QUEBRA} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\textbf{Nota metodológica (step-up vs.\ cold start):} no C3, o teste com step-up gradual (25→150u) chegou a 150u sem quebrar (p99=1500ms), mantendo conexões gRPC aquecidas e JIT compilado. O teste \textit{cold start} directo a 150u quebrou (p99=2500ms). O \textit{cold start} é a medida mais honesta do ponto de saturação real — o step-up subestima a latência por efeito de aquecimento progressivo.
+O resultado do C4 é contra-intuitivo: escalar os bottlenecks \emph{identificados} (frontend e currencyservice) produziu o pior resultado de todos. A análise de CPU após medição revela o mecanismo: o \texttt{cartservice} (1 réplica) atingiu 115m de CPU --- o valor mais alto de qualquer serviço em qualquer cenário. Com 3 réplicas de frontend a abrir conexões gRPC independentes ao \texttt{cartservice}, a pressão de conexões neste serviço triplicou, criando um novo bottleneck nos backends não escalados. Adicionalmente, a \textit{connection affinity} continuou a atuar no \texttt{currencyservice} (distribuição 45m/55m/3m), mantendo uma réplica quase inativa. O C4 confirma que escalar um subconjunto de serviços, mesmo os mais pressionados, desloca o bottleneck para as dependências não escaladas.
+
+\begin{table}[h]
+\caption{Comparação dos pontos de saturação entre todos os cenários (testes exaustivos). C4 adicionado como cenário exploratório.}
+\label{tab:saturacao}
+\begin{tabular}{lrrrrl}
+\toprule
+\textbf{Cenário} & \textbf{+Rép.} & \textbf{Quebra} & \textbf{RPS máx.} & \textbf{Falhas\%} & \textbf{Conclusão} \\
+\midrule
+C1 — Baseline                          & 0   & 75u            & 100,4 & 23,5 & Referência \\
+C2 — Seletivo (productcatalog ×3)      & +2  & \textbf{50u}   & 76,1  & 27,9 & Pior que C1 \\
+C4 — Seletivo (frontend+currency ×3)   & +4  & \textbf{25u}   & 66,8  & 77,1 & Pior de todos \\
+C3 — Uniforme (todos stateless ×3)     & +20 & $\sim$150u     & 130,5 & 0,0  & $\sim$2$\times$ mais que C1 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_throughput_vs_users.pdf}
+  \caption{Throughput (RPS) vs.\ carga por cenário (testes exaustivos). C3 é o único cenário a crescer até 150u; C4 quebra imediatamente a 25u. Marcadores~\texttimes\ indicam ponto de quebra.}
+  \label{fig:throughput}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_p99_vs_users.pdf}
+  \caption{Latência p99 (ms) vs.\ carga por cenário (escala logarítmica). A linha a tracejado vermelho indica o critério de quebra (2000~ms). C2 excede o critério a 50u; C4 excede a 25u.}
+  \label{fig:p99}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_saturacao.pdf}
+  \caption{Ponto de saturação (utilizadores até quebra) por cenário. C2 quebra \emph{antes} do C1; C4 é o pior de todos. Linha de referência a tracejado: C1 a 75u.}
+  \label{fig:saturacao}
+\end{figure}
+
+\textbf{Nota metodológica (carga incremental vs.\ arranque a frio):} no C3, o teste com carga incremental (25→150u) chegou a 150u sem quebrar (p99=1500ms), mantendo conexões gRPC aquecidas e JIT compilado. O teste de arranque a frio direto a 150u quebrou (p99=2500ms). O arranque a frio é a medida mais honesta do ponto de saturação real — a carga incremental subestima a latência por efeito de aquecimento progressivo.
+
+\subsection{Custo Proxy — Testes Exaustivos}
+\label{subsec:custo-exaustivo}
+
+Os testes comparativos mostraram throughputs idênticos nos três cenários — impossibilitando uma comparação de custo significativa. Os testes exaustivos, ao atingirem os pontos de saturação reais de cada cenário, permitem calcular um custo proxy mais informativo: o custo por pedido no regime em que cada configuração está a ser efetivamente exigida.
+
+O custo proxy foi calculado com a mesma fórmula ($C_{proxy} = 0{,}5 \times CPU_{time} + 0{,}5 \times RAM_{time}$), usando medições pontuais \texttt{kubectl top} por nível de carga de cada cenário. Para o C1 acumulam-se os três níveis antes da quebra (25/50/75u); para o C2 os dois níveis antes da quebra (25/50u); para o C3 apenas o nível de saturação (150u, arranque a frio); para o C4 apenas o único nível executado (25u, quebra imediata).
+
+\begin{table}[h]
+\caption{Custo proxy nos testes exaustivos por cenário, ao ponto de saturação. $C_{proxy}$ em unidades proxy; custo/pedido = $C_{proxy}$ / pedidos com sucesso; $CM_{tp}$ = ganho de RPS por réplica adicional face ao C1. C4 incluído como cenário exploratório. Legenda: ``incr.'' = carga incremental; ``a.f.'' = arranque a frio.}
+\label{tab:custo-exaustivo}
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Cenário} & \textbf{Pods} & \textbf{$C_{proxy}$} & \textbf{Req OK} & \textbf{Custo/req} & \textbf{$\Delta$Custo} & \textbf{$CM_{tp}$} \\
+\midrule
+C1 — Baseline                    & 11 & 184\,099 & 28\,241 & 6{,}52  & —       & — \\
+C2 — Seletivo (productcatalog)   & 13 & 127\,303 & 15\,031 & 8{,}47  & $+30\%$ & $-12{,}15$~RPS/rép. \\
+C4 — Seletivo (frontend+cur.)    & 15 &  71\,487 &  1\,835 & 38{,}96 & $+498\%$& $-8{,}40$~RPS/rép. \\
+C3 — Uniforme (todos stateless)  & 30 & 141\,659 & 13\,034 & 10{,}87 & $+67\%$ & $+0{,}44$~RPS/rép. \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Como se observa na Tabela~\ref{tab:custo-exaustivo}, os dados revelam quatro padrões com implicações arquiteturais distintas:
+
+\textbf{C2 — custo marginal negativo por ineficácia gRPC.} As 2 réplicas adicionais aumentaram o custo por pedido em 30\% e o $CM_{tp}=-12{,}15$~RPS/réplica significa que cada réplica adicional \emph{reduziu} a capacidade do sistema em 12~RPS. A \textit{connection affinity} fez com que as réplicas extras consumissem RAM/CPU sem receber tráfego, degradando os bottlenecks reais.
+
+\textbf{C4 — custo por pedido 6× superior ao C2, 40 vezes superior ao C1.} As 4 réplicas adicionais (frontend ×3 + currencyservice ×3) produziram 77,1\% de falhas a 25u — apenas 1.835 pedidos com sucesso em toda a execução. O custo proxy de 38,96 unidades/pedido é o mais elevado de todos os cenários porque o numerador (custo total) é semelhante ao C2 mas o denominador (pedidos bem-sucedidos) colapsa para menos de 2.000. O C4 ilustra o efeito cascata: escalar os serviços de entrada multiplica a carga de conexões gRPC nos backends não escalados, criando um novo bottleneck mais destrutivo que o original.
+
+\textbf{C3 — rendimentos marginais ínfimos mas positivos.} As 20 réplicas adicionais aumentaram o custo por pedido em 67\% mas o $CM_{tp}=+0{,}44$~RPS/réplica é o único valor positivo de todos os cenários seletivos.
+
+\textbf{RAM\_time domina em todos os cenários.} Réplicas inativas continuam a ocupar memória independentemente da carga recebida. Num ambiente de nó único, esta pressão de RAM é o mecanismo principal que limita a escalabilidade horizontal sem balanceamento ao nível de pedido.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_custo_pedido.pdf}
+  \caption{Custo proxy por pedido (índice relativo) nos testes comparativos e exaustivos. C4 destaca-se com custo 498\% acima do C1 nos exaustivos, consequência de 77,1\% de falhas a colapsar o denominador.}
+  \label{fig:custo}
+\end{figure}
+
+\subsection{Rendimentos Marginais por Nível de Carga}
+\label{subsec:rendimentos}
+
+A análise anterior calcula o $CM_{tp}$ de cada cenário ao respectivo ponto de saturação. Uma perspectiva complementar compara C1 e C3 ao \emph{mesmo} nível de carga, mostrando como o benefício marginal das réplicas adicionais evolui com a intensidade da carga.
+
+\begin{table}[h]
+\caption{Rendimento marginal do C3 face ao C1 por nível de carga (testes exaustivos, $+$20 réplicas). $CM_{tp}$ = $\Delta$RPS / 20 réplicas. Custo/req calculado com $C_{proxy}$ real a cada nível.}
+\label{tab:marginal-nivel}
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Nível} & \textbf{C1 RPS} & \textbf{C3 RPS} & \textbf{$\Delta$RPS} & \textbf{$CM_{tp}$} & \textbf{C1 custo/req} & \textbf{C3 custo/req} \\
+\midrule
+25u & 71,8 & 74,9 & $+$3,1 & $+$0,155~RPS/rép. & 7,08 & 14,76 (+108\%) \\
+50u & 88,1 & 99,4 & $+$11,3 & $+$0,565~RPS/rép. & 5,82 & 11,49 ($+$98\%) \\
+75u & 100,4* & 103,1 & $+$2,7 & $+$0,135~RPS/rép. & 6,68* & 11,26 ($+$69\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+{\small *C1 quebrou a 75u com 23,5\% de falhas.}
+
+A Tabela~\ref{tab:marginal-nivel} revela que o $CM_{tp}$ não é constante — é máximo quando o C1 está perto da saturação (50u: $+$0,565~RPS/réplica) e colapsa quando ambos os sistemas se aproximam dos seus limites (75u: $+$0,135~RPS/réplica). A 25u, com o sistema ainda confortavelmente abaixo da saturação, o ganho é mínimo ($+$0,155~RPS/réplica). O custo por pedido do C3 é sistematicamente $\approx 2\times$ o do C1 ao mesmo nível de carga, independentemente da intensidade — confirmando que o custo das réplicas adicionais é fixo enquanto o ganho de throughput é variável e dependente do estado de saturação do sistema.
+
+\subsection{Lei de Amdahl e o Tecto Teórico do Escalamento}
+\label{subsec:amdahl}
+
+A Lei de Amdahl~\cite{amdahl} fornece um enquadramento teórico para os rendimentos marginais decrescentes observados. Dado que uma fracção $s$ do trabalho é serial (não beneficia de paralelismo) e $N$ é o número de réplicas por serviço, o speedup máximo é:
+
+\begin{equation}
+S(N, s) = \frac{1}{s + \dfrac{1-s}{N}}
+\label{eq:amdahl}
+\end{equation}
+
+O speedup real observado no C3 é $S_{real} = 130{,}5 / 100{,}4 \approx 1{,}30\times$ com $N=3$ réplicas por serviço. Invertendo a equação~\ref{eq:amdahl} para determinar a fracção serial \emph{efectiva}:
+
+\begin{equation}
+s = \frac{N/S - 1}{N - 1} = \frac{3/1{,}30 - 1}{3 - 1} = \frac{1{,}308}{2} \approx 0{,}654
+\label{eq:amdahl-inv}
+\end{equation}
+
+Apesar de todos os serviços stateless terem sido escalados para 3 réplicas, \textbf{65,4\% do trabalho comporta-se como serial} — como se não pudesse ser paralelizado. A causa estrutural é a \textit{connection affinity} do gRPC/HTTP2: as conexões existentes permanecem nas réplicas originais, tornando as novas réplicas praticamente inactivas. Do ponto de vista de Amdahl, isto é equivalente a converter trabalho potencialmente paralelo em serial.
+
+\begin{table}[h]
+\caption{Speedup teórico (Lei de Amdahl) vs real, com $s=0{,}654$ (fracção serial efectiva determinada experimentalmente). Limite teórico: $1/s \approx 1{,}53\times$.}
+\label{tab:amdahl}
+\begin{tabular}{rrrr}
+\toprule
+\textbf{$N$ réplicas} & \textbf{Ideal ($s=0$)} & \textbf{Com $s=0{,}654$} & \textbf{Real (observado)} \\
+\midrule
+3  & 3,00$\times$ & 1,30$\times$ & 1,30$\times$ \checkmark \\
+5  & 5,00$\times$ & 1,38$\times$ & — \\
+10 & 10,00$\times$ & 1,45$\times$ & — \\
+20 & 20,00$\times$ & 1,49$\times$ & — (limite $\approx$1,53$\times$) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+A Tabela~\ref{tab:amdahl} mostra que, com $s=0{,}654$, adicionar réplicas além de $N=3$ produz retorno marginal ínfimo: passar de 3 para 20 réplicas por serviço aumentaria o speedup apenas de $1{,}30\times$ para $1{,}49\times$ — um ganho de $0{,}19\times$ para $17\times$ mais réplicas. O limite teórico absoluto é $1/s \approx 1{,}53\times$, independentemente do número de réplicas. Esta análise fornece uma justificação teórica para os rendimentos marginais decrescentes observados em H3 e H4, e quantifica o custo arquitectural da \textit{connection affinity}: sem balanceamento ao nível de pedido, o sistema tem efectivamente uma fracção serial de 65\%, reduzindo o tecto de Amdahl de $\infty$ para $\approx 1{,}53\times$.
 
 % ============================================================
 \section{Discussão}
@@ -402,13 +672,39 @@ C3 — Uniforme & +20 & $\sim$150u & 130,5 & $\sim$2$\times$ mais que C1 \\
 
 \subsection{Resposta às Questões de Investigação}
 
-\textbf{RQ1 — Que serviços dominam a degradação?} Sob carga severa (testes exaustivos), os bottlenecks reais são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O \texttt{productcatalogservice} é muito chamado (×6 por browse) mas é rápido; os seus chamadores acumulam CPU porque processam cada pedido HTTP de entrada. Esta descoberta contradiz a hipótese arquitetural inicial e tem implicações diretas para a estratégia de escalamento.
+\textbf{RQ1 — Que serviços dominam a degradação?} Nas condições testadas (ambiente local, Docker Desktop, perfil de carga exaustivo), os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O \texttt{productcatalogservice} é muito chamado (×6 por browse) mas é rápido; os seus chamadores acumulam CPU porque processam cada pedido HTTP de entrada. Esta observação, consistente com a hipótese H6, tem implicações diretas para a estratégia de escalamento, mas não deve ser generalizada como verdade absoluta sobre a aplicação — em configurações ou cargas distintas, a distribuição de pressão pode ser diferente.
 
-\textbf{RQ2 — Escalar o mais pressionado melhora?} Parcialmente, e com risco. Nos testes comparativos (carga baixa), o C2 melhorou a latência mediana em $\sim$22\%. Nos testes exaustivos (carga severa), o C2 foi o pior cenário — quebrou a 50u vs.\ 75u do C1. A \textit{connection affinity} do gRPC/HTTP2 fez com que as réplicas extras consumissem recursos sem receber tráfego, deixando menos CPU/RAM disponível para os bottlenecks reais. H1 é confirmada: o escalamento seletivo melhora parcialmente em carga baixa, mas pode degradar sob carga severa.
+\textbf{RQ2 — Escalar o mais pressionado melhora?} Não, e o cenário C4 é a demonstração mais clara. Identificados os bottlenecks reais (frontend e currencyservice) através dos testes exaustivos C1, desenhou-se o C4 para os escalar directamente. O resultado: quebra a 25u com 77,1\% de falhas — pior de todos os cenários. O escalamento do frontend (ponto de entrada HTTP/1.1) triplicou a pressão de conexões gRPC nos backends não escalados (o \texttt{cartservice} atingiu 115m de CPU, o valor mais alto observado em qualquer serviço em qualquer cenário). O C2, por sua vez, tinha falhado por não escalar os bottlenecks correctos; o C4 falhou por escalar os bottlenecks correctos sem escalar as suas dependências. H1 é confirmada: em ambos os casos, o escalamento seletivo degradou o sistema sob carga severa.
 
-\textbf{RQ3 — O ganho justifica o custo?} Não de forma linear. O C2 (+2 réplicas) melhorou a latência mediana mas degradou o sistema sob carga severa — custo marginal negativo. O C3 (+20 réplicas) deslocou o ponto de saturação para $\sim$150u ($\approx$2$\times$ o C1), mas com 10$\times$ mais réplicas adicionais do que o C2 — rendimentos marginais claramente decrescentes. H3 e H4 são confirmadas.
+\textbf{RQ3 — O ganho justifica o custo?} Nas condições testadas, não, em nenhum dos cenários seletivos. O C2 apresenta $CM_{tp}=-12{,}15$~RPS/réplica e o C4 apresenta $CM_{tp}=-8{,}40$~RPS/réplica — ambos com ganho marginal de throughput negativo. O C4 tem ainda o custo por pedido mais elevado (38,96 unidades/pedido, 498\% acima do C1) porque o denominador colapsa com 77,1\% de falhas. O C3 (+20 réplicas) é o único com $CM_{tp}$ positivo ($+0{,}44$~RPS/réplica), mas com custo por pedido 67\% superior ao C1. Os resultados são consistentes com as hipóteses H3 e H4 (rendimentos marginais decrescentes); o custo marginal negativo nos cenários seletivos é a evidência mais forte desta tendência.
 
-\textbf{RQ4 — Stateless vs.\ stateful?} O \texttt{redis-cart} manteve-se a 4--14m CPU mesmo a 150u — sem sinais de saturação nas cargas testadas. A hipótese de que o componente stateful limitaria o escalamento (H2, H5) não encontrou evidência experimental direta. Seriam necessárias cargas superiores para observar este efeito.
+\textbf{RQ4 — Serviços stateless vs.\ stateful?} O \texttt{redis-cart} manteve-se a 4--14m CPU mesmo a 150u — sem sinais de saturação nas cargas testadas. A hipótese de que o componente stateful limitaria o escalamento (H2, H5) não encontrou evidência experimental direta. Seriam necessárias cargas superiores para observar este efeito.
+
+\subsection{Porque é que o Throughput não Melhorou nos Testes Comparativos}
+
+Os três cenários produziram throughputs praticamente idênticos ($\approx$7{,}9--8{,}0~RPS a 25 utilizadores). Duas explicações complementares:
+
+\textbf{1. Sistema não saturado.} O C1 exploratório confirmou que o ponto de quebra está a 30 utilizadores. Se o sistema não está saturado, adicionar réplicas não pode melhorar o throughput — não existe fila de espera para distribuir. O escalamento só produz ganho de throughput quando o bottleneck está efetivamente saturado.
+
+\textbf{2. \textit{Connection affinity} limita o scale-out.} Mesmo quando a carga seria suficiente para saturar, as réplicas novas não recebem tráfego das conexões HTTP/2 já estabelecidas. A distribuição 91\%/6\%/3\% no \texttt{productcatalogservice} do C2 confirma este efeito. A implicação é arquiteturalmente importante: em sistemas gRPC/HTTP2, \texttt{kubectl scale} pode não produzir os ganhos esperados sem balanceamento ao nível de pedido.
+
+\subsection{Dicotomia p50/p99: Porque Melhorou a Mediana mas Piorou a Cauda}
+
+O C2 melhorou o p50 ($-22\%$) mas piorou o p99 ($+320\%$). Este aparente paradoxo tem explicação direta na \textit{connection affinity}:
+
+O \textbf{p50 melhorou} porque, quando novas conexões são abertas (ex: reinício do Locust, novos utilizadores), os pedidos podem ser roteados para réplicas menos carregadas — reduzindo a latência mediana ao evitar concorrência momentânea na réplica original.
+
+O \textbf{p99 piorou} porque representa os 1\% de pedidos mais lentos — que incluem precisamente os casos em que conexões são roteadas para réplicas novas, menos ``aquecidas'' (JIT não otimizado, caches frias, inicialização de \textit{goroutines}). Cada nova réplica tem um período de arranque com latência mais alta; com mais réplicas, há mais momentos de latência elevada, aumentando o p99.
+
+Esta dicotomia p50/p99 é uma característica estrutural dos sistemas com \textit{connection affinity}: \textbf{ganho na mediana, perda na cauda}. Para melhorar simultaneamente ambas as métricas seria necessário balanceamento ao nível de pedido — que garante que réplicas novas recebem carga progressiva e aquecida em vez de rajadas imprevisíveis.
+
+\subsection{Efeito Cascata no C4: Escalar os Bottlenecks Certos não Chega}
+
+O C4 foi desenhado como teste de controlo: se o C2 falhou por escalar o serviço errado, escalar os serviços certos (frontend e currencyservice, identificados como bottlenecks reais nos exaustivos C1) deveria produzir melhorias. O resultado foi o oposto — quebra a 25u com 77,1\% de falhas, antes de qualquer outro cenário.
+
+O mecanismo é distinto do C2. O frontend recebe pedidos HTTP/1.1 de clientes externos; o Kubernetes Service distribui estes pedidos ao nível L4 entre as 3 réplicas, o que funciona razoavelmente (distribuição 50m/58m/35m de CPU — muito mais uniforme do que os serviços gRPC internos). O problema está nos backends: cada réplica de frontend abre o seu próprio conjunto de conexões gRPC a todos os serviços downstream. Com 3 réplicas de frontend, o \texttt{cartservice} (1 réplica) passa a receber conexões de 3 clientes em vez de 1. O resultado: \texttt{cartservice} a 115m de CPU, tornando-se o novo bottleneck.
+
+Este efeito cascata ilustra uma propriedade estrutural das arquitecturas de microserviços com gRPC: \textbf{escalar qualquer serviço intermediário multiplica a carga de conexões nos seus dependentes}. Sem escalar a cadeia completa de dependências, o bottleneck apenas se desloca — não desaparece. O C3, ao escalar todos os serviços stateless uniformemente, é o único cenário que evita este efeito.
 
 \subsection{O Resultado Mais Surpreendente: C2 < C1}
 
@@ -420,7 +716,7 @@ O resultado mais significativo deste estudo é o facto de o C2 (escalamento sele
   \item \textbf{Consumo de recursos sem retorno:} as duas réplicas adicionais, apesar de praticamente inativas do ponto de vista de tráfego, consomem RAM e CPU do nó Kubernetes. Num ambiente com recursos finitos (nó único com $\sim$7,6~GB de RAM), esta pressão extra deixa menos recursos disponíveis para os bottlenecks reais (\texttt{frontend}, \texttt{currencyservice}), acelerando a saturação.
 \end{enumerate}
 
-Este resultado confirma H6 empiricamente e tem uma implicação arquitetural direta: em sistemas gRPC/HTTP2, o escalamento horizontal simples (\texttt{kubectl scale}) pode ser não só ineficaz como prejudicial, sem um mecanismo de balanceamento ao nível de pedido (ex: service mesh com \textit{load balancing} por pedido).
+Este resultado é a evidência experimental mais forte em suporte da hipótese H6 e tem uma implicação arquitetural direta: em sistemas gRPC/HTTP2~\cite{grpcloadbalancing}, o escalamento horizontal simples (\texttt{kubectl scale}) pode ser não só ineficaz como prejudicial, sem um mecanismo de balanceamento ao nível de pedido (ex: service mesh com \textit{load balancing} por pedido~\cite{k8sgrpc}).
 
 \subsection{Leitura pelos Atributos de Qualidade}
 
@@ -430,27 +726,55 @@ Este resultado confirma H6 empiricamente e tem uma implicação arquitetural dir
 
 \textbf{Deployability:} o escalamento seletivo exige identificação prévia do bottleneck (tracing, análise de CPU por réplica), o que requer instrumentação e capacidade de observabilidade. O escalamento uniforme é operacionalmente mais simples mas implica gestão de mais réplicas.
 
-\textbf{Cost:} o C2 tem o menor custo absoluto (+2 réplicas) mas o pior retorno (custo marginal negativo em carga severa). O C3 tem custo 3$\times$ superior mas um ponto de saturação 2$\times$ maior — a relação custo-benefício depende do regime de carga operacional.
+\textbf{Cost:} os dois cálculos de custo proxy (Tabelas~\ref{tab:custo} e~\ref{tab:custo-exaustivo}) contam histórias complementares. Nos testes comparativos (sistema não saturado), nenhum cenário gerou retorno. Nos testes exaustivos, o C2 tem $CM_{tp}=-12{,}15$~RPS/réplica e o C4 tem $CM_{tp}=-8{,}40$~RPS/réplica — ambos com custo marginal negativo. O C4 é o caso extremo: custo por pedido de 38,96 unidades (498\% acima do C1) porque a taxa de 77,1\% de falhas colapsa o denominador de pedidos com sucesso. O único cenário com $CM_{tp}$ positivo é o C3 ($+0{,}44$~RPS/réplica), mas com custo por pedido 67\% superior ao C1. O RAM\_time domina em todos os casos porque réplicas inativas ocupam memória sem processar pedidos. A conclusão é inequívoca: em sistemas gRPC sem balanceamento ao nível de pedido, o escalamento horizontal simples apresenta custo marginal crescente e tende a ser negativo nos cenários seletivos.
 
 \subsection{Limitações}
 
 Os testes foram executados num ambiente local de nó único (Docker Desktop), sem isolamento NUMA nem partilha de recursos com outros tenants. Em produção, os pods teriam limites de recursos por nó mais apertados, o que alteraria significativamente os pontos de saturação. Os resultados são válidos para a arquitetura e configuração testadas, mas não devem ser extrapolados diretamente para ambientes de produção multi-nó.
 
-A repetição de experiências com análise estatística (médias, desvios-padrão) seria necessária para separar o sinal de ruído ambiental — este é um ponto de melhoria para trabalho futuro.
+A repetição de experiências com análise estatística (médias, desvios-padrão por nível de carga) seria necessária para separar o sinal de ruído ambiental e validar a estabilidade dos pontos de saturação — este é um ponto de melhoria prioritário para trabalho futuro. Os testes exaustivos foram executados uma vez por nível de carga; a variabilidade observada (ex: step-up vs.\ arranque a frio no C3 a 150u: p99 de 1500~ms vs.\ 2500~ms) ilustra que a repetição teria impacto relevante nas conclusões. As comparações entre cenários devem ser lidas como indicativas de tendências, não como valores estáveis.
 
 % ============================================================
 \section{Conclusões}
 % ============================================================
 
-Este estudo produziu três resultados principais:
+\subsection{Resultados por Cenário}
 
-\textbf{1. O escalamento seletivo mal direcionado pode ser contraproducente.} O C2 quebrou a 50u, antes do C1 a 75u, demonstrando que escalar o candidato a bottleneck sem resolver o balanceamento gRPC não só não melhora como pode degradar o sistema. Este resultado é a confirmação empírica de H6 e uma advertência prática para arquiteturas gRPC/HTTP2 sem service mesh.
+\textbf{C1 — Baseline.} O sistema com 1 réplica por serviço suporta até 75 utilizadores com o locustfile exaustivo ($\approx$100~RPS), com degradação progressiva a partir de 50u (p99 a 1500~ms). Os serviços mais pressionados nas condições testadas são o \texttt{frontend} (199~m CPU), \texttt{recommendationservice} (200~m) e \texttt{currencyservice} (173~m). O \texttt{redis-cart} manteve-se abaixo de 15~m em todos os níveis — sem sinais de contenção stateful nas cargas testadas.
 
-\textbf{2. O escalamento uniforme desloca o ponto de saturação mas com rendimentos marginais decrescentes.} O C3 ($+$20 réplicas) atingiu $\sim$2$\times$ mais carga que o C1, mas o custo por utilizador adicional suportado é significativamente superior. H3 e H4 são confirmadas.
+\textbf{C2 — Escalamento seletivo (productcatalogservice ×3).} Resultado contra-intuitivo: quebra a 50u, \emph{antes} do baseline. As réplicas adicionais do \texttt{productcatalogservice} absorveram apenas 2\% do tráfego (97,9\% permaneceu na réplica original — Figura~\ref{fig:distrib-cpu}), mas consumiram RAM e CPU do nó, degradando os serviços realmente pressionados. Este resultado é consistente com H6 e representa a evidência empírica mais forte do estudo.
 
-\textbf{3. O componente stateful não foi o fator limitante nas cargas testadas.} O \texttt{redis-cart} manteve-se abaixo de 15m CPU mesmo a 150 utilizadores. H2 e H5 permanecem inconclusivas, requerendo cargas superiores para ser testadas.
+\textbf{C3 — Escalamento uniforme (todos stateless ×3).} O único cenário com $CM_{tp}$ positivo ($+0{,}44$~RPS/réplica): saturação a $\sim$150u, $\approx$2$\times$ mais que o C1. O custo por pedido sobe 67\% (exaustivos) e 130\% (comparativos). A fração serial efetiva de 65\% (Lei de Amdahl) mostra que o teto teórico é $\approx$1,53$\times$ — próximo do observado (1,30$\times$). Escalar além de 3 réplicas produziria ganhos marginais ínfimos.
 
-A implicação arquitetural mais relevante é que sistemas gRPC/HTTP2 requerem balanceamento ao nível de pedido (service mesh) para que o escalamento horizontal produza os ganhos esperados. Sem este mecanismo, o \texttt{kubectl scale} é uma ferramenta de eficácia limitada e potencialmente prejudicial.
+\textbf{C4 — Escalamento dos bottlenecks identificados (frontend ×3 + currencyservice ×3).} O pior resultado: quebra a 25u com 77,1\% de falhas. Escalar o \texttt{frontend} (ponto de entrada HTTP/1.1) triplicou as conexões gRPC nos backends não escalados: o \texttt{cartservice} atingiu 115~m de CPU (Figura~\ref{fig:cpu-servicos}), tornando-se o novo bottleneck. O C4 demonstra que identificar os serviços mais pressionados em métricas de CPU não é suficiente — é necessário escalar toda a cadeia de dependências.
+
+\subsection{Resposta às Questões de Investigação}
+
+\textbf{RQ1} — Nas condições testadas, os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O fan-out ×6 cria volume mas não saturação; os serviços de entrada acumulam CPU por processarem cada pedido HTTP.
+
+\textbf{RQ2} — Não. C2 ($-25u$ face ao C1) e C4 ($-50u$ face ao C1) demonstram que escalar o(s) serviço(s) mais pressionado(s) degrada o sistema quando a \textit{connection affinity} e os efeitos de cascata não são considerados.
+
+\textbf{RQ3} — O ganho não justifica o custo em nenhum cenário seletivo. C2: $CM_{tp}=-12{,}15$~RPS/réplica; C4: $CM_{tp}=-8{,}40$~RPS/réplica. C3 tem $CM_{tp}=+0{,}44$~RPS/réplica — positivo, mas com custo por pedido 67\% superior ao C1.
+
+\textbf{RQ4} — O \texttt{redis-cart} não foi fator limitante nas cargas testadas (máx.\ 15~m CPU a 150u). H2 e H5 permanecem inconclusivas — cargas superiores seriam necessárias para observar a limitação stateful.
+
+\subsection{Leitura pelos Atributos de Qualidade}
+
+\textbf{Performance:} só o C3 melhora significativamente o ponto de saturação. O escalamento seletivo melhora a latência mediana a carga baixa (C2: $-22\%$ p50) mas degrada a carga severa.
+
+\textbf{Availability:} o C3 elimina pontos únicos de falha ao nível aplicacional; o \texttt{redis-cart} permanece como único ponto de falha em todos os cenários.
+
+\textbf{Deployability:} o escalamento seletivo exige identificação prévia do bottleneck (tracing, CPU por réplica); o uniforme é operacionalmente mais simples mas multiplica a complexidade de gestão.
+
+\textbf{Cost:} C2 e C4 têm custo marginal negativo — adicionam réplicas sem retorno e comprometem o sistema. C3 tem custo por pedido sistematicamente $\approx$2$\times$ o do C1 ao mesmo nível de carga.
+
+\subsection{Implicação Arquitetural Central}
+
+Em sistemas gRPC/HTTP2, o \texttt{kubectl scale} simples é uma ferramenta de eficácia limitada e potencialmente prejudicial sem balanceamento ao nível de pedido. O service mesh (Istio/Linkerd) é a alternativa arquitetural que resolveria estruturalmente o problema identificado, ao operar como middleware L7 acima do Kubernetes — distribuindo pedidos, não conexões. Em arquiteturas com dependências em cadeia, o escalamento seletivo desloca o bottleneck; só o escalamento uniforme (ou o service mesh) o elimina.
+
+\subsection{Limitações e Trabalho Futuro}
+
+Os resultados foram obtidos num ambiente local de nó único, sem repetição de execuções. A variabilidade observada (step-up vs.\ arranque a frio no C3: p99 de 1500 vs.\ 2500~ms) sublinha a necessidade de repetição com análise estatística. Trabalho futuro prioritário: (1) repetição de C1/C2/C3 três vezes por nível com média $\pm$ desvio-padrão; (2) implementação de HPA e service mesh para validar as alternativas discutidas; (3) carga progressiva até à saturação do \texttt{redis-cart} (H2/H5 inconclusivas).
 
 % ============================================================
 % REFERÊNCIAS
@@ -478,6 +802,15 @@ Kubernetes Authors. \textit{Horizontal Pod Autoscaling}. 2024. Disponível em: \
 
 \bibitem{servicemesh}
 W.\ Morgan. \textit{What's a service mesh? And why do I need one?} Buoyant, 2017.
+
+\bibitem{grpcloadbalancing}
+gRPC Authors. \textit{gRPC Load Balancing}. gRPC documentation, 2024. Disponível em: \url{https://grpc.io/blog/grpc-load-balancing/}
+
+\bibitem{k8sgrpc}
+L.\ Liu e A.\ Strzoda. \textit{gRPC Load Balancing on Kubernetes without Tears}. Kubernetes Blog, 2018. Disponível em: \url{https://kubernetes.io/blog/2018/11/07/grpc-load-balancing-on-kubernetes-without-tears/}
+
+\bibitem{amdahl}
+G.\ M.\ Amdahl. \textit{Validity of the single processor approach to achieving large scale computing capabilities}. In Proceedings of AFIPS Spring Joint Computer Conference, pp.\ 483--485, 1967.
 
 \bibitem{newman}
 S.\ Newman. \textit{Building Microservices: Designing Fine-Grained Systems}. 2ª ed. O'Reilly Media, 2021.

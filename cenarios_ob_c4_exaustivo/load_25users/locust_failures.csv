@@ -1,0 +1,7 @@
+Method,Name,Error,Occurrences
+POST,/cart [add],HTTPError('500 Server Error: Internal Server Error for url: /cart [add]'),750
+POST,/cart [add],"CatchResponseError('add falhou (500), skip checkout')",442
+POST,/setCurrency,HTTPError('500 Server Error: Internal Server Error for url: /setCurrency'),723
+GET,/,HTTPError('500 Server Error: Internal Server Error for url: /'),160
+GET,/cart,HTTPError('500 Server Error: Internal Server Error for url: /cart'),861
+GET,/product/[id],HTTPError('500 Server Error: Internal Server Error for url: /product/[id]'),3202

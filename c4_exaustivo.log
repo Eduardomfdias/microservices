@@ -1,0 +1,100 @@
+[15:19:12] ==============================================
+[15:19:12] C4 EXAUSTIVO — frontend ×3, currencyservice ×3
+[15:19:12] Níveis: 25 50 75 100 125 150
+[15:19:12] Resultados em: cenarios_ob_c4_exaustivo
+[15:19:12] ==============================================
+[15:19:12] A verificar pré-requisitos...
+[15:19:12] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[15:19:12] Pré-requisitos OK
+deployment.apps/loadgenerator scaled
+[15:19:12] loadgenerator pausado
+[15:19:12] === C4: frontend ×3, currencyservice ×3, restantes ×1 ===
+deployment.apps/adservice scaled
+deployment.apps/cartservice scaled
+deployment.apps/checkoutservice scaled
+deployment.apps/emailservice scaled
+deployment.apps/paymentservice scaled
+deployment.apps/productcatalogservice scaled
+deployment.apps/recommendationservice scaled
+deployment.apps/shippingservice scaled
+deployment.apps/frontend scaled
+deployment.apps/currencyservice scaled
+deployment "frontend" successfully rolled out
+deployment "currencyservice" successfully rolled out
+[15:19:13] Réplicas C4 aplicadas
+  adservice: 1/1
+  cartservice: 1/1
+  checkoutservice: 1/1
+  currencyservice: 3/3
+  emailservice: 1/1
+  frontend: 3/3
+  loadgenerator: 0/0
+  paymentservice: 1/1
+  productcatalogservice: 1/1
+  recommendationservice: 1/1
+  redis-cart: 1/1
+  shippingservice: 1/1
+Servico                            Replicas  CPU_req     CPU_lim     Mem_req     Mem_lim
+-----------------------------------------------------------------------------------------------
+adservice                          1         200m        300m        180Mi       300Mi
+cartservice                        1         200m        300m        64Mi        128Mi
+checkoutservice                    1         100m        200m        64Mi        128Mi
+currencyservice                    3         100m        200m        64Mi        128Mi
+emailservice                       1         100m        200m        64Mi        128Mi
+frontend                           3         100m        200m        64Mi        128Mi
+loadgenerator                      0         300m        500m        256Mi       512Mi
+paymentservice                     1         100m        200m        64Mi        128Mi
+productcatalogservice              1         100m        200m        64Mi        128Mi
+recommendationservice              1         100m        200m        220Mi       450Mi
+redis-cart                         1         70m         125m        200Mi       256Mi
+shippingservice                    1         100m        200m        64Mi        128Mi
+[15:19:13] Baseline capturado em cenarios_ob_c4_exaustivo/baseline/
+[15:19:13] locustfile.py criado (3 perfis — idêntico ao C1/C2/C3 exaustivo)
+[15:19:13] A iniciar monitorização contínua (10s) → cenarios_ob_c4_exaustivo/monitoring/pods_metrics.csv
+[15:19:13] Monitor PID: 7292
+[15:19:13] ========================================================
+[15:19:13] C4 Exaustivo — 25 users (warm-up 30s + medição 120s)
+[15:19:13] ========================================================
+[15:19:14]   Warm-up: 30s...
+[15:19:44]   Medição: 120s...
+[15:21:46]   RESULTADO: p50=6ms  p90=120ms  p99=2300ms  falhas=6138(77.1%)  rps=66.77317606643648  [QUEBRA]
+[15:21:46]   CPU/RAM após medição:
+    adservice-574bff445c-lrlh5                         CPU=14m      RAM=284Mi
+    cartservice-6ff76684b-gppjt                        CPU=115m     RAM=127Mi
+    checkoutservice-5b6d96c9b7-scdqr                   CPU=6m       RAM=34Mi
+    currencyservice-7c8fc8fc9c-pjfwf                   CPU=45m      RAM=91Mi
+    currencyservice-7c8fc8fc9c-r5tjx                   CPU=55m      RAM=90Mi
+    currencyservice-7c8fc8fc9c-r8xqf                   CPU=3m       RAM=105Mi
+    emailservice-66944ff59-kvdhl                       CPU=10m      RAM=94Mi
+    frontend-7bd6f45654-4vrf6                          CPU=50m      RAM=41Mi
+    frontend-7bd6f45654-qpmm4                          CPU=58m      RAM=22Mi
+    frontend-7bd6f45654-xmwzg                          CPU=35m      RAM=22Mi
+    paymentservice-9bfb7bf5-sv6z9                      CPU=2m       RAM=113Mi
+    productcatalogservice-65bbf699df-78ts9             CPU=37m      RAM=43Mi
+    recommendationservice-7444754ff5-52dz4             CPU=8m       RAM=83Mi
+    redis-cart-78cc67775d-xfmzd                        CPU=3m       RAM=12Mi
+    shippingservice-f956b6d9f-97t8h                    CPU=4m       RAM=30Mi
+[15:21:46] *** QUEBRA DETECTADA a 25 users — a terminar ***
+./c4_exaustivo.sh: line 111:  7292 Terminated: 15          ( current_label="idle"; while true; do
+    ts=$(date +%H:%M:%S); [ -f "$RESULTS_DIR/monitoring/.current_label" ] && current_label=$(cat "$RESULTS_DIR/monitoring/.current_label"); kubectl -n "$NAMESPACE" top pods --no-headers 2> /dev/null | awk -v ts="$ts" -v lbl="$current_label" '{
+          cpu=$2; ram=$3;
+          gsub(/m/,"",cpu); gsub(/Mi/,"",ram);
+          print ts","lbl","$1","cpu","ram
+        }' >> "$out/pods_metrics.csv"; kubectl -n "$NAMESPACE" get pods --no-headers 2> /dev/null | awk -v ts="$ts" '$4>0{print ts" RESTART pod="$1" restarts="$4}' >> "$out/restarts.log"; sleep 10;
+done )
+[15:21:46] Monitorização parada
+======================================================================
+ASID 2025/2026 — C4 Exaustivo (frontend ×3 + currencyservice ×3)
+Critério de quebra: p99 > 2000ms  OU  falhas > 5%
+======================================================================
+ Users     p50     p90      p99   Falhas   Falhas%       RPS  Estado
+----------------------------------------------------------------------
+    25       6     120     2300     6138     77.1%  66.77317606643648  QUEBRA ◄ QUEBRA
+
+→ Ponto de quebra: 25 users
+[15:21:46] Resumo: cenarios_ob_c4_exaustivo/RESUMO_C4_exaustivo.txt
+deployment.apps/loadgenerator scaled
+[15:21:46] 
+[15:21:46] ==============================================
+[15:21:46] C4 Exaustivo CONCLUÍDO — cenarios_ob_c4_exaustivo
+[15:21:46] ==============================================

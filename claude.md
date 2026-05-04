@@ -196,6 +196,7 @@ index:1, setCurrency:2, browseProduct:10, addToCart:2, viewCart:3, checkout:1
 | **C1** — Baseline | 1 por serviço | 0 | Referência. Ponto de saturação natural. |
 | **C2** — Seletivo | productcatalogservice: 3; restantes: 1 | +2 | Escalar o candidato a bottleneck primário. |
 | **C3** — Uniforme | Todos stateless: 3; redis-cart: 1 | +20 | Escalar tudo — rendimentos marginais? |
+| **C4** — Seletivo real | frontend: 3; currencyservice: 3; restantes: 1 | +4 | Escalar os bottlenecks reais identificados nos exaustivos C1. |
 
 **Elemento constante:** redis-cart mantém 1 réplica em todos os cenários (stateful, single-threaded, não beneficia de scale-out simples).
 
@@ -272,13 +273,45 @@ Resultados em: `cenarios_ob_c3_exaustivo/` (cold start) e `cenarios_ob_c3_exaust
 
 **Nota step-up vs cold start:** o step-up gradual manteve conexões gRPC aquecidas e JIT compilado, chegando a 150u sem quebrar (p99=1500ms). O cold start directo a 150u quebrou (p99=2500ms). O cold start é a medida mais honesta do ponto de saturação real.
 
+### C4 Exaustivo — Seletivo real (frontend ×3 + currencyservice ×3)
+**Ponto de quebra: 25 users — PIOR DE TODOS**
+
+| Users | p50 | p90 | p99 | Falhas% | RPS | Estado |
+|---|---|---|---|---|---|---|
+| **25** | **6ms** | **120ms** | **2300ms** | **77.1%** | **66.8** | **QUEBRA** |
+
+Resultados em: `cenarios_ob_c4_exaustivo/`
+
+**Resultado catastrófico:** Quebra imediata a 25 users com 77.1% de falhas — o pior resultado de todos os cenários. Escalar os bottlenecks "reais" (frontend e currencyservice) identificados nos testes C1 produziu o pior comportamento de todos.
+
+**CPU no fim da medição (do run.log):**
+
+| Serviço | CPU | Nota |
+|---|---|---|
+| cartservice | **115m** | Novo bottleneck — saturou com 1 réplica |
+| currencyservice r5tjx | 55m | Réplica quente |
+| currencyservice pjfwf | 45m | Réplica quente |
+| currencyservice r8xqf | **3m** | Quase zero — H6 de novo |
+| frontend qpmm4 | 58m | |
+| frontend 4vrf6 | 50m | |
+| frontend xmwzg | 35m | |
+| productcatalogservice | 37m | 1 réplica, mais pressão |
+| redis-cart | 3m | Sem pressão |
+
+**Explicação:** ao escalar frontend e currencyservice, o bottleneck deslocou-se para o **cartservice** (115m CPU com 1 réplica) e o **productcatalogservice** (37m). A terceira réplica do currencyservice (3m) confirma novamente H6 — connection affinity gRPC impede que as novas réplicas recebam tráfego de conexões existentes.
+
+**Interpretação arquitetural:** C4 demonstra que identificar o bottleneck a partir de métricas de CPU instantâneas e escalar seletivamente pode ser enganoso quando o sistema tem múltiplos gargalos encadeados e o balanceamento gRPC não redistribui tráfego de conexões existentes. O bottleneck desloca-se mas não desaparece.
+
+---
+
 ### Comparação de pontos de saturação (testes exaustivos)
 
 | Cenário | Réplicas adicionadas | Ponto de quebra | RPS máximo | Conclusão |
 |---|---|---|---|---|
 | **C1** Baseline | 0 | **75 users** | 100.4 | Referência |
-| **C2** Seletivo | +2 | **50 users ◄ pior** | 76.1 | Escalamento prejudicou o sistema |
+| **C2** Seletivo | +2 | **50 users** | 76.1 | Escalamento prejudicou o sistema |
 | **C3** Uniforme | +20 | **~150 users** | 130.5 | ~2× mais que C1 |
+| **C4** Seletivo real | +4 | **25 users ◄ pior** | 66.8 | Catastrófico — pior que C1, C2 e C3 |
 
 ---
 
@@ -446,7 +479,83 @@ A professora pediu explicitamente:
 - ✅ Tabela comparativa C1/C2/C3
 - ✅ Locust explicitado como ferramenta
 
+---
+
+### Feedback ao relatório final (v4 → v5) — 2026-05-04
+
+**Avaliação global da professora:**
+O trabalho apresenta decisão arquitetural explícita, cenários C1/C2/C3 coerentes, articulação de resultados com desempenho e custo. O resultado mais interessante (C2 < C1) é reconhecido como não intuitivo e relevante. No entanto, precisa de mais rigor metodológico, mais prudência analítica e linha de leitura mais clara.
+
+**Faltam as figuras no relatório.**
+
+**Pontos positivos reconhecidos:**
+
+- Introdução e RQs bem alinhadas com o tema
+- Descrição arquitetural essencialmente correta (stateless vs. stateful, workflows)
+- Distinção cartservice vs. redis-cart bem formulada
+- Decisão arquitetural em estudo clara (seletivo vs. uniforme)
+- Secção de alternativas consideradas útil
+
+**Problemas identificados e o que corrigir:**
+
+#### Rigor analítico e linguagem
+
+- **Evitar "confirmado" e "o bottleneck dominante é X"** — reservar para evidência muito robusta com repetições. Substituir por "fortemente sugerido pelos resultados", "compatível com", "evidência é consistente com".
+- **Distinguir explicitamente:** observação empírica / interpretação plausível / hipótese explicativa. Não saltar diretamente de indícios para conclusões causais fortes.
+- **gRPC connection affinity (H6):** apresentar como explicação fortemente sugerida pelos dados, NÃO como prova fechada de causalidade. **Adicionar referência técnica/bibliográfica** sobre comportamento gRPC/HTTP2 em Kubernetes (ligações longas e multiplexadas que reduzem eficácia do balanceamento ao nível da ligação).
+- **Frontend/currencyservice como bottleneck:** tratar como leitura do ambiente e workloads observados, não verdade geral sobre a aplicação. Formulação mais segura: "nas condições testadas, o productcatalogservice não foi alvo eficaz para escalamento seletivo".
+
+#### Desenho experimental
+
+- **Justificar melhor os dois locustfiles diferentes:** deixar claro que um é orientado a comparação controlada (realista) e outro a encontrar saturação sob carga severa (exaustivo). A professora não percebeu claramente a razão da diferença.
+- **Caracterizar e justificar o workload misto:** explicitar que operações concretas inclui, com que pesos relativos, porque foi escolhida essa composição, e como se relaciona com W1/W2/W3. Formulação sugerida: workload como composição de operações cuja interpretação se faz à luz de W1 (driver do fan-out productcatalogservice), W2 (carrinho + backend stateful), W3 (transacional/orquestrado).
+- **Justificar parâmetros experimentais:** warm-up (estabilização antes da recolha), janela de medição (período relativamente estável), spawn rate (evitar subida brusca).
+- **Critério de quebra (p99>2000ms ou falhas>5%):** explicitar que não representa SLA real — é critério consistente para identificar degradação severa e tornar comparáveis os pontos de quebra entre cenários.
+- **Testes exaustivos progressivos vs. execuções independentes:** clarificar que a carga é aumentada progressivamente dentro da mesma execução. Útil para explorar tendências de saturação, mas o ponto de saturação assim obtido não é equivalente ao de execuções independentes por nível (efeitos herdados: caches aquecidas, ligações persistentes). Para comparação rigorosa C1/C2/C3: usar cargas equivalentes, cluster em estado controlado.
+- **Ficheiros CSV do Locust não foram submetidos** — incluir ou referenciar na submissão final.
+
+#### Apresentação dos resultados
+
+- **Separar "resultados observados" de "interpretação"** — actualmente intercalados, enfraquecendo a relação evidência→interpretação.
+- **Introduzir cada tabela antes da sua interpretação** com formulações tipo "como se observa na Tabela X" ou "os resultados da Figura Y mostram que...". Não discutir resultados antes de apontar o leitor para a tabela/figura.
+- **Evitar repetir a mesma leitura em várias secções** — uma boa tabela comparativa reduz muito o texto necessário.
+- **Indicar de forma uniforme unidades e fonte das métricas.**
+
+**Sugestão de apresentação compacta de resultados (da professora):**
+
+- **Tabela A:** Configuração dos cenários: réplicas por serviço, workload, warm-up, medição, critério de quebra
+- **Tabela B:** Resultados comparativos em cargas equivalentes (15/20/25 users)
+- **Tabela C:** Resultados exaustivos e ponto de saturação
+- **Figura 1:** Throughput vs. carga por cenário
+- **Figura 2:** p99 vs. carga por cenário
+- **Figura 3:** Proxy de custo ou custo por pedido bem-sucedido
+
+#### Custo marginal
+
+- **ΔRPS / ΔRéplicas mede ganho de throughput por réplica, não custo marginal** — clarificar esta distinção ou apresentá-la separadamente da métrica proxy (CPU_time + RAM_time).
+- **CPU_time + RAM_time é índice relativo**, não grandeza física ou monetária directa — deixar isto explícito.
+- **Pesos alpha=beta=0.5 são escolha metodológica simplificadora** para construir indicador comparável entre cenários — não soma com significado físico directo. Explicitar no texto.
+
+#### O que pode ser útil estudar adicionalmente (dentro do tempo disponível)
+
+- Aprofundar distribuição de carga entre réplicas em gRPC/HTTP2 com mais evidência por réplica e repetição de testes (central para explicar C2)
+- Acrescentar 1-2 testes dirigidos a workflows específicos para isolar comportamento W1 vs W2/W3
+- Discutir com maior profundidade uma alternativa não implementada (caching no productcatalogservice ou service mesh) — o estudo mostra que mais réplicas por si só não garante melhoria
+
+**Estrutura sugerida pela professora para a versão final:**
+
+1. Introdução: problema, motivação, sistema de referência, decisão arquitetural, RQs
+2. Contexto e arquitetura relevante: Online Boutique, W1/W2/W3, serviços-alvo
+3. Decisão arquitetural em estudo: C1/C2/C3 definidos
+4. Desenho experimental: ambiente, modelo de carga, cenários, métricas, critério de quebra, definição de custo
+5. Resultados: primeiro comparativos, depois exaustivos, sempre com tabelas e figuras compactas
+6. Discussão e alternativas arquiteturais: interpretação, relação com hipóteses, trade-offs, limitações, ameaças à validade, alternativas não implementadas (HPA, caching, service mesh, vertical scaling)
+7. Conclusão: resposta às RQs, mensagem arquitetural principal, trabalho futuro
+
+---
+
 **O que falta fazer para o relatório final (v5.0):**
+
 - [x] Executar C1 comparativo (2026-04-19)
 - [x] Executar C2 comparativo (2026-04-19)
 - [x] Executar C3 comparativo (2026-04-19)
@@ -458,13 +567,23 @@ A professora pediu explicitamente:
 - [ ] **Escrever secção "Decisão arquitetural + alternativas + trade-offs (P/A/D/C)" — vale 40% da nota**
 - [ ] **Repetir C1/C2/C3 três vezes a 25/50/75 users e reportar média ± desvio-padrão**
 - [ ] Calcular custo proxy C (CPU_time + RAM_time) para C1, C2, C3 — dados em `monitoring/pods_metrics.csv`
+- [x] Adicionar referência bibliográfica sobre gRPC/HTTP2 connection affinity em Kubernetes (2 bibitem novos + citações no texto)
+- [x] Clarificar no texto a distinção ΔRPS/ΔRéplicas vs. custo proxy CPU+RAM
+- [x] Justificar no texto os dois locustfiles distintos (comparativo vs. exaustivo)
+- [x] Justificar parâmetros experimentais (warm-up, janela de medição, spawn rate, critério de quebra como critério operacional, não SLA real)
+- [x] Clarificar que testes exaustivos são progressivos na mesma execução (não independentes por nível)
+- [x] Classe LaTeX corrigida: manuscript → sigconf; capa com hierarquia tipográfica consistente; autores adicionados
+- [x] Linguagem suavizada: "confirmado" → "consistente com", "bottlenecks reais" → "serviços mais pressionados nas condições testadas"
+- [x] "Como se observa na Tabela X" adicionado antes das interpretações
+- [ ] **Repetir C1/C2/C3 três vezes a 25/50/75 users e reportar média ± desvio-padrão**
+- [ ] Calcular custo proxy C (CPU_time + RAM_time) para C1, C2, C3 — dados em `monitoring/pods_metrics.csv`
+- [ ] Incluir/referenciar CSVs do Locust na submissão
 - [ ] Confirmar no Jaeger a ordem das chamadas no W3 (payment antes/depois de ship?)
-- [ ] Confirmar que EmptyCart ocorre após checkout bem-sucedido (já no diagrama, mas confirmar no Jaeger)
 - [ ] Discutir implicações de consistência em caso de falha parcial no W3
-- [ ] Escrever discussão final com leitura dupla: desempenho + arquitetural, ligada aos 4 atributos de qualidade
-- [ ] Incorporar descoberta C2 < C1 como evidência empírica de H6 (resultado mais forte do trabalho)
-- [ ] **Escolher template ACM (Word ou LaTeX) e iniciar migração esta semana**
-- [ ] Redigir relatório final em formato ACM (template da Blackboard), máximo 20 páginas sem figuras
+- [ ] **Inserir as figuras em falta** (inventário, diagrama dependências, sequências W1/W2/W3, throughput vs carga, p99 vs carga, custo proxy)
+- [ ] Preparar slides + demonstração funcional ao vivo para apresentação oral (30 min)
+- [ ] Auto-avaliação individual (1 página por aluno) — **deixar para o fim**
+- [ ] Anexo de uso de IA (ferramentas, prompts, contributo) — **deixar para o fim**
 - [ ] Preparar slides + demonstração funcional ao vivo para apresentação oral (30 min)
 - [ ] Auto-avaliação individual (1 página por aluno) — **deixar para o fim**
 - [ ] Anexo de uso de IA (ferramentas, prompts, contributo) — **deixar para o fim**
