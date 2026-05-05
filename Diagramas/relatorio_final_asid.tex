@@ -309,15 +309,17 @@ Pesos das tarefas (ambos): \texttt{browse×10 · view-cart×3 · add-to-cart×2 
 \subsection{Cenários Experimentais}
 
 \begin{table}[h]
-\caption{Descrição dos três cenários experimentais.}
+\caption{Descrição dos cenários experimentais.}
 \label{tab:cenarios}
 \begin{tabular}{p{1cm}p{2.5cm}p{1cm}p{2.5cm}}
 \toprule
-\textbf{Cenário} & \textbf{Configuração} & \textbf{+Rép.} & \textbf{Objetivo} \\
+\textbf{Cenário} & \textbf{Configuração} & \textbf{+Comp.} & \textbf{Objetivo} \\
 \midrule
 C1 & 1 réplica por serviço & 0 & Referência; ponto de saturação natural \\
 C2 & productcatalog: 3; restantes: 1 & +2 & Escalar candidato a bottleneck primário \\
 C3 & Todos stateless: 3; redis-cart: 1 & +20 & Escalar tudo; rendimentos marginais? \\
+C4 & frontend: 3; currency: 3; restantes: 1 & +4 & Escalar os bottlenecks reais identificados \\
+C5 & Todos stateless: 3 + Envoy proxy L7 & +20+Envoy & Mitigar connection affinity; validar H6 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -531,16 +533,36 @@ Os testes exaustivos usaram o locustfile agressivo para encontrar o ponto de sat
 O resultado do C4 é contra-intuitivo: escalar os bottlenecks \emph{identificados} (frontend e currencyservice) produziu o pior resultado de todos. A análise de CPU após medição revela o mecanismo: o \texttt{cartservice} (1 réplica) atingiu 115m de CPU --- o valor mais alto de qualquer serviço em qualquer cenário. Com 3 réplicas de frontend a abrir conexões gRPC independentes ao \texttt{cartservice}, a pressão de conexões neste serviço triplicou, criando um novo bottleneck nos backends não escalados. Adicionalmente, a \textit{connection affinity} continuou a atuar no \texttt{currencyservice} (distribuição 45m/55m/3m), mantendo uma réplica quase inativa. O C4 confirma que escalar um subconjunto de serviços, mesmo os mais pressionados, desloca o bottleneck para as dependências não escaladas.
 
 \begin{table}[h]
-\caption{Comparação dos pontos de saturação entre todos os cenários (testes exaustivos). C4 adicionado como cenário exploratório.}
+\caption{Resultados exaustivos C5 (todos stateless ×3 + Envoy L7). Sistema estável em todos os níveis até 150 utilizadores — sem quebra.}
+\label{tab:c5ex}
+\begin{tabular}{lrrrrrr}
+\toprule
+\textbf{Users} & \textbf{p50} & \textbf{p90} & \textbf{p99} & \textbf{Falhas\%} & \textbf{RPS} & \textbf{Estado} \\
+\midrule
+25  & 12ms  & 19ms  & 45ms  & 0,0\% & 89,1  & OK \\
+50  & 15ms  & 50ms  & 140ms & 0,0\% & 116,6 & OK \\
+75  & 53ms  & 150ms & 540ms & 0,0\% & 184,3 & Aviso \\
+100 & 97ms  & 240ms & 500ms & 0,0\% & 201,7 & Aviso \\
+125 & 150ms & 340ms & 720ms & 0,0\% & 201,8 & Aviso \\
+\textbf{150} & \textbf{160ms} & \textbf{380ms} & \textbf{660ms} & \textbf{0,0\%} & \textbf{218,7} & \textbf{Aviso} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+O C5 valida empiricamente a hipótese H6: com o Envoy a fazer balanceamento por pedido (LEAST\_REQUEST), as três réplicas do \texttt{productcatalogservice} receberam 121m/121m/122m de CPU a 150u — distribuição quase perfeita, em contraste com 91\%/6\%/3\% no C3 sem Envoy. A \textit{connection affinity} foi estruturalmente mitigada. O custo desta mitigação é o Envoy em si: o proxy central consumiu 481m~CPU a 150u — mais do que qualquer réplica individual de qualquer serviço.
+
+\begin{table}[h]
+\caption{Comparação dos pontos de saturação entre todos os cenários (testes exaustivos).}
 \label{tab:saturacao}
 \begin{tabular}{lrrrrl}
 \toprule
-\textbf{Cenário} & \textbf{+Rép.} & \textbf{Quebra} & \textbf{RPS máx.} & \textbf{Falhas\%} & \textbf{Conclusão} \\
+\textbf{Cenário} & \textbf{+Comp.} & \textbf{Quebra} & \textbf{RPS máx.} & \textbf{Falhas\%} & \textbf{Conclusão} \\
 \midrule
-C1 — Baseline                          & 0   & 75u            & 100,4 & 23,5 & Referência \\
-C2 — Seletivo (productcatalog ×3)      & +2  & \textbf{50u}   & 76,1  & 27,9 & Pior que C1 \\
-C4 — Seletivo (frontend+currency ×3)   & +4  & \textbf{25u}   & 66,8  & 77,1 & Pior de todos \\
-C3 — Uniforme (todos stateless ×3)     & +20 & $\sim$150u     & 130,5 & 0,0  & $\sim$2$\times$ mais que C1 \\
+C1 — Baseline                          & 0       & 75u              & 100,4 & 23,5 & Referência \\
+C2 — Seletivo (productcatalog ×3)      & +2      & \textbf{50u}     & 76,1  & 27,9 & Pior que C1 \\
+C4 — Seletivo (frontend+currency ×3)   & +4      & \textbf{25u}     & 66,8  & 77,1 & Pior de todos \\
+C3 — Uniforme (todos stateless ×3)     & +20     & $\sim$150u       & 130,5 & 0,0  & $\sim$2$\times$ mais que C1 \\
+C5 — Uniforme ×3 + Envoy L7           & +20+Env & \textbf{$>$150u} & 218,7 & 0,0  & $\sim$2,2$\times$ mais que C1; H6 resolvido \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -573,32 +595,35 @@ C3 — Uniforme (todos stateless ×3)     & +20 & $\sim$150u     & 130,5 & 0,0  
 
 Os testes comparativos mostraram throughputs idênticos nos três cenários — impossibilitando uma comparação de custo significativa. Os testes exaustivos, ao atingirem os pontos de saturação reais de cada cenário, permitem calcular um custo proxy mais informativo: o custo por pedido no regime em que cada configuração está a ser efetivamente exigida.
 
-O custo proxy foi calculado com a mesma fórmula ($C_{proxy} = 0{,}5 \times CPU_{time} + 0{,}5 \times RAM_{time}$), usando medições pontuais \texttt{kubectl top} por nível de carga de cada cenário. Para o C1 acumulam-se os três níveis antes da quebra (25/50/75u); para o C2 os dois níveis antes da quebra (25/50u); para o C3 apenas o nível de saturação (150u, arranque a frio); para o C4 apenas o único nível executado (25u, quebra imediata).
+O custo proxy foi calculado com a mesma fórmula ($C_{proxy} = 0{,}5 \times CPU_{time} + 0{,}5 \times RAM_{time}$), usando medições pontuais \texttt{kubectl top} por nível de carga de cada cenário. Para o C1 acumulam-se os três níveis antes da quebra (25/50/75u); para o C2 os dois níveis antes da quebra (25/50u); para o C3 e C5 apenas o nível de saturação (150u); para o C4 apenas o único nível executado (25u, quebra imediata). O C5 inclui o Envoy no cômputo de CPU e RAM.
 
 \begin{table}[h]
-\caption{Custo proxy nos testes exaustivos por cenário, ao ponto de saturação. $C_{proxy}$ em unidades proxy; custo/pedido = $C_{proxy}$ / pedidos com sucesso; $CM_{tp}$ = ganho de RPS por réplica adicional face ao C1. C4 incluído como cenário exploratório. Legenda: ``incr.'' = carga incremental; ``a.f.'' = arranque a frio.}
+\caption{Custo proxy nos testes exaustivos por cenário, ao ponto de saturação. $C_{proxy}$ em unidades proxy; custo/pedido = $C_{proxy}$ / pedidos com sucesso; $CM_{tp}$ = ganho de RPS por componente adicional face ao C1. Legenda: ``a.f.'' = arranque a frio.}
 \label{tab:custo-exaustivo}
 \begin{tabular}{lrrrrrr}
 \toprule
 \textbf{Cenário} & \textbf{Pods} & \textbf{$C_{proxy}$} & \textbf{Req OK} & \textbf{Custo/req} & \textbf{$\Delta$Custo} & \textbf{$CM_{tp}$} \\
 \midrule
-C1 — Baseline                    & 11 & 184\,099 & 28\,241 & 6{,}52  & —       & — \\
-C2 — Seletivo (productcatalog)   & 13 & 127\,303 & 15\,031 & 8{,}47  & $+30\%$ & $-12{,}15$~RPS/rép. \\
-C4 — Seletivo (frontend+cur.)    & 15 &  71\,487 &  1\,835 & 38{,}96 & $+498\%$& $-8{,}40$~RPS/rép. \\
-C3 — Uniforme (todos stateless)  & 30 & 141\,659 & 13\,034 & 10{,}87 & $+67\%$ & $+0{,}44$~RPS/rép. \\
+C1 — Baseline                    & 11 & 184\,099 & 28\,241 &  6{,}52 & —        & — \\
+C2 — Seletivo (productcatalog)   & 13 & 127\,303 & 15\,031 &  8{,}47 & $+30\%$  & $-12{,}15$~RPS/rép. \\
+C4 — Seletivo (frontend+cur.)    & 15 &  71\,487 &  1\,835 & 38{,}96 & $+498\%$ & $-8{,}40$~RPS/rép. \\
+C3 — Uniforme (todos, a.f.)      & 30 & 141\,659 & 13\,034 & 10{,}87 & $+67\%$  & $+0{,}44$~RPS/rép. \\
+C5 — Uniforme ×3 + Envoy (150u) & 31 & 140\,105 & 26\,239 &  5{,}34 & $-18\%$  & $+5{,}63$~RPS/comp. \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-Como se observa na Tabela~\ref{tab:custo-exaustivo}, os dados revelam quatro padrões com implicações arquiteturais distintas:
+Como se observa na Tabela~\ref{tab:custo-exaustivo}, os dados revelam cinco padrões com implicações arquiteturais distintas:
 
 \textbf{C2 — custo marginal negativo por ineficácia gRPC.} As 2 réplicas adicionais aumentaram o custo por pedido em 30\% e o $CM_{tp}=-12{,}15$~RPS/réplica significa que cada réplica adicional \emph{reduziu} a capacidade do sistema em 12~RPS. A \textit{connection affinity} fez com que as réplicas extras consumissem RAM/CPU sem receber tráfego, degradando os bottlenecks reais.
 
-\textbf{C4 — custo por pedido 6× superior ao C2, 40 vezes superior ao C1.} As 4 réplicas adicionais (frontend ×3 + currencyservice ×3) produziram 77,1\% de falhas a 25u — apenas 1.835 pedidos com sucesso em toda a execução. O custo proxy de 38,96 unidades/pedido é o mais elevado de todos os cenários porque o numerador (custo total) é semelhante ao C2 mas o denominador (pedidos bem-sucedidos) colapsa para menos de 2.000. O C4 ilustra o efeito cascata: escalar os serviços de entrada multiplica a carga de conexões gRPC nos backends não escalados, criando um novo bottleneck mais destrutivo que o original.
+\textbf{C4 — custo por pedido 6× superior ao C2, 40 vezes superior ao C1.} As 4 réplicas adicionais (frontend ×3 + currencyservice ×3) produziram 77,1\% de falhas a 25u — apenas 1.835 pedidos com sucesso em toda a execução. O custo proxy de 38,96 unidades/pedido é o mais elevado de todos os cenários porque o denominador (pedidos bem-sucedidos) colapsa para menos de 2.000. O C4 ilustra o efeito cascata: escalar os serviços de entrada multiplica a carga de conexões gRPC nos backends não escalados, criando um novo bottleneck mais destrutivo que o original.
 
-\textbf{C3 — rendimentos marginais ínfimos mas positivos.} As 20 réplicas adicionais aumentaram o custo por pedido em 67\% mas o $CM_{tp}=+0{,}44$~RPS/réplica é o único valor positivo de todos os cenários seletivos.
+\textbf{C3 — rendimentos marginais ínfimos mas positivos.} As 20 réplicas adicionais aumentaram o custo por pedido em 67\% e o $CM_{tp}=+0{,}44$~RPS/réplica é o único valor positivo de todos os cenários sem Envoy.
 
-\textbf{RAM\_time domina em todos os cenários.} Réplicas inativas continuam a ocupar memória independentemente da carga recebida. Num ambiente de nó único, esta pressão de RAM é o mecanismo principal que limita a escalabilidade horizontal sem balanceamento ao nível de pedido.
+\textbf{C5 — único cenário com custo por pedido abaixo do C1.} O Envoy (1 pod adicional) mitigou a \textit{connection affinity}: com distribuição uniforme entre réplicas, o sistema atingiu 218,7~RPS a 150u sem uma única falha. O custo por pedido de 5,34 unidades é $18\%$ \emph{inferior} ao C1 (6,52) porque o throughput muito superior dilui o custo total sobre um denominador de pedidos com sucesso 85\% maior do que no C3. O $CM_{tp}=+5{,}63$~RPS/componente é 12,8× superior ao C3, demonstrando que o ganho do Envoy é qualitativo, não apenas quantitativo.
+
+\textbf{RAM\_time domina em todos os cenários sem Envoy.} Réplicas inativas continuam a ocupar memória independentemente da carga recebida. No C5, o Envoy introduz CPU\_time adicional (481m a 150u), mas a eliminação de réplicas inativas faz com que o custo total permaneça comparável ao C3 apesar do throughput 68\% superior.
 
 \begin{figure}[h]
   \centering
@@ -649,21 +674,21 @@ s = \frac{N/S - 1}{N - 1} = \frac{3/1{,}30 - 1}{3 - 1} = \frac{1{,}308}{2} \appr
 Apesar de todos os serviços stateless terem sido escalados para 3 réplicas, \textbf{65,4\% do trabalho comporta-se como serial} — como se não pudesse ser paralelizado. A causa estrutural é a \textit{connection affinity} do gRPC/HTTP2: as conexões existentes permanecem nas réplicas originais, tornando as novas réplicas praticamente inactivas. Do ponto de vista de Amdahl, isto é equivalente a converter trabalho potencialmente paralelo em serial.
 
 \begin{table}[h]
-\caption{Speedup teórico (Lei de Amdahl) vs real, com $s=0{,}654$ (fracção serial efectiva determinada experimentalmente). Limite teórico: $1/s \approx 1{,}53\times$.}
+\caption{Speedup teórico (Lei de Amdahl) vs real. C3 determina $s=0{,}654$ (com \textit{connection affinity}); C5 determina $s_{C5}=0{,}188$ (com Envoy). Limites teóricos: $1{,}53\times$ sem Envoy; $5{,}32\times$ com Envoy.}
 \label{tab:amdahl}
-\begin{tabular}{rrrr}
+\begin{tabular}{rrrrr}
 \toprule
-\textbf{$N$ réplicas} & \textbf{Ideal ($s=0$)} & \textbf{Com $s=0{,}654$} & \textbf{Real (observado)} \\
+\textbf{$N$ réplicas} & \textbf{Ideal ($s=0$)} & \textbf{Com $s=0{,}654$ (C3)} & \textbf{Com $s=0{,}188$ (C5+Envoy)} & \textbf{Real} \\
 \midrule
-3  & 3,00$\times$ & 1,30$\times$ & 1,30$\times$ \checkmark \\
-5  & 5,00$\times$ & 1,38$\times$ & — \\
-10 & 10,00$\times$ & 1,45$\times$ & — \\
-20 & 20,00$\times$ & 1,49$\times$ & — (limite $\approx$1,53$\times$) \\
+3  & 3,00$\times$ & 1,30$\times$ & 2,18$\times$ & C3: 1,30$\times$ \checkmark; C5: 2,18$\times$ \checkmark \\
+5  & 5,00$\times$ & 1,38$\times$ & 3,00$\times$ & — \\
+10 & 10,00$\times$ & 1,45$\times$ & 4,29$\times$ & — \\
+20 & 20,00$\times$ & 1,49$\times$ & 5,06$\times$ & — (limite C5: $\approx$5,32$\times$) \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-A Tabela~\ref{tab:amdahl} mostra que, com $s=0{,}654$, adicionar réplicas além de $N=3$ produz retorno marginal ínfimo: passar de 3 para 20 réplicas por serviço aumentaria o speedup apenas de $1{,}30\times$ para $1{,}49\times$ — um ganho de $0{,}19\times$ para $17\times$ mais réplicas. O limite teórico absoluto é $1/s \approx 1{,}53\times$, independentemente do número de réplicas. Esta análise fornece uma justificação teórica para os rendimentos marginais decrescentes observados em H3 e H4, e quantifica o custo arquitectural da \textit{connection affinity}: sem balanceamento ao nível de pedido, o sistema tem efectivamente uma fracção serial de 65\%, reduzindo o tecto de Amdahl de $\infty$ para $\approx 1{,}53\times$.
+A Tabela~\ref{tab:amdahl} revela duas fracções seriais efectivas experimentalmente determinadas. O C3 (sem Envoy) confirma $s=0{,}654$: 65,4\% do trabalho comporta-se como serial devido à \textit{connection affinity}, com tecto teórico em $1/0{,}654 \approx 1{,}53\times$. O C5 (com Envoy) obtém $S_{real}=218{,}7/100{,}4\approx 2{,}18\times$, que invertido na equação~\ref{eq:amdahl-inv} dá $s_{C5}=(3/2{,}18-1)/(3-1)\approx 0{,}188$: o Envoy reduziu a fracção serial efectiva de 65\% para 19\%, elevando o tecto teórico para $1/0{,}188\approx 5{,}32\times$. Esta redução da fracção serial — de 0,654 para 0,188 — quantifica o impacto arquitectural do balanceamento ao nível de pedido: a \textit{connection affinity} não é uma limitação fundamental do hardware ou do algoritmo, mas uma limitação do mecanismo de balanceamento, que pode ser eliminada com um proxy L7.
 
 % ============================================================
 \section{Discussão}
@@ -674,9 +699,9 @@ A Tabela~\ref{tab:amdahl} mostra que, com $s=0{,}654$, adicionar réplicas além
 
 \textbf{RQ1 — Que serviços dominam a degradação?} Nas condições testadas (ambiente local, Docker Desktop, perfil de carga exaustivo), os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O \texttt{productcatalogservice} é muito chamado (×6 por browse) mas é rápido; os seus chamadores acumulam CPU porque processam cada pedido HTTP de entrada. Esta observação, consistente com a hipótese H6, tem implicações diretas para a estratégia de escalamento, mas não deve ser generalizada como verdade absoluta sobre a aplicação — em configurações ou cargas distintas, a distribuição de pressão pode ser diferente.
 
-\textbf{RQ2 — Escalar o mais pressionado melhora?} Não, e o cenário C4 é a demonstração mais clara. Identificados os bottlenecks reais (frontend e currencyservice) através dos testes exaustivos C1, desenhou-se o C4 para os escalar directamente. O resultado: quebra a 25u com 77,1\% de falhas — pior de todos os cenários. O escalamento do frontend (ponto de entrada HTTP/1.1) triplicou a pressão de conexões gRPC nos backends não escalados (o \texttt{cartservice} atingiu 115m de CPU, o valor mais alto observado em qualquer serviço em qualquer cenário). O C2, por sua vez, tinha falhado por não escalar os bottlenecks correctos; o C4 falhou por escalar os bottlenecks correctos sem escalar as suas dependências. H1 é confirmada: em ambos os casos, o escalamento seletivo degradou o sistema sob carga severa.
+\textbf{RQ2 — Escalar o mais pressionado melhora?} Não em nenhum dos cenários seletivos sem Envoy. O C4 é a demonstração mais clara: identificados os bottlenecks reais (frontend e currencyservice) via C1, escalá-los directamente produziu quebra a 25u com 77,1\% de falhas — pior de todos. O C2, por sua vez, falhou por escalar o serviço errado. O C5 mostra que a pergunta correcta não é ``qual serviço escalar'' mas ``como garantir que as réplicas adicionais recebem tráfego'': com o Envoy, as mesmas 20 réplicas do C3 atingiram 218,7~RPS a 150u sem falhas.
 
-\textbf{RQ3 — O ganho justifica o custo?} Nas condições testadas, não, em nenhum dos cenários seletivos. O C2 apresenta $CM_{tp}=-12{,}15$~RPS/réplica e o C4 apresenta $CM_{tp}=-8{,}40$~RPS/réplica — ambos com ganho marginal de throughput negativo. O C4 tem ainda o custo por pedido mais elevado (38,96 unidades/pedido, 498\% acima do C1) porque o denominador colapsa com 77,1\% de falhas. O C3 (+20 réplicas) é o único com $CM_{tp}$ positivo ($+0{,}44$~RPS/réplica), mas com custo por pedido 67\% superior ao C1. Os resultados são consistentes com as hipóteses H3 e H4 (rendimentos marginais decrescentes); o custo marginal negativo nos cenários seletivos é a evidência mais forte desta tendência.
+\textbf{RQ3 — O ganho justifica o custo?} Depende do mecanismo de balanceamento. Sem Envoy: nenhum cenário seletivo justifica o custo ($CM_{tp}$ negativo em C2 e C4); o C3 tem $CM_{tp}=+0{,}44$~RPS/réplica com custo por pedido 67\% acima do C1. Com Envoy (C5): o $CM_{tp}=+5{,}63$~RPS/componente é 12,8× superior ao C3, e o custo por pedido de 5,34 é 18\% \emph{inferior} ao C1 — porque o throughput de 218,7~RPS dilui o custo total sobre muito mais pedidos bem-sucedidos. O C5 inverte a conclusão de H3 e H4: os rendimentos marginais decrescentes são uma consequência da \textit{connection affinity}, não do escalamento horizontal em si.
 
 \textbf{RQ4 — Serviços stateless vs.\ stateful?} O \texttt{redis-cart} manteve-se a 4--14m CPU mesmo a 150u — sem sinais de saturação nas cargas testadas. A hipótese de que o componente stateful limitaria o escalamento (H2, H5) não encontrou evidência experimental direta. Seriam necessárias cargas superiores para observar este efeito.
 
@@ -718,6 +743,14 @@ O resultado mais significativo deste estudo é o facto de o C2 (escalamento sele
 
 Este resultado é a evidência experimental mais forte em suporte da hipótese H6 e tem uma implicação arquitetural direta: em sistemas gRPC/HTTP2~\cite{grpcloadbalancing}, o escalamento horizontal simples (\texttt{kubectl scale}) pode ser não só ineficaz como prejudicial, sem um mecanismo de balanceamento ao nível de pedido (ex: service mesh com \textit{load balancing} por pedido~\cite{k8sgrpc}).
 
+\subsection{C5 — Envoy como Prova de Conceito da Alternativa Arquitetural}
+
+O C5 foi desenhado para testar empiricamente a alternativa ao \texttt{kubectl scale} simples: um proxy Envoy central~\cite{grpcloadbalancing} com balanceamento LEAST\_REQUEST por pedido (L7), usando headless services Kubernetes para resolução DNS directa aos pods (ignorando o kube-proxy). Esta implementação é uma versão simplificada do service mesh descrito na Secção~\ref{sec:metodologia} — sem injeção de sidecar nem control plane, mas com o mesmo mecanismo fundamental: substituir balanceamento por conexão por balanceamento por pedido.
+
+Os resultados confirmam a hipótese: a distribuição de CPU entre réplicas do \texttt{productcatalogservice} passou de 91\%/6\%/3\% (C3, com kube-proxy) para 121m/121m/122m (C5, com Envoy) — dentro de 1\% de desvio, essencialmente perfeita. Esta uniformidade propagou-se a todos os serviços escalados, elevando o ponto de saturação para além dos 150u testados. O Envoy consumiu 481m~CPU a 150u, o que representa um overhead real a considerar no dimensionamento.
+
+A comparação C3 vs C5 isola o efeito do balanceamento L7: as configurações de réplicas são idênticas (+20 stateless, redis-cart ×1), a única diferença é o routing. O ganho de 218,7~RPS (C5) vs 109,1~RPS (C3 arranque a frio) — um factor de 2,0× — com o mesmo número de réplicas é evidência directa de que a \textit{connection affinity} era o factor limitante dominante, não a capacidade de computação agregada.
+
 \subsection{Leitura pelos Atributos de Qualidade}
 
 \textbf{Performance:} o escalamento uniforme (C3) é o único cenário que melhora significativamente o ponto de saturação ($\sim$2$\times$). O escalamento seletivo (C2) melhora a latência mediana a carga baixa mas degrada o sistema a carga severa.
@@ -748,33 +781,35 @@ A repetição de experiências com análise estatística (médias, desvios-padr�
 
 \textbf{C4 — Escalamento dos bottlenecks identificados (frontend ×3 + currencyservice ×3).} O pior resultado: quebra a 25u com 77,1\% de falhas. Escalar o \texttt{frontend} (ponto de entrada HTTP/1.1) triplicou as conexões gRPC nos backends não escalados: o \texttt{cartservice} atingiu 115~m de CPU (Figura~\ref{fig:cpu-servicos}), tornando-se o novo bottleneck. O C4 demonstra que identificar os serviços mais pressionados em métricas de CPU não é suficiente — é necessário escalar toda a cadeia de dependências.
 
+\textbf{C5 — Escalamento uniforme ×3 + Envoy L7.} Único cenário sem quebra a 150u: 218,7~RPS, 0\% de falhas. O custo por pedido de 5,34 unidades é 18\% \emph{abaixo} do C1, porque o throughput elevado dilui o custo total. A fracção serial efectiva (Lei de Amdahl) baixou de 65\% (C3) para 19\% (C5), elevando o tecto teórico de 1,53$\times$ para 5,32$\times$. O C5 confirma que a \textit{connection affinity} era o factor limitante dominante — não a capacidade de computação agregada.
+
 \subsection{Resposta às Questões de Investigação}
 
 \textbf{RQ1} — Nas condições testadas, os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O fan-out ×6 cria volume mas não saturação; os serviços de entrada acumulam CPU por processarem cada pedido HTTP.
 
-\textbf{RQ2} — Não. C2 ($-25u$ face ao C1) e C4 ($-50u$ face ao C1) demonstram que escalar o(s) serviço(s) mais pressionado(s) degrada o sistema quando a \textit{connection affinity} e os efeitos de cascata não são considerados.
+\textbf{RQ2} — Sem Envoy, não: C2 e C4 degradaram o sistema. Com Envoy (C5), as mesmas 20 réplicas do C3 atingiram 218,7~RPS sem falhas — 68\% mais do que o C3. A questão relevante não é qual serviço escalar, mas como garantir que as réplicas recebem tráfego.
 
-\textbf{RQ3} — O ganho não justifica o custo em nenhum cenário seletivo. C2: $CM_{tp}=-12{,}15$~RPS/réplica; C4: $CM_{tp}=-8{,}40$~RPS/réplica. C3 tem $CM_{tp}=+0{,}44$~RPS/réplica — positivo, mas com custo por pedido 67\% superior ao C1.
+\textbf{RQ3} — O ganho não justifica o custo sem balanceamento L7. C2: $CM_{tp}=-12{,}15$~RPS/réplica; C4: $CM_{tp}=-8{,}40$~RPS/réplica; C3: $CM_{tp}=+0{,}44$~RPS/réplica (+67\% custo/req). Com Envoy: C5 tem $CM_{tp}=+5{,}63$~RPS/componente e custo/req 18\% abaixo do C1 — o balanceamento L7 inverte o sinal dos rendimentos marginais.
 
-\textbf{RQ4} — O \texttt{redis-cart} não foi fator limitante nas cargas testadas (máx.\ 15~m CPU a 150u). H2 e H5 permanecem inconclusivas — cargas superiores seriam necessárias para observar a limitação stateful.
+\textbf{RQ4} — O \texttt{redis-cart} não foi fator limitante nas cargas testadas (máx.\ 18~m CPU a 150u no C5). H2 e H5 permanecem inconclusivas — cargas superiores seriam necessárias para observar a limitação stateful.
 
 \subsection{Leitura pelos Atributos de Qualidade}
 
-\textbf{Performance:} só o C3 melhora significativamente o ponto de saturação. O escalamento seletivo melhora a latência mediana a carga baixa (C2: $-22\%$ p50) mas degrada a carga severa.
+\textbf{Performance:} C3 melhora o ponto de saturação para $\sim$2$\times$; C5 (com Envoy) atinge 2,18$\times$ sem quebra a 150u. O escalamento seletivo (C2, C4) degrada a performance.
 
-\textbf{Availability:} o C3 elimina pontos únicos de falha ao nível aplicacional; o \texttt{redis-cart} permanece como único ponto de falha em todos os cenários.
+\textbf{Availability:} C3 e C5 eliminam pontos únicos de falha ao nível aplicacional; o \texttt{redis-cart} permanece como único SPOF em todos os cenários. O Envoy no C5 introduz um novo SPOF (1 réplica) — mitigável com 2 réplicas em produção.
 
-\textbf{Deployability:} o escalamento seletivo exige identificação prévia do bottleneck (tracing, CPU por réplica); o uniforme é operacionalmente mais simples mas multiplica a complexidade de gestão.
+\textbf{Deployability:} o escalamento seletivo exige identificação prévia do bottleneck (tracing, CPU por réplica); o uniforme é operacionalmente mais simples. O C5 adiciona complexidade operacional do Envoy (configuração, observabilidade do proxy), mas elimina a necessidade de identificar bottlenecks: com balanceamento correcto, qualquer serviço escala eficazmente.
 
-\textbf{Cost:} C2 e C4 têm custo marginal negativo — adicionam réplicas sem retorno e comprometem o sistema. C3 tem custo por pedido sistematicamente $\approx$2$\times$ o do C1 ao mesmo nível de carga.
+\textbf{Cost:} C2 e C4 têm custo marginal negativo. C3 tem custo por pedido 67\% acima do C1. C5 tem custo por pedido 18\% \emph{abaixo} do C1 — demonstrando que o custo do Envoy é amplamente compensado pela eficiência do throughput.
 
 \subsection{Implicação Arquitetural Central}
 
-Em sistemas gRPC/HTTP2, o \texttt{kubectl scale} simples é uma ferramenta de eficácia limitada e potencialmente prejudicial sem balanceamento ao nível de pedido. O service mesh (Istio/Linkerd) é a alternativa arquitetural que resolveria estruturalmente o problema identificado, ao operar como middleware L7 acima do Kubernetes — distribuindo pedidos, não conexões. Em arquiteturas com dependências em cadeia, o escalamento seletivo desloca o bottleneck; só o escalamento uniforme (ou o service mesh) o elimina.
+Em sistemas gRPC/HTTP2, o \texttt{kubectl scale} simples é uma ferramenta de eficácia limitada e potencialmente prejudicial sem balanceamento ao nível de pedido. O C5 demonstra empiricamente que um proxy L7 (Envoy com LEAST\_REQUEST) resolve estruturalmente este problema: a fracção serial efectiva baixou de 65\% para 19\%, o throughput aumentou 2,18$\times$ face ao C1 e o custo por pedido ficou abaixo do baseline. Em arquiteturas microserviços com gRPC, a decisão de escalamento horizontal deve incluir a estratégia de balanceamento como variável de primeira classe — não como detalhe de implementação.
 
 \subsection{Limitações e Trabalho Futuro}
 
-Os resultados foram obtidos num ambiente local de nó único, sem repetição de execuções. A variabilidade observada (step-up vs.\ arranque a frio no C3: p99 de 1500 vs.\ 2500~ms) sublinha a necessidade de repetição com análise estatística. Trabalho futuro prioritário: (1) repetição de C1/C2/C3 três vezes por nível com média $\pm$ desvio-padrão; (2) implementação de HPA e service mesh para validar as alternativas discutidas; (3) carga progressiva até à saturação do \texttt{redis-cart} (H2/H5 inconclusivas).
+Os resultados foram obtidos num ambiente local de nó único, sem repetição de execuções. A variabilidade observada (step-up vs.\ arranque a frio no C3: p99 de 1500 vs.\ 2500~ms) sublinha a necessidade de repetição com análise estatística. Trabalho futuro prioritário: (1) repetição de C1/C2/C3/C5 três vezes por nível com média $\pm$ desvio-padrão; (2) teste do C5 além de 150u para determinar o ponto de saturação real com Envoy; (3) carga progressiva até à saturação do \texttt{redis-cart} (H2/H5 inconclusivas); (4) avaliação de HPA sobre o C5 para escalar automaticamente em função da carga real.
 
 % ============================================================
 % REFERÊNCIAS

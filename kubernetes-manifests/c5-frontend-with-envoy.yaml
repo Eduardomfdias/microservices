@@ -1,0 +1,228 @@
+# =============================================================================
+# ASID 2025/2026 — Cenário C5 — Callers reconfigrados para Envoy
+#
+# Este ficheiro atualiza os três serviços que iniciam chamadas gRPC internas
+# (frontend, checkoutservice, recommendationservice) para apontar para o
+# envoy-grpc-lb em vez dos K8s Services diretos.
+#
+# DIFERENÇAS face aos manifestos originais:
+#   - *_SERVICE_ADDR → envoy-grpc-lb:<porta>
+#   - PAYMENT_SERVICE_ADDR usa porta 50052 (evitar colisão com shipping :50051)
+#   - imagePullPolicy: Never (imagens locais)
+#
+# Aplicar DEPOIS do envoy-grpc-lb estar Running:
+#   kubectl apply -f kubernetes-manifests/envoy-grpc-lb.yaml
+#   kubectl rollout status deployment/envoy-grpc-lb
+#   kubectl apply -f kubernetes-manifests/c5-frontend-with-envoy.yaml
+#
+# Para reverter ao routing original:
+#   kubectl apply -f kubernetes-manifests/frontend.yaml
+#   kubectl apply -f kubernetes-manifests/checkoutservice.yaml
+#   kubectl apply -f kubernetes-manifests/recommendationservice.yaml
+# =============================================================================
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+    scenario: c5
+spec:
+  selector:
+    matchLabels:
+      app: frontend
+  template:
+    metadata:
+      labels:
+        app: frontend
+      annotations:
+        sidecar.istio.io/rewriteAppHTTPProbers: "true"
+    spec:
+      serviceAccountName: frontend
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: frontend
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 8080
+          readinessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-readiness-probe"
+          livenessProbe:
+            initialDelaySeconds: 10
+            httpGet:
+              path: "/_healthz"
+              port: 8080
+              httpHeaders:
+              - name: "Cookie"
+                value: "shop_session-id=x-liveness-probe"
+          env:
+          - name: PORT
+            value: "8080"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "envoy-grpc-lb:3550"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "envoy-grpc-lb:7000"
+          - name: CART_SERVICE_ADDR
+            value: "envoy-grpc-lb:7070"
+          - name: RECOMMENDATION_SERVICE_ADDR
+            value: "envoy-grpc-lb:8080"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "envoy-grpc-lb:50051"
+          - name: CHECKOUT_SERVICE_ADDR
+            value: "envoy-grpc-lb:5050"
+          - name: AD_SERVICE_ADDR
+            value: "envoy-grpc-lb:9555"
+          - name: SHOPPING_ASSISTANT_SERVICE_ADDR
+            value: "shoppingassistantservice:80"
+          - name: ENABLE_PROFILER
+            value: "0"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: checkoutservice
+  labels:
+    app: checkoutservice
+    scenario: c5
+spec:
+  selector:
+    matchLabels:
+      app: checkoutservice
+  template:
+    metadata:
+      labels:
+        app: checkoutservice
+    spec:
+      serviceAccountName: checkoutservice
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+        - name: server
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            privileged: false
+            readOnlyRootFilesystem: true
+          image: checkoutservice
+          imagePullPolicy: Never
+          ports:
+          - containerPort: 5050
+          readinessProbe:
+            grpc:
+              port: 5050
+          livenessProbe:
+            grpc:
+              port: 5050
+          env:
+          - name: PORT
+            value: "5050"
+          - name: PRODUCT_CATALOG_SERVICE_ADDR
+            value: "envoy-grpc-lb:3550"
+          - name: SHIPPING_SERVICE_ADDR
+            value: "envoy-grpc-lb:50051"
+          - name: PAYMENT_SERVICE_ADDR
+            value: "envoy-grpc-lb:50052"
+          - name: EMAIL_SERVICE_ADDR
+            value: "envoy-grpc-lb:5000"
+          - name: CURRENCY_SERVICE_ADDR
+            value: "envoy-grpc-lb:7000"
+          - name: CART_SERVICE_ADDR
+            value: "envoy-grpc-lb:7070"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: recommendationservice
+  labels:
+    app: recommendationservice
+    scenario: c5
+spec:
+  selector:
+    matchLabels:
+      app: recommendationservice
+  template:
+    metadata:
+      labels:
+        app: recommendationservice
+    spec:
+      serviceAccountName: recommendationservice
+      terminationGracePeriodSeconds: 5
+      securityContext:
+        fsGroup: 1000
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      containers:
+      - name: server
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL
+          privileged: false
+          readOnlyRootFilesystem: true
+        image: recommendationservice
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8080
+        readinessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        livenessProbe:
+          periodSeconds: 5
+          grpc:
+            port: 8080
+        env:
+        - name: PORT
+          value: "8080"
+        - name: PRODUCT_CATALOG_SERVICE_ADDR
+          value: "envoy-grpc-lb:3550"
+        - name: DISABLE_PROFILER
+          value: "1"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 220Mi
+          limits:
+            cpu: 200m
+            memory: 450Mi

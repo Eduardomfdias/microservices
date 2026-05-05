@@ -1,613 +1,354 @@
 # CLAUDE.md — Projeto ASID 2025/2026
 
-> Este ficheiro existe para dar contexto ao Claude Code (ou a qualquer instância de Claude) sobre o estado atual do projeto, o que já foi feito, o que falta, e como o ambiente funciona. Lê isto antes de fazer qualquer coisa.
+> Contexto para o Claude Code sobre o estado do projeto. Lê isto antes de fazer qualquer coisa.
 
 ---
 
 ## Contexto geral
 
-**Unidade curricular:** Arquiteturas de Sistemas de Informação Distribuídos (ASID)  
-**Universidade:** Universidade do Minho  
-**Mestrado:** Engenharia e Gestão de Sistemas de Informação (MEGSI) — confirmar na capa do relatório final que é este e não Engenharia de Ciência de Dados (o handout menciona ambos)  
-**Ano letivo:** 2025/2026 — 2.º Semestre  
-**Professor:** Helena Rodrigues  
+**UC:** Arquiteturas de Sistemas de Informação Distribuídos (ASID) — MEGSI, UMinho, 2025/2026  
 **Tema:** Tema 2 — Escalabilidade Horizontal e Custo Marginal em Microserviços  
-**Sistema em estudo:** [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo)  
+**Sistema:** [Google Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo)  
+**Professor:** Helena Rodrigues
 
-**Grupo:**
-- PG61463 – Eduardo Dias
-- PG47542 – Nuno Martinho
-- PG58760 – Clementina Kulivala
-- PG58761 – Golda Kangunga
+**Grupo:** PG61463 – Eduardo Dias · PG47542 – Nuno Martinho · PG58760 – Clementina Kulivala · PG58761 – Golda Kangunga
 
-**Entrega final:** 31 de maio de 2026, 23h59, via Blackboard, formato ACM, máximo 20 páginas (sem figuras).  
-**Peso na nota:** 90% da nota final.
-
-**Apresentação oral:** ~30 minutos com demonstração funcional incluída. Vale 5% (incluído nos 90%). Cronograma do enunciado coloca a preparação na semana 16-17, a seguir à entrega do relatório.
+**Entrega final:** 31 maio 2026, 23h59, Blackboard, formato ACM, máx. 20 páginas (sem figuras). Peso: 90%.  
+**Apresentação oral:** ~30 min com demo funcional, semana 16-17. Vale 5% (incluído nos 90%).
 
 ---
 
-## Critérios de avaliação (ENUNCIADO)
+## Critérios de avaliação
 
 | Critério | Peso |
 |---|---|
 | Fundamentação e coerência arquitetural | **40%** |
 | Qualidade da avaliação experimental | 30% |
-| Implementação e deployment (suporte experimental) | 15% |
+| Implementação e deployment | 15% |
 | Discussão crítica e conclusões | 10% |
 | Apresentação oral e demonstração | 5% |
 
-**Atributos de qualidade obrigatórios** (têm de ser ligados às decisões arquiteturais): Performance, Availability, Deployability, Cost.
+**Atributos de qualidade obrigatórios** (ligar às decisões): Performance, Availability, Deployability, Cost.
 
 ---
 
 ## Sistema em estudo
 
-**Online Boutique** é uma aplicação de e-commerce com 11 microserviços + Redis, disponibilizada pela Google como referência de boas práticas.
-
-### Serviços
-
-| Serviço | Linguagem | Tipo | Nota |
+| Serviço | Lang | Tipo | Nota |
 |---|---|---|---|
-| frontend | Go | Stateless | Ponto de entrada HTTP/1.1 |
-| productcatalogservice | Go | Stateless | Chamado ×6 por browse — candidato inicial a bottleneck, mas **não é o bottleneck real sob carga severa** |
-| cartservice | C# (.NET) | Stateless aplicacional | Depende criticamente do redis-cart |
+| frontend | Go | Stateless | Entrada HTTP/1.1 |
+| productcatalogservice | Go | Stateless | ×6 por browse — candidato inicial a bottleneck, **não é o bottleneck real** |
+| cartservice | C# | Stateless aplicacional | Depende do redis-cart — **NÃO é stateful** |
 | checkoutservice | Go | Stateless | Orquestrador de 6 serviços em sequência |
-| currencyservice | Node.js | Stateless | Converte moedas (BCE) — **bottleneck real sob carga severa** (junto com frontend) |
+| currencyservice | Node.js | Stateless | Bottleneck sob carga severa (junto com frontend) |
 | paymentservice | Node.js | Stateless | Pagamento simulado |
 | shippingservice | Go | Stateless | Envio simulado |
-| emailservice | Python | Stateless | Email confirmação simulado |
-| recommendationservice | Python | Stateless | Chama o productcatalogservice |
+| emailservice | Python | Stateless | Email simulado |
+| recommendationservice | Python | Stateless | Chama productcatalogservice |
 | adservice | Java | Stateless | Anúncios contextuais |
-| redis-cart | — | **Stateful** | Único backend com estado persistente; single-threaded |
+| redis-cart | — | **Stateful** | Único backend com estado; single-threaded |
 
-**Atenção importante:** o `cartservice` NÃO é stateful — é um serviço aplicacional stateless que depende de um backend stateful partilhado (`redis-cart`). Escalar réplicas do cartservice não escala o redis-cart.
-
-**Descoberta experimental:** sob carga severa (testes exaustivos), os bottlenecks reais são **frontend** e **currencyservice**, não o productcatalogservice. Este último é muito chamado (×6 por browse) mas é rápido. O frontend e currencyservice acumulam CPU porque processam cada pedido HTTP de entrada.
-
-### Comunicação
-- Externa: HTTP/1.1 (frontend → browser/Locust)
-- Interna: gRPC sobre HTTP/2 (todos os serviços entre si)
-- **Problema confirmado empiricamente:** gRPC/HTTP2 faz balanceamento ao nível de conexão (connection affinity) — novas réplicas recebem quase zero tráfego até novas conexões serem abertas. Confirmado em C2: réplicas novas do productcatalogservice ficaram em 1–2m CPU enquanto a réplica original estava em 31m.
+**Comunicação:** externa HTTP/1.1; interna gRPC/HTTP2.  
+**H6 (confirmada empiricamente):** gRPC/HTTP2 faz balanceamento por conexão — novas réplicas recebem quase zero tráfego até novas conexões serem abertas. C2 quebrou antes do C1 como evidência direta. **C5 (Envoy) resolve H6.**
 
 ---
 
-## Decisão arquitetural em estudo (PARA O RELATÓRIO FINAL)
+## Decisão arquitetural em estudo
 
-> Este ponto vale 40% da nota. O enunciado exige descrição explícita da decisão E de pelo menos uma alternativa relevante, com discussão de trade-offs ligada aos quatro atributos de qualidade.
+**Decisão principal:** escalamento horizontal **seletivo** vs. **uniforme** (C2 vs. C3). C5 adiciona a dimensão do balanceamento L7.
 
-**Decisão arquitetural principal:** escalamento horizontal **seletivo** (escalar apenas o(s) serviço(s) candidato(s) a bottleneck) por oposição a escalamento horizontal **uniforme** (escalar todos os serviços stateless igualmente).
-
-**Alternativas a discutir explicitamente no relatório final:**
+**Alternativas discutidas no relatório:**
 
 | Alternativa | Trade-offs (P / A / D / C) |
 |---|---|
-| **Auto-scaling (HPA por CPU/memória)** | P: reage a carga real; A: melhor sob carga variável; D: requer métricas e configuração extra; C: custo variável, potencialmente menor em períodos calmos |
-| **Caching no productcatalogservice** | P: elimina o fan-out ×6; A: TTL pode causar inconsistências curtas; D: alteração de código; C: pode evitar todo o scale-out |
-| **Service mesh (Linkerd/Istio) com balanceamento por pedido** | P: mitiga o connection affinity gRPC (resolve H6); A: introduz componente extra que pode falhar; D: complexidade operacional significativa; C: overhead de CPU/memória |
-| **Não escalar — ajustar limites de recursos** | P: explora capacidade não usada; A: limite duro; D: simples; C: barato mas não resolve a longo prazo |
-
-**Trade-offs do escalamento seletivo vs uniforme** (esta é a comparação central do trabalho — corresponde a C2 vs C3):
-
-- **Performance:** uniforme atinge maior throughput (C3: 130 RPS vs C1: 100 RPS); seletivo pode degradar se atingir o serviço errado (C2: 76 RPS — pior que C1)
-- **Availability:** seletivo deixa serviços não escalados como pontos únicos de falha; uniforme distribui risco
-- **Deployability:** seletivo requer identificação prévia do bottleneck (análise de tracing); uniforme é mecânico
-- **Cost:** seletivo tem menor custo absoluto mas pior CM se mal direcionado; uniforme tem custo proporcional ao número de serviços (×N)
+| **Auto-scaling (HPA)** | P: reage a carga real; A: melhor sob carga variável; D: requer métricas; C: variável |
+| **Caching no productcatalogservice** | P: elimina fan-out ×6; A: TTL pode causar inconsistências; D: altera código; C: evita scale-out |
+| **Service mesh / proxy L7 (Envoy)** | P: resolve H6 (balanceamento por pedido); A: Envoy SPOF (mitigável); D: complexidade operacional; C: overhead proxy compensado pelo throughput |
+| **Não escalar — ajustar limites** | P: explora capacidade existente; A: limite duro; D: simples; C: barato mas não escala |
 
 ---
 
 ## Ambiente de desenvolvimento
 
-- **OS:** macOS Apple Silicon (M4, arm64) — MacBook Air 2026
-- **Kubernetes:** Docker Desktop com Kubernetes ativo
-- **Namespace:** `default`
-- **Hardware:** M4 10 cores (4P+6E), 16 GB RAM. Kubernetes recebe todos os 10 cores e ~7.6 GB RAM.
-- **Registo de imagens:** `us-central1-docker.pkg.dev/google-samples/microservices-demo/`
-- **Ficheiro de specs completo:** `ambiente_experimental.md`
+- **OS:** macOS Apple Silicon (M4, arm64) — Docker Desktop Kubernetes
+- **Namespace:** `default` | **Hardware:** M4 10 cores, 16 GB RAM
 
-### Fixes obrigatórios para Apple Silicon (JÁ APLICADOS)
-```bash
-# 1. Memory limit do cartservice aumentado de 128Mi para 512Mi (evita OOMKill sob carga)
-# 2. Env var DOTNET_EnableWriteXorExecute=0 no cartservice (fix bug JIT .NET em ARM64)
-# 3. imagePullPolicy: Never em todos os deployments (imagens locais — não pull do registry remoto)
-# 4. loadgenerator: 0 réplicas (carga gerada externamente pelo Locust)
+### Fixes Apple Silicon (JÁ APLICADOS em kubernetes-manifests/)
+```
+- cartservice: memory limit 128Mi → 512Mi (evita OOMKill)
+- cartservice: DOTNET_EnableWriteXorExecute=0 (fix JIT .NET ARM64)
+- imagePullPolicy: Never em todos os deployments (imagens locais)
+- loadgenerator: 0 réplicas (carga gerada pelo Locust)
+- metrics-server: instalado + patch --kubelet-insecure-tls (para kubectl top)
+- Imagens retagged com nomes curtos (ex: docker tag gcr.io/.../frontend frontend)
 ```
 
-### Ferramentas instaladas/usadas
-- **Locust** — gerador de carga (Python). Locustfile com 3 perfis de utilizador.
-- **Jaeger** (all-in-one) — rastreio distribuído. Manifesto em `kubernetes-manifests/jaeger.yaml`
-- **OpenTelemetry Collector** — agrega traces dos microserviços e exporta para Jaeger. Manifesto em `kubernetes-manifests/otel-collector.yaml`
-- **kubectl top** — métricas CPU/RAM por pod (requer metrics-server)
+### Ferramentas
+- **Locust** — gerador de carga. Locustfile com 3 perfis.
+- **Jaeger** (all-in-one) — tracing. `kubernetes-manifests/jaeger.yaml`
+- **OpenTelemetry Collector** — `kubernetes-manifests/otel-collector.yaml`
+- **kubectl top** — métricas CPU/RAM (requer metrics-server)
+- **Envoy** (C5) — proxy L7 gRPC. `kubernetes-manifests/envoy-grpc-lb.yaml`
 
 ### Scripts de teste
-- `c1comp.sh` — C1 comparativo (15, 20, 25 users; think times realistas)
-- `c2.sh` — C2 comparativo
-- `c3.sh` — C3 comparativo
-- `c1_exaustivo.sh` — C1 exaustivo (25→150 users; locustfile severo) ✅ executado
-- `c2_exaustivo.sh` — C2 exaustivo ✅ executado
-- `c3_exaustivo.sh` — C3 exaustivo ✅ executado
+- `c1comp.sh` — C1 comparativo ✅
+- `c2.sh` — C2 comparativo ✅
+- `c3.sh` — C3 comparativo ✅
+- `c1_exaustivo.sh` — C1 exaustivo ✅
+- `c2_exaustivo.sh` — C2 exaustivo ✅
+- `c3_exaustivo.sh` — C3 exaustivo ✅
+- `c5.sh` — C5 exaustivo (Envoy) ✅ executado 2026-05-05
+
+### Ficheiros C5 (criados 2026-05-05)
+- `kubernetes-manifests/envoy-grpc-lb.yaml` — 9 headless services + ConfigMap (LEAST_REQUEST) + Deployment + Service
+- `kubernetes-manifests/c5-frontend-with-envoy.yaml` — frontend/checkoutservice/recommendationservice com *_SERVICE_ADDR → envoy-grpc-lb
+- `cenarios_ob_c5_exaustivo/` — resultados dos testes C5
 
 ---
 
 ## Workflows analisados
 
 ### W1 — Browse Product `GET /product/{id}` (peso 10)
-- **Fan-out:** 6 chamadas gRPC paralelas ao productcatalogservice por pedido
-- **Serviços ativados:** frontend → productcatalogservice (×6), currencyservice, recommendationservice → productcatalogservice, cartservice (verificação), adservice
-- **Relevância:** operação mais frequente; principal driver de carga do productcatalogservice
+frontend → productcatalogservice (×6), currencyservice, recommendationservice→productcatalogservice, cartservice, adservice
 
 ### W2 — Add to Cart `POST /cart` (peso 3)
-- **Fan-out:** 2 chamadas gRPC sequenciais
-- **Serviços ativados:** frontend → productcatalogservice (GetProduct), frontend → cartservice → redis-cart (HSET)
-- **Relevância:** pré-requisito do checkout; falha aqui → checkout falha 100%; HSET no redis-cart é bloqueante
+frontend → productcatalogservice (GetProduct) → cartservice → redis-cart (HSET bloqueante)
 
 ### W3 — Checkout `POST /cart/checkout` (peso 1)
-- **Fan-out:** 6 chamadas gRPC sequenciais do checkoutservice
-- **Serviços ativados:** frontend → checkoutservice → redis-cart (GetCart), productcatalogservice, currencyservice, shippingservice, paymentservice, emailservice, redis-cart (EmptyCart)
-- **Relevância:** maior valor de negócio; latência = soma de todas as dependências; EmptyCart ocorre no final (confirmado no Jaeger)
+frontend → checkoutservice → redis-cart (GetCart), productcatalogservice, currencyservice, shippingservice, paymentservice, emailservice, redis-cart (EmptyCart — confirmado no Jaeger)
 
 ---
 
 ## Modelo de carga — Locust
 
-O loadgenerator nativo deve ser **pausado** antes dos testes:
 ```bash
-kubectl scale deployment loadgenerator --replicas=0
+kubectl scale deployment loadgenerator --replicas=0  # pausar antes dos testes
 ```
 
-### Perfis comparativos (think times realistas — c1comp/c2/c3)
-```python
-# CasualUser — 30% · wait 5–15 s · browse, homepage, moeda
-# NormalUser — 50% · wait 2–6 s · browse, cart, checkout ocasional
-# PowerUser  — 20% · wait 0.5–2 s · browse, cart, checkout frequente
-```
-A 25 users gera ~8 RPS — insuficiente para saturar o sistema.
+**Comparativo** (locustfile realista): CasualUser 30% wait 5–15s · NormalUser 50% wait 2–6s · PowerUser 20% wait 0.5–2s → ~8 RPS a 25u  
+**Exaustivo** (locustfile severo): CasualUser 20% wait 0.5–1s · NormalUser 50% wait 0.2–0.5s · PowerUser 30% wait 0.1–0.2s → ~72 RPS a 25u
 
-### Perfis exaustivos (think times severos — c1/c2/c3_exaustivo)
-```python
-# CasualUser — 20% · wait 0.5–1 s · browse, homepage, moeda
-# NormalUser — 50% · wait 0.2–0.5 s · browse, cart, checkout ocasional
-# PowerUser  — 30% · wait 0.1–0.2 s · browse, cart, checkout frequente
-```
-A 25 users gera ~72 RPS. Encontra o ponto de saturação real de cada cenário.
-
-**Pesos das tarefas (ambos os locustfiles):**
-```
-index:1, setCurrency:2, browseProduct:10, addToCart:2, viewCart:3, checkout:1
-```
-
-**Parâmetros dos testes exaustivos:**
-- Níveis: 25 → 50 → 75 → 100 → 125 → 150 users
-- Spawn rate: 2 users/s
-- Warm-up: 30s + medição 120s por nível
-- Cooldown entre níveis: 60s
-- Critério de quebra: p99 > 2000ms OU falhas > 5%
-
-**Decisão técnica:** o checkout usa `catch_response=True` para não contaminar métricas de checkout com falhas do add-to-cart.
-
-**zip_code correto no form de checkout:** `10001` (só aceita 4–5 dígitos).
+**Pesos tarefas:** `index:1, setCurrency:2, browseProduct:10, addToCart:2, viewCart:3, checkout:1`  
+**Parâmetros exaustivos:** 25→50→75→100→125→150u · spawn 2u/s · warm-up 30s · medição 120s · cooldown 60s  
+**Critério de quebra:** p99 > 2000ms OU falhas > 5% (critério operacional, não SLA real)  
+**zip_code checkout:** `10001` (4–5 dígitos)
 
 ---
 
 ## Cenários experimentais
 
-| Cenário | Réplicas | Réplicas adicionadas vs C1 | Objetivo |
+| Cenário | Réplicas | +Comp. vs C1 | Objetivo |
 |---|---|---|---|
-| **C1** — Baseline | 1 por serviço | 0 | Referência. Ponto de saturação natural. |
-| **C2** — Seletivo | productcatalogservice: 3; restantes: 1 | +2 | Escalar o candidato a bottleneck primário. |
-| **C3** — Uniforme | Todos stateless: 3; redis-cart: 1 | +20 | Escalar tudo — rendimentos marginais? |
-| **C4** — Seletivo real | frontend: 3; currencyservice: 3; restantes: 1 | +4 | Escalar os bottlenecks reais identificados nos exaustivos C1. |
+| **C1** — Baseline | 1 por serviço | 0 | Referência |
+| **C2** — Seletivo | productcatalogservice ×3; restantes ×1 | +2 | Escalar candidato a bottleneck |
+| **C3** — Uniforme | Todos stateless ×3; redis-cart ×1 | +20 | Escalar tudo |
+| **C4** — Seletivo real | frontend ×3 + currencyservice ×3; restantes ×1 | +4 | Escalar bottlenecks reais |
+| **C5** — Uniforme ×3 + Envoy L7 | Todos stateless ×3 + Envoy proxy | +20+Envoy | Mitigar connection affinity; validar H6 |
 
-**Elemento constante:** redis-cart mantém 1 réplica em todos os cenários (stateful, single-threaded, não beneficia de scale-out simples).
-
----
-
-## Resultados — Testes Comparativos (15/20/25 users, locustfile realista — 2026-04-19)
-
-Estes resultados mostram comportamento a carga sub-saturação. A carga de 25 users não satura nenhum cenário.
-
-### C1 Comparativo
-| Users | p50 | p90 | p99 | Falhas% | RPS |
-|---|---|---|---|---|---|
-| 15 | 20ms | 30ms | 62ms | 0.0% | 4.80 |
-| 20 | 18ms | 31ms | 52ms | 0.0% | 6.36 |
-| 25 | 18ms | 31ms | 69ms | 0.0% | 7.98 |
-
-### C2 Comparativo (productcatalogservice ×3)
-| Users | p50 | p90 | p99 | Falhas% | RPS |
-|---|---|---|---|---|---|
-| 15 | 16ms | 27ms | 170ms | 0.0% | 4.92 |
-| 20 | 16ms | 25ms | 86ms | 0.0% | 6.42 |
-| 25 | 14ms | 25ms | 290ms | 0.0% | 7.94 |
-
-### C3 Comparativo (todos stateless ×3)
-| Users | p50 | p90 | p99 | Falhas% | RPS |
-|---|---|---|---|---|---|
-| 15 | 21ms | 38ms | 200ms | 0.0% | 4.78 |
-| 20 | 19ms | 32ms | 96ms | 0.0% | 6.57 |
-| 25 | 19ms | 31ms | 110ms | 0.0% | 7.92 |
-
-**Conclusão comparativos:** RPS idêntico nos 3 cenários (~8 RPS). C2 tem melhor p50 (−22%). C1 tem melhores p99. Não houve saturação — a carga não é suficiente para revelar os bottlenecks.
+**redis-cart sempre ×1** (stateful, single-threaded, não beneficia de scale-out simples).
 
 ---
 
-## Resultados — Testes Exaustivos (locustfile severo — 2026-04-26)
+## Resultados — Testes Comparativos (locustfile realista — 2026-04-19)
 
-### C1 Exaustivo — Baseline (1 réplica por serviço)
-**Ponto de quebra: 75 users**
+A 25u (~8 RPS) não satura nenhum cenário. C2 tem melhor p50 (−22%). RPS idêntico nos 3 cenários.
 
-| Users | p50 | p90 | p99 | Falhas% | RPS | Estado |
-|---|---|---|---|---|---|---|
-| 25 | 47ms | 130ms | 660ms | 0.0% | 71.8 | Aviso |
-| 50 | 160ms | 280ms | 1500ms | 0.0% | 88.1 | Aviso |
-| **75** | **330ms** | **520ms** | **1800ms** | **23.5%** | **100.4** | **QUEBRA** |
-
-Resultados em: `cenarios_ob_c1_exaustivo/`
-
-### C2 Exaustivo — Seletivo (productcatalogservice ×3)
-**Ponto de quebra: 50 users — PIOR QUE C1**
-
-| Users | p50 | p90 | p99 | Falhas% | RPS | Estado |
-|---|---|---|---|---|---|---|
-| 25 | 50ms | 140ms | 460ms | 0.0% | 71.0 | Aviso |
-| **50** | **160ms** | **390ms** | **3700ms** | **27.9%** | **76.1** | **QUEBRA** |
-
-Resultados em: `cenarios_ob_c2_exaustivo/`
-
-**Resultado contra-intuitivo:** C2 quebrou antes do C1 (50u vs 75u). As 2 réplicas adicionais do productcatalogservice não recebem tráfego significativo (afinidade gRPC) mas consomem RAM e CPU do nó, deixando menos recursos para o frontend e currencyservice — os bottlenecks reais. **Confirma H6 empiricamente.**
-
-### C3 Exaustivo — Uniforme (todos stateless ×3)
-**Ponto de saturação: ~150 users (2× mais que C1)**
-
-| Users | p50 | p90 | p99 | Falhas% | RPS | Estado |
-|---|---|---|---|---|---|---|
-| 25 | 20ms | 110ms | 720ms | 0.0% | 74.9 | Aviso |
-| 50 | 140ms | 370ms | 560ms | 0.0% | 99.4 | Aviso |
-| 75 | 210ms | 700ms | 1100ms | 0.1% | 103.1 | Aviso |
-| 100 | 240ms | 710ms | 1000ms | 0.0% | 124.2 | Aviso |
-| 125 | 310ms | 970ms | 1300ms | 0.5% | 123.4 | Aviso |
-| 150 *(step-up)* | 350ms | 1200ms | 1500ms | 0.0% | 130.5 | Aviso |
-| **150 *(cold start)*** | **340ms** | **1500ms** | **2500ms** | **0.0%** | **109.1** | **QUEBRA** |
-
-Resultados em: `cenarios_ob_c3_exaustivo/` (cold start) e `cenarios_ob_c3_exaustivo_bak_20260426_103651/` (step-up)
-
-**Nota step-up vs cold start:** o step-up gradual manteve conexões gRPC aquecidas e JIT compilado, chegando a 150u sem quebrar (p99=1500ms). O cold start directo a 150u quebrou (p99=2500ms). O cold start é a medida mais honesta do ponto de saturação real.
-
-### C4 Exaustivo — Seletivo real (frontend ×3 + currencyservice ×3)
-**Ponto de quebra: 25 users — PIOR DE TODOS**
-
-| Users | p50 | p90 | p99 | Falhas% | RPS | Estado |
-|---|---|---|---|---|---|---|
-| **25** | **6ms** | **120ms** | **2300ms** | **77.1%** | **66.8** | **QUEBRA** |
-
-Resultados em: `cenarios_ob_c4_exaustivo/`
-
-**Resultado catastrófico:** Quebra imediata a 25 users com 77.1% de falhas — o pior resultado de todos os cenários. Escalar os bottlenecks "reais" (frontend e currencyservice) identificados nos testes C1 produziu o pior comportamento de todos.
-
-**CPU no fim da medição (do run.log):**
-
-| Serviço | CPU | Nota |
-|---|---|---|
-| cartservice | **115m** | Novo bottleneck — saturou com 1 réplica |
-| currencyservice r5tjx | 55m | Réplica quente |
-| currencyservice pjfwf | 45m | Réplica quente |
-| currencyservice r8xqf | **3m** | Quase zero — H6 de novo |
-| frontend qpmm4 | 58m | |
-| frontend 4vrf6 | 50m | |
-| frontend xmwzg | 35m | |
-| productcatalogservice | 37m | 1 réplica, mais pressão |
-| redis-cart | 3m | Sem pressão |
-
-**Explicação:** ao escalar frontend e currencyservice, o bottleneck deslocou-se para o **cartservice** (115m CPU com 1 réplica) e o **productcatalogservice** (37m). A terceira réplica do currencyservice (3m) confirma novamente H6 — connection affinity gRPC impede que as novas réplicas recebam tráfego de conexões existentes.
-
-**Interpretação arquitetural:** C4 demonstra que identificar o bottleneck a partir de métricas de CPU instantâneas e escalar seletivamente pode ser enganoso quando o sistema tem múltiplos gargalos encadeados e o balanceamento gRPC não redistribui tráfego de conexões existentes. O bottleneck desloca-se mas não desaparece.
+| Users | C1 p50/p99/RPS | C2 p50/p99/RPS | C3 p50/p99/RPS |
+|---|---|---|---|
+| 15 | 20/62ms · 4.80 | 16/170ms · 4.92 | 21/200ms · 4.78 |
+| 20 | 18/52ms · 6.36 | 16/86ms · 6.42 | 19/96ms · 6.57 |
+| 25 | 18/69ms · 7.98 | 14/290ms · 7.94 | 19/110ms · 7.92 |
 
 ---
 
-### Comparação de pontos de saturação (testes exaustivos)
+## Resultados — Testes Exaustivos (locustfile severo)
 
-| Cenário | Réplicas adicionadas | Ponto de quebra | RPS máximo | Conclusão |
+### C1 Exaustivo — Baseline · quebra: **75u** (2026-04-26)
+| Users | p50 | p90 | p99 | Falhas% | RPS |
+|---|---|---|---|---|---|
+| 25 | 47ms | 130ms | 660ms | 0.0% | 71.8 |
+| 50 | 160ms | 280ms | 1500ms | 0.0% | 88.1 |
+| **75** | **330ms** | **520ms** | **1800ms** | **23.5%** | **100.4** |
+
+### C2 Exaustivo — Seletivo · quebra: **50u — PIOR QUE C1** (2026-04-26)
+| Users | p50 | p99 | Falhas% | RPS |
 |---|---|---|---|---|
-| **C1** Baseline | 0 | **75 users** | 100.4 | Referência |
-| **C2** Seletivo | +2 | **50 users** | 76.1 | Escalamento prejudicou o sistema |
-| **C3** Uniforme | +20 | **~150 users** | 130.5 | ~2× mais que C1 |
-| **C4** Seletivo real | +4 | **25 users ◄ pior** | 66.8 | Catastrófico — pior que C1, C2 e C3 |
+| 25 | 50ms | 460ms | 0.0% | 71.0 |
+| **50** | **160ms** | **3700ms** | **27.9%** | **76.1** |
+
+Réplicas extras sem tráfego (H6) consomem CPU/RAM do nó → deixam menos recursos para frontend/currencyservice.
+
+### C3 Exaustivo — Uniforme · saturação: **~150u** (2026-04-26)
+| Users | p50 | p99 | Falhas% | RPS |
+|---|---|---|---|---|
+| 25–125 | 20–310ms | 720–1300ms | 0.0–0.5% | 74.9–123.4 |
+| 150 *(step-up)* | 350ms | 1500ms | 0.0% | 130.5 |
+| **150 *(cold start)*** | **340ms** | **2500ms** | **0.0%** | **109.1 — QUEBRA** |
+
+Step-up mantém conexões gRPC aquecidas; cold start é a medida mais honesta.
+
+### C4 Exaustivo — Seletivo real · quebra: **25u — PIOR DE TODOS** (2026-04-26)
+| Users | p50 | p99 | Falhas% | RPS |
+|---|---|---|---|---|
+| **25** | **6ms** | **2300ms** | **77.1%** | **66.8** |
+
+Escalar frontend+currencyservice deslocou bottleneck para cartservice (115m CPU) e productcatalogservice. H6 de novo: réplica 3 do currencyservice ficou a 3m CPU.
+
+### C5 Exaustivo — Envoy L7 · **sem quebra até 150u** (2026-05-05)
+| Users | p50 | p90 | p99 | Falhas% | RPS |
+|---|---|---|---|---|---|
+| 25 | 12ms | 19ms | 45ms | 0.0% | 89.1 |
+| 50 | 15ms | 50ms | 140ms | 0.0% | 116.6 |
+| 75 | 53ms | 150ms | 540ms | 0.0% | 184.3 |
+| 100 | 97ms | 240ms | 500ms | 0.0% | 201.7 |
+| 125 | 150ms | 340ms | 720ms | 0.0% | 201.8 |
+| 150 | 160ms | 380ms | 660ms | 0.0% | **218.7** |
+
+**H6 resolvida:** productcatalogservice réplicas a 121m/121m/122m CPU (vs 91%/6%/3% no C3). Envoy: 481m CPU a 150u.  
+Resultados em: `cenarios_ob_c5_exaustivo/`
 
 ---
 
-## Repetição de experiências e análise estatística (PEDIDO PELO ENUNCIADO)
+## Comparação de pontos de saturação
 
-> O enunciado pede explicitamente "repetição de experiências sempre que aplicável" e "análise estatística básica (médias, variação, comparação entre cenários)". Os testes atuais foram executados uma vez por nível de carga — para o relatório final convém repetir e reportar variação.
+| Cenário | +Comp. | Quebra | RPS máx. | Custo/req | CM_tp |
+|---|---|---|---|---|---|
+| **C1** Baseline | 0 | **75u** | 100.4 | 6.52 | — |
+| **C2** Seletivo | +2 | **50u** | 76.1 | 10.87 | −12.15 RPS/rep |
+| **C3** Uniforme | +20 | **~150u** | 130.5 (step-up) / 109.1 (cold) | 10.87 | +0.44 RPS/rep |
+| **C4** Seletivo real | +4 | **25u ◄ pior** | 66.8 | — | −8.40 RPS/rep |
+| **C5** Uniforme+Envoy | +20+Env | **>150u** | 218.7 | **5.34 (−18%)** | +5.63 RPS/comp |
 
-**Plano mínimo de repetição** (executar antes do relatório final):
-- Repetir C1, C2 e C3 três vezes a 25, 50 e 75 users (níveis críticos comuns aos três cenários)
-- Para cada cenário/nível: reportar média ± desvio-padrão de p50, p99, RPS e taxa de falhas
-- Comparar variação entre execuções para validar estabilidade do ponto de quebra
-- Tempo estimado: 3 cenários × 3 repetições × 3 níveis × ~3min = ~80 minutos de carga + cooldowns
-
-**Justificação metodológica:** num ambiente local Docker Desktop, há ruído proveniente de processos do sistema operativo, garbage collection do JIT e variabilidade do gRPC connection affinity. A repetição permite separar sinal de ruído.
-
----
-
-## Questões de investigação
-
-- **RQ1:** Que serviços dominam a degradação de desempenho nos workflows principais à medida que a carga aumenta?
-- **RQ2:** Escalar seletivamente o serviço mais pressionado melhora de forma mensurável throughput, latência e taxa de falhas?
-- **RQ3:** O ganho por réplica adicional justifica o custo, ou surgem rapidamente rendimentos marginais decrescentes?
-- **RQ4:** Até que ponto a eficácia do escalamento horizontal é condicionada pela natureza stateless vs. dependência de componentes stateful partilhados?
+**Amdahl:** C3 determina s=0.654 (tecto 1.53×); C5 determina s=0.188 (tecto 5.32×). Envoy reduziu fracção serial de 65% → 19%.
 
 ---
 
-## Hipóteses
+## Questões de investigação e Hipóteses
 
-| H | Hipótese | Estado | Evidência |
-|---|---|---|---|
-| H1 | Escalar seletivamente o productcatalogservice melhora parcialmente o sistema, mas pode não deslocar significativamente o ponto de quebra se outro bottleneck passar a dominar | ✅ Confirmado (parcialmente) | C2 melhora p50 (~22%) nos comparativos, mas nos exaustivos quebra antes do C1 — outro bottleneck passou a dominar (frontend/currencyservice). |
-| H2 | Após aliviar pressão no productcatalogservice, o redis-cart tende a emergir como limitação mais visível (especialmente em W2/W3) | ⬜ Sem evidência | redis-cart manteve-se a 4–14m CPU mesmo a 150 users — sem sinais de contenção. Pode emergir a cargas muito superiores. |
-| H3 | O ganho por réplica adicional tende a diminuir à medida que o bottleneck se desloca para outras dependências | ✅ Confirmado | C3 (+20 réplicas) desloca o ponto de quebra para ~150u (vs 75u do C1), mas o ganho por réplica é decrescente: C2 (+2) degradou o sistema; C3 (+20) melhorou ~2×. |
-| H4 | O custo marginal tende a aumentar quando réplicas deixam de produzir ganhos proporcionais | ✅ Confirmado | C2: +2 réplicas com custo negativo (quebrou antes). C3: +20 réplicas para ganhar ~2× no ponto de quebra — custo marginal crescente. |
-| H5 | A escalabilidade horizontal é mais eficaz em serviços stateless do que quando o desempenho depende de um componente stateful partilhado | ⬜ Inconclusivo | O redis-cart não saturou nas cargas testadas. Não foi possível observar o efeito limitador do componente stateful. |
-| H6 (exploratória) | O balanceamento gRPC/HTTP2 pode ser não uniforme entre réplicas (connection affinity), limitando o ganho do scale-out | ✅ Confirmado empiricamente | C2 quebrou **antes** do C1 nos exaustivos: réplicas extras do productcatalogservice consomem recursos sem receber tráfego (1–2m CPU vs 31m da réplica original). Resultado C2 < C1 é a evidência mais forte de H6. |
+**RQ1:** Que serviços dominam a degradação à medida que a carga aumenta?  
+**RQ2:** Escalar seletivamente melhora throughput/latência/falhas?  
+**RQ3:** O ganho por réplica justifica o custo?  
+**RQ4:** A eficácia do escalamento é condicionada por componentes stateful?
 
-**Mapeamento Hipótese → Atributo de Qualidade** (para a discussão final):
-- H1, H3 → Performance, Cost
-- H2, H5 → Performance, Availability
-- H4 → Cost
-- H6 → Performance, Deployability
+| H | Estado | Evidência resumida |
+|---|---|---|
+| H1 — Seletivo melhora parcialmente | ✅ Confirmado (parcialmente) | C2 melhora p50 comparativo mas quebra antes do C1 nos exaustivos |
+| H2 — redis-cart emerge como limitação | ⬜ Inconclusivo | redis-cart: máx. 18m CPU a 150u (C5) — sem sinais de contenção |
+| H3 — Rendimentos marginais decrescentes | ✅ Confirmado | C2 (+2 rep) degradou; C3 (+20) melhorou ~2×; C5 inverte com Envoy |
+| H4 — Custo marginal crescente | ✅ Confirmado | C2/C4: CM negativo; C3: +67% custo/req; C5: −18% custo/req |
+| H5 — Stateless mais escalável que stateful | ⬜ Inconclusivo | redis-cart não saturou nas cargas testadas |
+| H6 — Connection affinity limita scale-out | ✅ Confirmado empiricamente | C2<C1; C5 (Envoy) resolve: 121m/121m/122m vs 91%/6%/3% |
 
 ---
 
 ## Definição operacional de custo marginal
 
 ```
-CM_throughput = RPS_ganho / Replicas_adicionadas
-
-Custo proxy C = alpha * CPU_time + beta * RAM_time
+CM_throughput = (RPS_cenário − RPS_C1) / componentes_adicionados
+Custo proxy C = 0.5 × CPU_time + 0.5 × RAM_time
+Custo por pedido = C / pedidos_com_sucesso
 ```
 
-Onde:
-- `RPS_ganho` = RPS do cenário − RPS do C1 (referência)
-- `Replicas_adicionadas` = réplicas adicionadas face ao baseline (C2: +2; C3: +20)
-- `CPU_time` = taxa média de CPU (millicores/1000) × duração (s), somada por réplica
-- `RAM_time` = memória média (MiB) × duração (s), somada por réplica
-- `alpha = beta = 0.5` (pesos iguais — manter constante entre cenários)
-- `Custo por pedido com sucesso` = C / pedidos_com_sucesso
-
-Dados para calcular: `cenarios_ob_*/monitoring/pods_metrics.csv` (CSV com timestamp, load_label, pod, cpu_m, ram_mi a cada 10s)
+- `CPU_time` = média CPU (mcore/1000) × duração (s), somada por réplica
+- `RAM_time` = média RAM (MiB) × duração (s), somada por réplica
+- alpha=beta=0.5: escolha metodológica para índice relativo comparável entre cenários (não grandeza física)
+- Dados: `cenarios_ob_*/monitoring/pods_metrics.csv` (timestamp, load_label, pod, cpu_m, ram_mi a cada 10s)
 
 ---
 
 ## Distinção metodológica
 
-**Execuções comparativas** (cargas fixas 15/20/25 users, locustfile realista):
-- Usadas para comparar C1/C2/C3 em condições sub-saturação
-- Think times: 5–15s (Casual), 2–6s (Normal), 0.5–2s (Power)
-- Resultados em: `cenarios_ob_c1comp/`, `cenarios_ob_c2/`, `cenarios_ob_c3/`
-
-**Execuções exaustivas** (step-up 25→150 users, locustfile severo):
-- Usadas para encontrar o ponto de saturação real de cada cenário
-- Think times: 0.5–1s (Casual), 0.2–0.5s (Normal), 0.1–0.2s (Power)
-- Resultados em: `cenarios_ob_c1_exaustivo/`, `cenarios_ob_c2_exaustivo/`, `cenarios_ob_c3_exaustivo/`
-- **Não misturar com os comparativos** — locustfiles diferentes, não comparáveis diretamente entre si mas comparáveis dentro de cada tipo
-
----
-
-## Ficheiro de resultados HTML
-
-`Diagramas/Resultados-C1-C2-C3.html` — **contém apenas os testes exaustivos** (atualizado 2026-04-26)
-
-Estrutura atual (8 secções):
-1. Modelo de carga — Locust (perfis exaustivos)
-2. Desenho experimental — C1/C2/C3
-3. Testes exaustivos — metodologia
-4. C1 Exaustivo (quebra a 75u)
-5. C2 Exaustivo (quebra a 50u — pior que C1)
-6. C3 Exaustivo (saturação 125–150u)
-7. Comparação pontos de saturação
-8. Próximos passos
+**Comparativo** (15/20/25u, locustfile realista): comparação controlada sub-saturação. Resultados em `cenarios_ob_c1comp/`, `cenarios_ob_c2/`, `cenarios_ob_c3/`  
+**Exaustivo** (25→150u, locustfile severo): encontrar ponto de saturação. Resultados em `cenarios_ob_c*_exaustivo/`  
+**Não misturar** — locustfiles diferentes, não comparáveis entre tipos.  
+Testes exaustivos são **progressivos na mesma execução** (caches aquecidas, ligações persistentes) — não equivalentes a execuções independentes por nível.
 
 ---
 
 ## Estado atual do relatório
 
-**Versão atual:** v4.0 (Abril 2026, formato Word) — **a migrar para v5.0 em template ACM**
+**Versão:** v5.0 — LaTeX ACM sigconf (`Diagramas/relatorio_final_asid.tex`, 858 linhas, 18 tabelas balanceadas)  
+**Editado via:** Overleaf/Prism (grupo usa este sistema)
 
-**Decisão pendente:** escolher entre template ACM Word ou LaTeX. Recomendação: começar a migração esta semana — a formatação ACM consome mais tempo do que se imagina e o limite são 20 páginas (sem figuras).
-- Word: https://authors.acm.org/proceedings/production-information/preparing-your-article-with-microsoft-word
-- LaTeX: https://authors.acm.org/proceedings/production-information/preparing-your-article-with-latex
+**Integrado no v5.0 (Eduardo + sessão 2026-05-05):**
+- C4 e C5 na tabela de cenários
+- Tabela C5 exaustivo (tab:c5ex) com 6 níveis
+- Custo proxy e CM_tp para todos os cenários incluindo C5
+- Amdahl com C5 (s=0.188, tecto 5.32×)
+- Subsecção "C5 — Envoy como Prova de Conceito da Alternativa Arquitetural"
+- RQ2, RQ3 atualizados; conclusões com C5; implicação arquitetural central reescrita
+- Referências gRPC connection affinity em Kubernetes
+- Linguagem suavizada (evidência sugere / consistente com / nas condições testadas)
 
-**Estrutura do documento:**
-1. Introdução + objetivo geral
-2. Arquitetura (inventário, diagrama, workflows W1/W2/W3, tabela chamada→dependências→risco, serviços-alvo)
-3. **Decisão arquitetural em estudo + alternativas + trade-offs (P/A/D/C)** — secção crítica para os 40%
-4. Questões de investigação (RQ1–RQ4) + Hipóteses (H1–H6)
-5. Metodologia experimental (Locust, cenários, warm-up, comparativos vs. exaustivos, métricas, custo marginal, repetição/estatística)
-6. Resultados comparativos C1/C2/C3 (15/20/25 users)
-7. Resultados exaustivos C1/C2/C3 (25→150 users) — **a adicionar**
-8. Tabela comparativa de pontos de saturação — **a adicionar**
-9. Discussão (desempenho + leitura arquitetural ligada aos 4 atributos de qualidade) — **a expandir**
-10. Conclusões e limitações
-
----
-
-## Apresentação oral e demonstração (PARA SEMANA 16-17)
-
-- **Duração:** ~30 minutos (apresentação + demonstração funcional)
-- **Peso:** 5% da nota final
-- **Critérios de avaliação:** clareza da apresentação, estrutura do relatório, capacidade de responder a questões técnicas, demonstração funcional da solução
-
-**Estrutura sugerida** (a preparar após relatório final):
-- Contexto e tema (~3 min)
-- Sistema em estudo + decisão arquitetural + alternativas (~5 min)
-- Metodologia experimental (~5 min)
-- Resultados — destaque para a descoberta C2 < C1 e H6 (~10 min)
-- Discussão arquitetural ligada aos 4 atributos de qualidade (~4 min)
-- **Demonstração funcional ao vivo:** deploy do Online Boutique + Locust em tempo real + Jaeger UI mostrando traces (~3 min)
-- Q&A
+**Estrutura do documento (atual):**
+1. Introdução + RQs
+2. Contexto e arquitetura (W1/W2/W3, tabela risco)
+3. Decisão arquitetural + alternativas + trade-offs (P/A/D/C) — **vale 40%**
+4. Desenho experimental (Locust, cenários, métricas, custo)
+5. Resultados comparativos C1/C2/C3
+6. Resultados exaustivos C1/C2/C3/C4/C5
+7. Discussão (hipóteses, Amdahl, custo, atributos de qualidade)
+8. Conclusões e trabalho futuro
 
 ---
 
-## Feedback da professora (resumo acumulado)
+## Feedback da professora (2026-05-04 — v4→v5)
 
-### Semana 7 — Primeiro feedback detalhado
-A professora pediu explicitamente:
-1. Diagrama arquitetural global único e final ✅
-2. Diagramas de sequência por workflow (W1, W2, W3) ✅
-3. Tabela chamada → dependências → risco ✅
-4. Definição operacional de custo marginal ✅
-5. Hipóteses explícitas com critérios de confirmação ✅
-6. Serviços-alvo justificados (análise stateful vs. stateless) ✅
+**Pontos positivos:** RQs bem alinhadas, arquitetura correta, distinção cartservice/redis-cart, decisão arquitetural clara, resultado C2<C1 reconhecido como relevante.
 
-### Semana 9 — Feedback ao relatório intercalar (v3→v4)
-**Pontos positivos reconhecidos:**
-- Estrutura global mais clara
-- W1/W2/W3 adequados ao tema
-- Análise arquitetural objetiva
-- Distinção C2 (seletivo) vs. C3 (uniforme) é boa base de comparação
-- Definição de custo marginal apropriada
-- Resultados C1 úteis como referência
-
-**O que faltava (corrigido no v4):**
-- ✅ Questões de investigação RQ1–RQ4
-- ✅ Cada hipótese ligada ao cenário que a testa
-- ✅ Linguagem prudente (candidato/indício)
-- ✅ Distinção cartservice vs. redis-cart
-- ✅ H6 marcada como exploratória
-- ✅ Distinção exploratório vs. comparativo
-- ✅ Warm-up de 30s explicitado
-- ✅ CPU_time e RAM_time operacionalizados
-- ✅ Tabela comparativa C1/C2/C3
-- ✅ Locust explicitado como ferramenta
+**O que corrigir (maioria já corrigido no v5.0):**
+- ✅ Linguagem prudente ("consistente com", "nas condições testadas")
+- ✅ Distinguir observação / interpretação / hipótese
+- ✅ Referência bibliográfica H6 (gRPC/HTTP2 Kubernetes)
+- ✅ Justificar dois locustfiles (comparativo vs. exaustivo)
+- ✅ Justificar parâmetros (warm-up, spawn rate, critério de quebra como operacional não SLA)
+- ✅ Clarificar step-up progressivo vs. execuções independentes
+- ✅ "Como se observa na Tabela X" antes das interpretações
+- ✅ Distinção ΔRPS/ΔRéplicas vs. custo proxy
+- ✅ **Faltam as figuras** — ainda pendente (ver todo list)
 
 ---
 
-### Feedback ao relatório final (v4 → v5) — 2026-05-04
+## Todo list
 
-**Avaliação global da professora:**
-O trabalho apresenta decisão arquitetural explícita, cenários C1/C2/C3 coerentes, articulação de resultados com desempenho e custo. O resultado mais interessante (C2 < C1) é reconhecido como não intuitivo e relevante. No entanto, precisa de mais rigor metodológico, mais prudência analítica e linha de leitura mais clara.
-
-**Faltam as figuras no relatório.**
-
-**Pontos positivos reconhecidos:**
-
-- Introdução e RQs bem alinhadas com o tema
-- Descrição arquitetural essencialmente correta (stateless vs. stateful, workflows)
-- Distinção cartservice vs. redis-cart bem formulada
-- Decisão arquitetural em estudo clara (seletivo vs. uniforme)
-- Secção de alternativas consideradas útil
-
-**Problemas identificados e o que corrigir:**
-
-#### Rigor analítico e linguagem
-
-- **Evitar "confirmado" e "o bottleneck dominante é X"** — reservar para evidência muito robusta com repetições. Substituir por "fortemente sugerido pelos resultados", "compatível com", "evidência é consistente com".
-- **Distinguir explicitamente:** observação empírica / interpretação plausível / hipótese explicativa. Não saltar diretamente de indícios para conclusões causais fortes.
-- **gRPC connection affinity (H6):** apresentar como explicação fortemente sugerida pelos dados, NÃO como prova fechada de causalidade. **Adicionar referência técnica/bibliográfica** sobre comportamento gRPC/HTTP2 em Kubernetes (ligações longas e multiplexadas que reduzem eficácia do balanceamento ao nível da ligação).
-- **Frontend/currencyservice como bottleneck:** tratar como leitura do ambiente e workloads observados, não verdade geral sobre a aplicação. Formulação mais segura: "nas condições testadas, o productcatalogservice não foi alvo eficaz para escalamento seletivo".
-
-#### Desenho experimental
-
-- **Justificar melhor os dois locustfiles diferentes:** deixar claro que um é orientado a comparação controlada (realista) e outro a encontrar saturação sob carga severa (exaustivo). A professora não percebeu claramente a razão da diferença.
-- **Caracterizar e justificar o workload misto:** explicitar que operações concretas inclui, com que pesos relativos, porque foi escolhida essa composição, e como se relaciona com W1/W2/W3. Formulação sugerida: workload como composição de operações cuja interpretação se faz à luz de W1 (driver do fan-out productcatalogservice), W2 (carrinho + backend stateful), W3 (transacional/orquestrado).
-- **Justificar parâmetros experimentais:** warm-up (estabilização antes da recolha), janela de medição (período relativamente estável), spawn rate (evitar subida brusca).
-- **Critério de quebra (p99>2000ms ou falhas>5%):** explicitar que não representa SLA real — é critério consistente para identificar degradação severa e tornar comparáveis os pontos de quebra entre cenários.
-- **Testes exaustivos progressivos vs. execuções independentes:** clarificar que a carga é aumentada progressivamente dentro da mesma execução. Útil para explorar tendências de saturação, mas o ponto de saturação assim obtido não é equivalente ao de execuções independentes por nível (efeitos herdados: caches aquecidas, ligações persistentes). Para comparação rigorosa C1/C2/C3: usar cargas equivalentes, cluster em estado controlado.
-- **Ficheiros CSV do Locust não foram submetidos** — incluir ou referenciar na submissão final.
-
-#### Apresentação dos resultados
-
-- **Separar "resultados observados" de "interpretação"** — actualmente intercalados, enfraquecendo a relação evidência→interpretação.
-- **Introduzir cada tabela antes da sua interpretação** com formulações tipo "como se observa na Tabela X" ou "os resultados da Figura Y mostram que...". Não discutir resultados antes de apontar o leitor para a tabela/figura.
-- **Evitar repetir a mesma leitura em várias secções** — uma boa tabela comparativa reduz muito o texto necessário.
-- **Indicar de forma uniforme unidades e fonte das métricas.**
-
-**Sugestão de apresentação compacta de resultados (da professora):**
-
-- **Tabela A:** Configuração dos cenários: réplicas por serviço, workload, warm-up, medição, critério de quebra
-- **Tabela B:** Resultados comparativos em cargas equivalentes (15/20/25 users)
-- **Tabela C:** Resultados exaustivos e ponto de saturação
-- **Figura 1:** Throughput vs. carga por cenário
-- **Figura 2:** p99 vs. carga por cenário
-- **Figura 3:** Proxy de custo ou custo por pedido bem-sucedido
-
-#### Custo marginal
-
-- **ΔRPS / ΔRéplicas mede ganho de throughput por réplica, não custo marginal** — clarificar esta distinção ou apresentá-la separadamente da métrica proxy (CPU_time + RAM_time).
-- **CPU_time + RAM_time é índice relativo**, não grandeza física ou monetária directa — deixar isto explícito.
-- **Pesos alpha=beta=0.5 são escolha metodológica simplificadora** para construir indicador comparável entre cenários — não soma com significado físico directo. Explicitar no texto.
-
-#### O que pode ser útil estudar adicionalmente (dentro do tempo disponível)
-
-- Aprofundar distribuição de carga entre réplicas em gRPC/HTTP2 com mais evidência por réplica e repetição de testes (central para explicar C2)
-- Acrescentar 1-2 testes dirigidos a workflows específicos para isolar comportamento W1 vs W2/W3
-- Discutir com maior profundidade uma alternativa não implementada (caching no productcatalogservice ou service mesh) — o estudo mostra que mais réplicas por si só não garante melhoria
-
-**Estrutura sugerida pela professora para a versão final:**
-
-1. Introdução: problema, motivação, sistema de referência, decisão arquitetural, RQs
-2. Contexto e arquitetura relevante: Online Boutique, W1/W2/W3, serviços-alvo
-3. Decisão arquitetural em estudo: C1/C2/C3 definidos
-4. Desenho experimental: ambiente, modelo de carga, cenários, métricas, critério de quebra, definição de custo
-5. Resultados: primeiro comparativos, depois exaustivos, sempre com tabelas e figuras compactas
-6. Discussão e alternativas arquiteturais: interpretação, relação com hipóteses, trade-offs, limitações, ameaças à validade, alternativas não implementadas (HPA, caching, service mesh, vertical scaling)
-7. Conclusão: resposta às RQs, mensagem arquitetural principal, trabalho futuro
-
----
-
-**O que falta fazer para o relatório final (v5.0):**
-
-- [x] Executar C1 comparativo (2026-04-19)
-- [x] Executar C2 comparativo (2026-04-19)
-- [x] Executar C3 comparativo (2026-04-19)
-- [x] Preencher tabela comparativa com dados reais
-- [x] Executar testes exaustivos C1 (2026-04-26) — quebra a 75u
-- [x] Executar testes exaustivos C2 (2026-04-26) — quebra a 50u (pior que C1)
-- [x] Executar testes exaustivos C3 (2026-04-26) — saturação a 150u
-- [x] Determinar ponto de quebra de cada cenário
-- [ ] **Escrever secção "Decisão arquitetural + alternativas + trade-offs (P/A/D/C)" — vale 40% da nota**
-- [ ] **Repetir C1/C2/C3 três vezes a 25/50/75 users e reportar média ± desvio-padrão**
-- [ ] Calcular custo proxy C (CPU_time + RAM_time) para C1, C2, C3 — dados em `monitoring/pods_metrics.csv`
-- [x] Adicionar referência bibliográfica sobre gRPC/HTTP2 connection affinity em Kubernetes (2 bibitem novos + citações no texto)
-- [x] Clarificar no texto a distinção ΔRPS/ΔRéplicas vs. custo proxy CPU+RAM
-- [x] Justificar no texto os dois locustfiles distintos (comparativo vs. exaustivo)
-- [x] Justificar parâmetros experimentais (warm-up, janela de medição, spawn rate, critério de quebra como critério operacional, não SLA real)
-- [x] Clarificar que testes exaustivos são progressivos na mesma execução (não independentes por nível)
-- [x] Classe LaTeX corrigida: manuscript → sigconf; capa com hierarquia tipográfica consistente; autores adicionados
-- [x] Linguagem suavizada: "confirmado" → "consistente com", "bottlenecks reais" → "serviços mais pressionados nas condições testadas"
-- [x] "Como se observa na Tabela X" adicionado antes das interpretações
-- [ ] **Repetir C1/C2/C3 três vezes a 25/50/75 users e reportar média ± desvio-padrão**
-- [ ] Calcular custo proxy C (CPU_time + RAM_time) para C1, C2, C3 — dados em `monitoring/pods_metrics.csv`
+- [x] Executar C1/C2/C3 comparativos (2026-04-19)
+- [x] Executar C1/C2/C3/C4 exaustivos (2026-04-26)
+- [x] Implementar C5 com Envoy (2026-05-05)
+- [x] Executar C5 exaustivo (2026-05-05) — estável >150u, 218.7 RPS
+- [x] Atualizar relatorio_final_asid.tex com C5 completo
+- [x] Referências bibliográficas gRPC/HTTP2
+- [x] Linguagem suavizada + estrutura resultados/interpretação
+- [ ] **Inserir figuras** (throughput vs carga, p99 vs carga, custo proxy — Figura 1/2/3 pedidas pela professora)
+- [ ] **Repetir C1/C2/C3 ×3 a 25/50/75u → média ± desvio-padrão** (~80 min de testes)
+- [ ] Calcular custo proxy com dados CSV completos (`monitoring/pods_metrics.csv`)
 - [ ] Incluir/referenciar CSVs do Locust na submissão
-- [ ] Confirmar no Jaeger a ordem das chamadas no W3 (payment antes/depois de ship?)
-- [ ] Discutir implicações de consistência em caso de falha parcial no W3
-- [ ] **Inserir as figuras em falta** (inventário, diagrama dependências, sequências W1/W2/W3, throughput vs carga, p99 vs carga, custo proxy)
-- [ ] Preparar slides + demonstração funcional ao vivo para apresentação oral (30 min)
-- [ ] Auto-avaliação individual (1 página por aluno) — **deixar para o fim**
-- [ ] Anexo de uso de IA (ferramentas, prompts, contributo) — **deixar para o fim**
-- [ ] Preparar slides + demonstração funcional ao vivo para apresentação oral (30 min)
-- [ ] Auto-avaliação individual (1 página por aluno) — **deixar para o fim**
-- [ ] Anexo de uso de IA (ferramentas, prompts, contributo) — **deixar para o fim**
+- [ ] Confirmar no Jaeger ordem W3 (payment antes/depois de ship?)
+- [ ] Preparar slides + demo funcional (semana 16-17)
+- [ ] Auto-avaliação individual (1 pág/aluno) — deixar para o fim
+- [ ] Anexo uso de IA — deixar para o fim
 
 ---
 
 ## Regras para o Claude Code
 
-**NÃO inventar dados.** Todos os números nos resultados são reais e validados. Nunca adicionar dados de execuções que não aconteceram.
+**NÃO inventar dados.** Todos os números são reais e validados. Nunca adicionar dados de execuções que não aconteceram.
 
-**NÃO remover** a tabela de risco chamada→dependências→risco — a professora pediu-a explicitamente e é um entregável obrigatório.
+**NÃO remover** a tabela chamada→dependências→risco — entregável obrigatório pedido pela professora.
 
-**NÃO assumir GKE ou cloud.** O ambiente é Docker Desktop local em Apple Silicon. Não sugerir comandos ou configs específicos de GKE.
+**NÃO assumir GKE ou cloud.** Ambiente Docker Desktop local em Apple Silicon.
 
-**Linguagem prudente nos bottlenecks.** Usar "candidato a bottleneck", "indício de saturação", "evidência sugere" — nunca "confirmado" sem evidência experimental. Exceção: H6 pode ser descrita como "confirmado empiricamente" porque C2 < C1 é evidência direta.
+**Linguagem prudente nos bottlenecks.** "Candidato a bottleneck", "evidência sugere", "nas condições testadas". Exceção: H6 pode ser "confirmado empiricamente" (C2<C1 é evidência direta; C5 resolve estruturalmente).
 
-**Cartservice ≠ Stateful.** O cartservice é aplicacional stateless. O redis-cart é o componente stateful. Esta distinção é central e foi explicitamente corrigida pela professora.
+**Cartservice ≠ Stateful.** É aplicacional stateless que depende do redis-cart (stateful).
 
-**Locust, não k6.** A ferramenta de carga é Locust (Python). A professora questionou o uso de k6.
+**Locust, não k6.** A professora questionou k6.
 
-**Relatório final usa template ACM** — não Word. O Word foi para o intercalar; o final segue o template ACM da Blackboard.
+**Template ACM LaTeX** (`Diagramas/relatorio_final_asid.tex`). Grupo usa Overleaf/Prism para editar.
 
-**productcatalogservice não é o bottleneck real.** Nos testes exaustivos, os bottlenecks reais são frontend e currencyservice. O productcatalogservice é muito chamado mas é rápido. Não afirmar que escalar o productcatalogservice resolve o problema — a evidência mostra o contrário (C2 < C1).
+**productcatalogservice não é o bottleneck real.** Escalar o productcatalogservice não resolve — evidência: C2<C1.
 
-**Sempre ligar resultados aos 4 atributos de qualidade.** Performance, Availability, Deployability, Cost. A fundamentação arquitetural pesa 40% e exige esta ligação explícita. Não basta apresentar números — é preciso explicar o que significam para cada atributo de qualidade.
+**C5/Envoy:** o Envoy resolveu H6 estruturalmente (LEAST_REQUEST + headless services). O paymentservice usa porta 50052 no Envoy (evitar colisão com shippingservice :50051). O emailservice usa listener :5000 → upstream :8080.
 
-**Análise estatística.** Quando reportar resultados, incluir média e desvio-padrão sempre que houver repetição. Comparações entre cenários devem ser feitas com base nos valores médios e considerar a variação observada.
+**Ligar sempre aos 4 atributos de qualidade.** Performance, Availability, Deployability, Cost — fundamentação arquitetural vale 40%.
+
+**Análise estatística.** Incluir média ± desvio-padrão quando houver repetição.
