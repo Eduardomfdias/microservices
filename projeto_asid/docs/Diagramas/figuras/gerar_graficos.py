@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import numpy as np
 
-OUTPUT_DIR = "/Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/"
+OUTPUT_DIR = "/Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/projeto_asid/docs/Diagramas/figuras/"
 
 # --- Style ---
 plt.rcParams['font.family'] = 'serif'

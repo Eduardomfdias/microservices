@@ -19,8 +19,6 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/generic/iftex/iftex.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amscls/amsart.cls
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amscls/amsart.cls
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/cm/cmr9.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsmath.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amsopn.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsmath/amstext.sty
@@ -164,7 +162,8 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/newtxmath.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/newtxmath.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/fontenc.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/base/fontenc.sty
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/ecrm0900.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/map/fontname/texfonts.map
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/jknappen/ec/ecrm1000.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/cmap/t1.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/cmap/t1.cmap
 OUTPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/relatorio_final_asid.pdf
@@ -236,8 +235,6 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/tabularx.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/tabularx.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/tools/array.sty
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/preprint/balance.sty
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/preprint/balance.sty
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/relatorio_final_asid.aux
@@ -265,23 +262,29 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/cmap/ot1.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/cmap/ot1.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/cmap/ot1.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/mmap/oml.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/mmap/oml.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/mmap/oml.cmap
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi5.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsa.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/amsfonts/umsb.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm5.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxmia.fd
@@ -289,9 +292,11 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxmia.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxmia.fd
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsym.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsym.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsym.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsyc.fd
@@ -299,6 +304,8 @@ INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsyc.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/newtx/untxsyc.fd
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/graphics/color.sty
@@ -370,38 +377,68 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertine
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ts1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTBI-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumTB-tlf-t1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumT-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-t1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1--base.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTB-tlf-t1.vf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTI-tlf-t1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/ntxsy.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txsys.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txex-bar.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumTB-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTB-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTI-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/ntxsy.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txsys.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txex-bar.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTBI-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumT-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmi.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathMI.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/NewTXMI.tfm
@@ -412,68 +449,28 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.e
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTBI-tlf-t1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTBI-tlf-t1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_ki75ao.enc
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-t1.vf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1--base.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
-INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/t1zi4.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-t1.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4r-4.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmi5.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsy5.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexx.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/nxlmia.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsym.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxsyc.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/ntxexa.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumT-tlf-t1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-t1--base.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/ntxsy.vf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txsys.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txex-bar.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumTI-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumTI-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTB-tlf-t1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ts1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
 INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/inconsolata/ts1zi4.fd
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/inconsolata/ts1-zi4r.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-ts1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/inconsolata/t1-zi4b-4.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-ts1.tfm
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmi7.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathMI7.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/NewTXMI7.tfm
@@ -482,35 +479,68 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmia.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathRM.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txmiaSTbb.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txmiaX.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmi.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathMI.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/NewTXMI.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmi7.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathMI7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/NewTXMI7.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/stxscr.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/newtx/nxlmia.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/LibertineMathRM.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txmiaSTbb.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/newtx/txmiaX.tfm
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_distribuicao_cpu_c2.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_cpu_servicos.pdf
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
+INPUT /usr/local/texlive/2025/texmf-dist/tex/latex/libertine/TS1LinuxBiolinumT-TLF.fd
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-ts1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTI-tlf-ts1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-ts1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_u7qtuy.enc
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
-INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTB-tlf-ts1.vf
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-ts1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_7f4ce4.enc
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_throughput_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_p99_vs_users.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
+INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_saturacao.pdf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinBiolinumT-tlf-ts1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinBiolinumT-tlf-ts1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/enc/dvips/libertine/lbtn_afusau.enc
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-ts1.tfm
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_custo_pedido.pdf
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_custo_pedido.pdf
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_custo_pedido.pdf
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_custo_pedido.pdf
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/figuras/fig_custo_pedido.pdf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1.tfm
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-t1.vf
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-t1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineTB-tlf-ts1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTB-tlf-ts1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/vf/public/libertine/LinLibertineT-tlf-ot1.vf
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ot1--base.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineTI-tlf-t1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertineT-tlf-ts1.tfm
 INPUT /usr/local/texlive/2025/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
@@ -526,17 +556,18 @@ INPUT /usr/local/texlive/2025/texmf-dist/fonts/tfm/public/libertine/LinLibertine
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/relatorio_final_asid.aux
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/relatorio_final_asid.out
 INPUT /Users/edias/Documents/Mestrado /1º Ano - 2º Semestre/Arquiteturas de Sistemas de Informação Distribuídos/Trabalho Pratico /microservices-demo-main/microservices/Diagramas/relatorio_final_asid.out
-INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4b.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/LibertineMathMI.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/LibertineMathMI7.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/LibertineMathRM.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinBiolinumT.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinBiolinumTI.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinLibertineTBI.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb
+INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/NewTXMI.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/txmiaX.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/txsym.pfb
 INPUT /usr/local/texlive/2025/texmf-dist/fonts/type1/public/newtx/txsys.pfb

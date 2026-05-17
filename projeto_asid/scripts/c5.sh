@@ -68,7 +68,7 @@ resume_loadgenerator() {
 # =============================================================================
 deploy_envoy() {
   log "=== C5: A fazer deploy do Envoy gRPC LB + headless services ==="
-  kubectl -n "$NAMESPACE" apply -f kubernetes-manifests/envoy-grpc-lb.yaml
+  kubectl -n "$NAMESPACE" apply -f projeto_asid/manifests/envoy-grpc-lb.yaml
   log "A aguardar Envoy ficar Ready..."
   kubectl -n "$NAMESPACE" rollout status deployment/envoy-grpc-lb --timeout=90s
   log "Envoy pronto"
@@ -76,7 +76,7 @@ deploy_envoy() {
 
 teardown_envoy() {
   log "=== A remover Envoy e restaurar routing original ==="
-  kubectl -n "$NAMESPACE" delete -f kubernetes-manifests/envoy-grpc-lb.yaml 2>/dev/null || true
+  kubectl -n "$NAMESPACE" delete -f projeto_asid/manifests/envoy-grpc-lb.yaml 2>/dev/null || true
   kubectl -n "$NAMESPACE" apply -f kubernetes-manifests/frontend.yaml
   kubectl -n "$NAMESPACE" apply -f kubernetes-manifests/checkoutservice.yaml
   kubectl -n "$NAMESPACE" apply -f kubernetes-manifests/recommendationservice.yaml
@@ -152,7 +152,7 @@ set_replicas_c5() {
   log "=== C5: Todos stateless ×3, redis-cart ×1 (igual ao C3 + Envoy) ==="
 
   # Aplicar routing via Envoy nos callers
-  kubectl -n "$NAMESPACE" apply -f kubernetes-manifests/c5-frontend-with-envoy.yaml
+  kubectl -n "$NAMESPACE" apply -f projeto_asid/manifests/c5-frontend-with-envoy.yaml
 
   # Escalar todos os stateless para 3
   for svc in adservice cartservice checkoutservice currencyservice emailservice \

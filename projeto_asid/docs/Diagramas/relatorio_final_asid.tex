@@ -41,22 +41,7 @@
 \makeatother
 \renewcommand{\shortauthors}{}
 
-% --- Autores ---
-\author{Eduardo Dias}
-\affiliation{\institution{Universidade do Minho}\country{Portugal}}
-\email{pg61463@alunos.uminho.pt}
-
-\author{Nuno Martinho}
-\affiliation{\institution{Universidade do Minho}\country{Portugal}}
-\email{pg47542@alunos.uminho.pt}
-
-\author{Clementina Kulivala}
-\affiliation{\institution{Universidade do Minho}\country{Portugal}}
-\email{pg58760@alunos.uminho.pt}
-
-\author{Golda Kangunga}
-\affiliation{\institution{Universidade do Minho}\country{Portugal}}
-\email{pg58761@alunos.uminho.pt}
+% --- Autores (suprimidos do corpo — constam na capa) ---
 
 % --- Título ---
 \title{Escalabilidade Horizontal e Custo Marginal em Microserviços:\\
@@ -155,7 +140,7 @@ O \textit{Online Boutique} é composto por 11 microserviços e um componente \te
 
 \textbf{Nota conceptual importante:} o \texttt{cartservice} é um serviço aplicacional \textit{stateless} que depende de um \textit{backend stateful} partilhado (\texttt{redis-cart}). Escalar réplicas do \texttt{cartservice} não escala o recurso que concentra o estado e a contenção. Esta distinção é central para a interpretação dos resultados.
 
-% TODO: inserir diagrama de inventário de serviços e diagrama de dependências (figuras arquitecturais a preparar pelo grupo)
+O inventário completo dos 11 microserviços — linguagem, porta, tipo e responsabilidade — encontra-se no Anexo~\ref{apx:inventario} (Tabela~\ref{tab:inventario}). O diagrama de dependências entre serviços encontra-se no Anexo~\ref{apx:dependencias} (Figura~\ref{fig:dependencias}).
 
 \subsection{Workflows Analisados}
 
@@ -167,33 +152,31 @@ Foram selecionados três \textit{workflows} que cobrem padrões distintos de esc
 
 \textbf{W3 — Checkout} (\texttt{POST /cart/checkout}): o \texttt{checkoutservice} orquestra 6 serviços em sequência — a latência total é a soma das latências individuais, sem paralelismo. A operação EmptyCart ocorre no final, após \textit{checkout} bem-sucedido (confirmado no Jaeger).
 
-% TODO: inserir diagramas de sequência W1/W2/W3 (figuras arquitecturais a preparar pelo grupo)
+Os diagramas de sequência detalhados de W1, W2 e W3 encontram-se no Anexo~\ref{apx:sequencias} (Figuras~\ref{fig:seq-w1}, \ref{fig:seq-w2} e~\ref{fig:seq-w3}).
 
 \subsection{Tabela Chamada $\rightarrow$ Dependências $\rightarrow$ Risco}
 
 \begin{table}[h]
 \caption{Análise de risco por chamada nos três workflows. Risco: ALTO = caminho crítico com fan-out, dependência \textit{stateful} ou bloqueio em cascata.}
 \label{tab:risco}
-\resizebox{\columnwidth}{!}{%
 \begin{tabular}{llllll}
 \toprule
 \textbf{WF} & \textbf{Chamada} & \textbf{Origem} & \textbf{Destino} & \textbf{Fan-out} & \textbf{Risco} \\
 \midrule
-W1 & GET /product & Locust & frontend & — & ALTO \\
-W1 & GetProduct (×6) & frontend & productcatalog & 6 paralelas & ALTO \\
-W1 & GetCurrencies & frontend & currencyservice & 1 & MÉDIO \\
-W1 & ListRec. & frontend & recommend. & 1 (chama catalog) & BAIXO \\
-W2 & POST /cart & Locust & frontend & 2 sequenciais & ALTO \\
-W2 & GetProduct & frontend & productcatalog & 1 & MÉDIO \\
-W2 & AddItem (HSET) & frontend & cart→redis & 1 bloqueante & ALTO \\
-W3 & POST /checkout & Locust & frontend→checkout & 6 sequenciais & ALTO \\
-W3 & GetCart & checkoutservice & cart→redis & 1 & ALTO \\
-W3 & Charge & checkoutservice & paymentservice & 1 & ALTO \\
-W3 & SendEmail & checkoutservice & emailservice & 1 & BAIXO \\
-W3 & EmptyCart & checkoutservice & redis-cart & 1 & MÉDIO \\
+W1 & GET /product     & Locust          & frontend          & —                & ALTO \\
+W1 & GetProduct (×6)  & frontend        & productcatalog    & 6 paralelas      & ALTO \\
+W1 & GetCurrencies    & frontend        & currencyservice   & 1                & MÉDIO \\
+W1 & ListRec.         & frontend        & recommendation    & 1 (chama cat.)   & BAIXO \\
+W2 & POST /cart       & Locust          & frontend          & 2 sequenciais    & ALTO \\
+W2 & GetProduct       & frontend        & productcatalog    & 1                & MÉDIO \\
+W2 & AddItem (HSET)   & frontend        & cart→redis        & 1 bloqueante     & ALTO \\
+W3 & POST /checkout   & Locust          & frontend→checkout & 6 sequenciais    & ALTO \\
+W3 & GetCart          & checkoutservice & cart→redis        & 1                & ALTO \\
+W3 & Charge           & checkoutservice & paymentservice    & 1                & ALTO \\
+W3 & SendEmail        & checkoutservice & emailservice      & 1                & BAIXO \\
+W3 & EmptyCart        & checkoutservice & redis-cart        & 1                & MÉDIO \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabular}
 \end{table}
 
 \subsection{Serviços-Alvo}
@@ -203,19 +186,17 @@ Com base na análise de fan-out, tipo de estado e presença nos três \textit{wo
 \begin{table}[h]
 \caption{Serviços-alvo selecionados (ST1--ST3), tipo, cenário de escala e justificação.}
 \label{tab:alvos}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{p{2.2cm}p{1.5cm}p{1.8cm}p{4.5cm}}
+\begin{tabularx}{\columnwidth}{p{2cm}p{1.4cm}p{1.7cm}X}
 \toprule
 \textbf{Serviço-alvo} & \textbf{Tipo} & \textbf{Cenário} & \textbf{Justificação} \\
 \midrule
-ST1 — \texttt{productcatalog\-service} & Stateless & C2 (×3 réplicas) & Candidato a bottleneck primário: fan-out ×6 em W1, sem cache, chamado em W1/W2/W3 por 3 serviços. Stateless — escalamento seguro. Testa RQ1 e RQ2. \\
+ST1 — \texttt{productcatalog} & Stateless & C2 (×3 répl.) & Fan-out ×6 em W1, sem cache, chamado em W1/W2/W3. Stateless — escalamento seguro. Testa RQ1 e RQ2. \\
 \addlinespace
-ST2 — \texttt{redis-cart} & Stateful (backend) & C1/C2 (observação) & Único componente stateful partilhado; single-threaded. Escalar o \texttt{cartservice} não resolve a pressão no \texttt{redis-cart}. Testa RQ4. \\
+ST2 — \texttt{redis-cart} & Stateful & C1/C2 (obs.) & Único componente stateful; single-threaded. Escalar o \texttt{cartservice} não resolve a pressão no \texttt{redis-cart}. Testa RQ4. \\
 \addlinespace
-ST3 — \texttt{frontend} & Stateless & C3 (uniforme) & Ponto de entrada único. O C3 isola se o gargalo é a receção HTTP ou as dependências internas. Contribui para a análise de custo marginal. \\
+ST3 — \texttt{frontend} & Stateless & C3 (uniforme) & Ponto de entrada único. O C3 isola se o gargalo está na receção HTTP ou nas dependências internas. \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabularx}
 \end{table}
 
 % ============================================================
@@ -267,20 +248,18 @@ A evidência experimental mostra que o escalamento seletivo (C2) é a decisão d
 \begin{table}[h]
 \caption{Hipóteses formuladas, cenários de teste e estado após experimentação.}
 \label{tab:hipoteses}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{p{0.3cm}p{3.5cm}p{1cm}p{2.5cm}}
+\begin{tabularx}{\columnwidth}{lXp{1.8cm}p{2cm}}
 \toprule
 \textbf{H} & \textbf{Hipótese} & \textbf{Cenário} & \textbf{Estado} \\
 \midrule
-H1 & Escalar seletivamente melhora parcialmente, mas pode não deslocar o ponto de quebra se outro bottleneck dominar & C1 vs C2 & \checkmark\ Confirmada \\
+H1 & Escalar seletivamente melhora parcialmente, mas pode não deslocar o ponto de quebra se outro bottleneck dominar & C1 vs.\ C2 & \checkmark\ Confirmada \\
 H2 & Após aliviar o productcatalog, o redis-cart emerge como limitação em W2/W3 & C2 obs. & $\circ$\ Inconclusiva \\
 H3 & Ganho por réplica diminui com o deslocamento do bottleneck & C1→C2→C3 & \checkmark\ Confirmada \\
-H4 & Custo marginal cresce quando réplicas deixam de produzir ganhos proporcionais & C2 vs C3 & \checkmark\ Confirmada \\
-H5 & Escalamento horizontal é mais eficaz em stateless do que com dependência stateful & C2/C3 vs redis & $\circ$\ Inconclusiva \\
-H6 & Connection affinity gRPC/HTTP2 limita a eficácia do escalamento horizontal & C2 CPU/réplica & \checkmark\ Confirmada \\
+H4 & Custo marginal cresce quando réplicas deixam de produzir ganhos proporcionais & C2 vs.\ C3 & \checkmark\ Confirmada \\
+H5 & Escalamento horizontal é mais eficaz em stateless do que com dependência stateful & C2/C3 vs.\ redis & $\circ$\ Inconclusiva \\
+H6 & Connection affinity gRPC/HTTP2 limita a eficácia do escalamento horizontal & C2 CPU/répl. & \checkmark\ Confirmada \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabularx}
 \end{table}
 
 % ============================================================
@@ -372,16 +351,16 @@ onde $CPU_{time} = \overline{cpu_{m}} / 1000 \times t_{s}$ (CPU-segundos por ré
 Os valores de CPU e RAM foram obtidos a partir dos ficheiros \texttt{pods\_after.txt} (medição pontual \texttt{kubectl top} no final de cada nível de carga), usando a média das três medições (15/20/25 utilizadores) × 120\,s de janela de medição por nível. A Tabela~\ref{tab:custo} apresenta os resultados calculados.
 
 \begin{table}[h]
-\caption{Custo proxy calculado para C1, C2 e C3 (testes comparativos, 15/20/25 utilizadores, $t_{total}=360$\,s). Unidades: CPU\_time em CPU-s; RAM\_time em MiB-s; C\_proxy = 0{,}5$\times$CPU\_time + 0{,}5$\times$RAM\_time; custo/pedido em unidades proxy por pedido com sucesso.}
+\caption{Custo proxy calculado para C1, C2 e C3 (testes comparativos, 15/20/25 utilizadores, $t_{total}=360$\,s). CPU\_time em CPU-s; RAM\_time em MiB-s; $C_{proxy} = 0{,}5\times\text{CPU}_{time} + 0{,}5\times\text{RAM}_{time}$; custo/req em unidades proxy por pedido com sucesso.}
 \label{tab:custo}
-\resizebox{\columnwidth}{!}{%
+{\footnotesize
 \begin{tabular}{lrrrrrrrr}
 \toprule
-\textbf{Cenário} & \textbf{+Rép.} & \textbf{CPU\_time} & \textbf{RAM\_time} & \textbf{C\_proxy} & \textbf{Req OK} & \textbf{Custo/req} & \textbf{$\Delta$Custo/req} & \textbf{$CM_{tp}$} \\
+\textbf{Cenário} & \textbf{+Rép.} & \textbf{CPU\_t} & \textbf{RAM\_t} & \textbf{$C_{proxy}$} & \textbf{Req OK} & \textbf{C/req} & \textbf{$\Delta$C/req} & \textbf{$CM_{tp}$} \\
 \midrule
-C1 — Baseline & 0   & 59{,}8  & 353\,640 & 176\,850 & 2285 & 77{,}4 & — (ref.) & — \\
-C2 — Seletivo & +2  & 86{,}3  & 370\,560 & 185\,323 & 2301 & 80{,}5 & $+$4\%  & $-$0{,}02 \\
-C3 — Uniforme & +20 & 84{,}2  & 817\,320 & 408\,702 & 2300 & 177{,}7 & $+$130\% & $-$0{,}003 \\
+C1 — Baseline & 0   & 59{,}8 & 353\,640 & 176\,850 & 2285 & 77{,}4 & — & — \\
+C2 — Seletivo & +2  & 86{,}3 & 370\,560 & 185\,323 & 2301 & 80{,}5 & $+$4\%   & $-$0{,}02 \\
+C3 — Uniforme & +20 & 84{,}2 & 817\,320 & 408\,702 & 2300 & 177{,}7 & $+$130\% & $-$0{,}003 \\
 \bottomrule
 \end{tabular}%
 }
@@ -434,20 +413,18 @@ Como se observa na Tabela~\ref{tab:cpu}, a distribuição de CPU no C2 revela: \
 \begin{table}[h]
 \caption{Distribuição de CPU por serviço e por réplica nos três cenários a 25 utilizadores (valores \texttt{kubectl top}, em millicores). Evidencia a \textit{connection affinity} gRPC (H6): réplicas novas ficam subutilizadas enquanto a original acumula carga.}
 \label{tab:cpu}
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{lrrr}
+\begin{tabularx}{\columnwidth}{lrrX}
 \toprule
-\textbf{Serviço} & \textbf{C1 — 1 réplica} & \textbf{C2 — productcatalog ×3} & \textbf{C3 — todos stateless ×3} \\
+\textbf{Serviço} & \textbf{C1} & \textbf{C2} & \textbf{C3 — todos stateless ×3} \\
 \midrule
-frontend            & 50m & 70m (1 réplica) & $\sim$16m + 17m + 16m (bem distribuído) \\
-currencyservice     & 47m & 55m (1 réplica) & $\sim$26m + 17m + 2m (desigual) \\
-recommendationservice & 31m & 47m (1 réplica) & $\sim$39m distribuídos (3 réplicas) \\
-productcatalogservice & 21m & \#1: 31m | \#2: 2m | \#3: 1m & $\sim$14m + 7m + 3m (desigual) \\
-cartservice         & 23m & 23m (1 réplica) & $\sim$29m distribuídos (3 réplicas) \\
-redis-cart (stateful) & 4m & 5m (sem alteração) & 4m (sem alteração) \\
+frontend              & 50m & 70m (1 répl.)               & $\sim$16m+17m+16m (uniforme) \\
+currencyservice       & 47m & 55m (1 répl.)               & $\sim$26m+17m+2m (desigual) \\
+recommendationservice & 31m & 47m (1 répl.)               & $\sim$39m distribuídos \\
+productcatalogservice & 21m & \#1:31m | \#2:2m | \#3:1m  & $\sim$14m+7m+3m (desigual) \\
+cartservice           & 23m & 23m (1 répl.)               & $\sim$29m distribuídos \\
+redis-cart (stateful) & 4m  & 5m (inalterado)             & 4m (inalterado) \\
 \bottomrule
-\end{tabular}%
-}
+\end{tabularx}
 \end{table}
 
 \begin{figure}[h]
@@ -554,17 +531,17 @@ O C5 valida empiricamente a hipótese H6: com o Envoy a fazer balanceamento por 
 \begin{table}[h]
 \caption{Comparação dos pontos de saturação entre todos os cenários (testes exaustivos).}
 \label{tab:saturacao}
-\begin{tabular}{lrrrrl}
+\begin{tabularx}{\columnwidth}{lrrrrrX}
 \toprule
 \textbf{Cenário} & \textbf{+Comp.} & \textbf{Quebra} & \textbf{RPS máx.} & \textbf{Falhas\%} & \textbf{Conclusão} \\
 \midrule
-C1 — Baseline                          & 0       & 75u              & 100,4 & 23,5 & Referência \\
-C2 — Seletivo (productcatalog ×3)      & +2      & \textbf{50u}     & 76,1  & 27,9 & Pior que C1 \\
-C4 — Seletivo (frontend+currency ×3)   & +4      & \textbf{25u}     & 66,8  & 77,1 & Pior de todos \\
-C3 — Uniforme (todos stateless ×3)     & +20     & $\sim$150u       & 130,5 & 0,0  & $\sim$2$\times$ mais que C1 \\
-C5 — Uniforme ×3 + Envoy L7           & +20+Env & \textbf{$>$150u} & 218,7 & 0,0  & $\sim$2,2$\times$ mais que C1; H6 resolvido \\
+C1 — Baseline                        & 0       & 75u              & 100,4 & 23,5 & Referência \\
+C2 — Seletivo (productcatalog ×3)    & +2      & \textbf{50u}     & 76,1  & 27,9 & Pior que C1 \\
+C4 — Seletivo (frontend+cur. ×3)     & +4      & \textbf{25u}     & 66,8  & 77,1 & Pior de todos \\
+C3 — Uniforme (todos ×3)             & +20     & $\sim$150u       & 130,5 & 0,0  & $\sim$2$\times$ C1 \\
+C5 — Uniforme ×3 + Envoy             & +20+Env & \textbf{$>$150u} & 218,7 & 0,0  & $\sim$2,2$\times$ C1; H6 resolvido \\
 \bottomrule
-\end{tabular}
+\end{tabularx}
 \end{table}
 
 \begin{figure}[h]
@@ -854,5 +831,74 @@ S.\ Newman. \textit{Building Microservices: Designing Fine-Grained Systems}. 2ª
 M.\ Fowler e J.\ Lewis. \textit{Microservices}. martinfowler.com, 2014. Disponível em: \url{https://martinfowler.com/articles/microservices.html}
 
 \end{thebibliography}
+
+% ============================================================
+\appendix
+% ============================================================
+
+\section{Inventário dos Microserviços}
+\label{apx:inventario}
+
+\begin{table}[h]
+\caption{Inventário dos 11 microserviços do Online Boutique: linguagem de implementação, porta de comunicação, tipo e responsabilidade principal. O \texttt{redis-cart} é o único componente \textit{stateful}; todos os restantes são aplicacionalmente \textit{stateless}.}
+\label{tab:inventario}
+\begin{tabularx}{\columnwidth}{p{2.5cm}p{1.1cm}p{1.8cm}X}
+\toprule
+\textbf{Serviço} & \textbf{Lang.} & \textbf{Porta} & \textbf{Tipo e responsabilidade} \\
+\midrule
+frontend              & Go      & 8080 HTTP      & Stateless. Ponto de entrada externo; orquestra chamadas gRPC internas. Depende de 8 serviços. \\
+productcatalogservice & Go      & 3550 gRPC      & Stateless. Catálogo em memória. Chamado ×6 por W1 — principal alvo de escalonamento. \\
+cartservice           & C\#     & 7070 gRPC      & Stateless aplicacional. Delega persistência ao \texttt{redis-cart} via HSET. Não é stateful. \\
+checkoutservice       & Go      & 5050 gRPC      & Stateless. Orquestrador transacional — 6 serviços em sequência; latência acumulada. \\
+currencyservice       & Node.js & 7000 gRPC      & Stateless. Conversão de moeda. Single-threaded — candidato a bottleneck sob carga. \\
+paymentservice        & Node.js & 50051 gRPC     & Stateless. Pagamento simulado; sem dependências externas (folha). \\
+shippingservice       & Go      & 50051 gRPC     & Stateless. Envio simulado; sem dependências externas (folha). \\
+emailservice          & Python  & 8080 gRPC      & Stateless. Email de confirmação; não bloqueia o checkout em caso de falha. \\
+recommendationservice & Python  & 8080 gRPC      & Stateless. Sugere produtos; chama \texttt{productcatalogservice}. \\
+adservice             & Java    & 9555 gRPC      & Stateless. Anúncios contextuais; degradação suave — não afeta fluxo transacional. \\
+redis-cart            & Redis   & 6379 TCP       & \textbf{Stateful}. Único backend com estado; single-threaded. Não beneficia de scale-out simples. \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+% ============================================================
+
+\section{Diagrama de Dependências entre Serviços}
+\label{apx:dependencias}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_dependencias.pdf}
+  \caption{Diagrama de dependências entre microserviços. Verde: \texttt{frontend} (depende de 8 serviços, mais vulnerável a falhas em cascata). Vermelho: \texttt{checkoutservice} (orquestrador de 6 serviços em série). Laranja: \texttt{redis-cart} (único componente \textit{stateful}). Folhas (verde claro) — \texttt{paymentservice}, \texttt{emailservice}, \texttt{adservice}, \texttt{shippingservice} — sem dependências externas. O \texttt{productcatalogservice} e o \texttt{redis-cart} são os candidatos principais a pontos de saturação: o primeiro por fan-out ×6 em W1; o segundo por contenção de estado partilhado em W2/W3.}
+  \label{fig:dependencias}
+\end{figure}
+
+% ============================================================
+
+\section{Diagramas de Sequência dos Workflows}
+\label{apx:sequencias}
+
+Os diagramas seguintes detalham a ordem exacta das chamadas gRPC entre microserviços para cada workflow analisado. Cada seta representa um pedido de rede; a latência total de resposta é a soma das latências de todas as chamadas em série.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_seq_w1.pdf}
+  \caption{W1 — Browse Product (\texttt{GET /product/\{id\}}). O \texttt{frontend} realiza 6 chamadas gRPC sequenciais ao \texttt{productcatalogservice} por pedido, mais chamadas ao \texttt{currencyservice}, \texttt{recommendationservice}, \texttt{adservice} e \texttt{cartservice}. Operação mais frequente no modelo de carga (peso 10).}
+  \label{fig:seq-w1}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_seq_w2.pdf}
+  \caption{W2 — Add to Cart (\texttt{POST /cart}). O \texttt{frontend} valida o produto via \texttt{productcatalogservice} e persiste no \texttt{redis-cart} através do \texttt{cartservice} com uma operação HSET bloqueante. Pré-requisito funcional do checkout.}
+  \label{fig:seq-w2}
+\end{figure}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\linewidth]{figuras/fig_seq_w3.pdf}
+  \caption{W3 — Checkout (\texttt{POST /cart/checkout}). O \texttt{checkoutservice} orquestra 6 serviços em sequência: GetCart, GetProduct, Convert, GetQuote/ShipOrder, Charge e SendConfirmation, seguido de EmptyCart. A latência total é a soma de todas as chamadas individuais — sem paralelismo.}
+  \label{fig:seq-w3}
+\end{figure}
 
 \end{document}
