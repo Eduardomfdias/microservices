@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.9)  17 MAY 2026 20:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (TeX Live 2025) (preloaded format=pdflatex 2026.2.9)  18 MAY 2026 11:27
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1440,11 +1440,11 @@ Package fancyhdr Warning: \headheight is too small (13.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-5.48402pt}.
 
 [7.8]
-Overfull \hbox (29.99483pt too wide) in paragraph at lines 337--338
-\T1/LinuxLibertineT-TLF/m/n/10 (-20) RAM por pod a cada 10s du-rante os tes-tes
- via \T1/zi4/m/n/10 kubectl top\T1/LinuxLibertineT-TLF/m/n/10 (-20) , guar-da-d
-os em \T1/zi4/m/n/10 monitoring/pods_metrics.csv\T1/LinuxLibertineT-TLF/m/n/10 
-(-20) .
+Overfull \hbox (36.04242pt too wide) in paragraph at lines 337--338
+\T1/LinuxLibertineT-TLF/m/n/10 (-20) e RAM por pod a cada 10s du-rante os tes-t
+es via \T1/zi4/m/n/10 kubectl top\T1/LinuxLibertineT-TLF/m/n/10 (-20) , guar-da
+-dos em \T1/zi4/m/n/10 monitoring/pods_metrics.csv\T1/LinuxLibertineT-TLF/m/n/1
+0 (-20) .
  []
 
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
@@ -1659,9 +1659,6 @@ Package fancyhdr Warning: \headheight is too small (13.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-5.48402pt}.
 
 [19.20]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 [20.21]
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
@@ -1715,22 +1712,9 @@ Package pdftex.def Info: figuras/fig_seq_w1.pdf  used on input line 885.
 Class acmart Warning: A possible image without description on input line 888.
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-
-
-Package fancyhdr Warning: \headheight is too small (13.0pt): 
-(fancyhdr)                Make it at least 18.48402pt, for example:
-(fancyhdr)                \setlength{\headheight}{18.48402pt}.
-(fancyhdr)                You might also make \topmargin smaller:
-(fancyhdr)                \addtolength{\topmargin}{-5.48402pt}.
-
-[21.22]
-
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figuras/fig_seq_w2.pdf, id=755, 614.295pt x 794.97pt>
+<figuras/fig_seq_w2.pdf, id=744, 614.295pt x 794.97pt>
 File: figuras/fig_seq_w2.pdf Graphic file (type pdf)
 <use figuras/fig_seq_w2.pdf>
 Package pdftex.def Info: figuras/fig_seq_w2.pdf  used on input line 892.
@@ -1741,7 +1725,7 @@ Class acmart Warning: A possible image without description on input line 895.
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figuras/fig_seq_w3.pdf, id=756, 614.295pt x 794.97pt>
+<figuras/fig_seq_w3.pdf, id=745, 614.295pt x 794.97pt>
 File: figuras/fig_seq_w3.pdf Graphic file (type pdf)
 <use figuras/fig_seq_w3.pdf>
 Package pdftex.def Info: figuras/fig_seq_w3.pdf  used on input line 899.
@@ -1756,6 +1740,15 @@ LaTeX Warning: `h' float specifier changed to `ht'.
 Class acmart Warning: Some images may lack descriptions.
 
 
+
+
+Package fancyhdr Warning: \headheight is too small (13.0pt): 
+(fancyhdr)                Make it at least 18.48402pt, for example:
+(fancyhdr)                \setlength{\headheight}{18.48402pt}.
+(fancyhdr)                You might also make \topmargin smaller:
+(fancyhdr)                \addtolength{\topmargin}{-5.48402pt}.
+
+[21.22]
 
 [22.23]
 
@@ -1793,11 +1786,11 @@ Package rerunfilecheck Info: File `relatorio_final_asid.out' has not changed.
 (rerunfilecheck)             Checksum: 471F7A74412440BFEF3B569C0E6C8339;9793.
  ) 
 Here is how much of TeX's memory you used:
- 24486 strings out of 473190
- 402023 string characters out of 5715801
- 864523 words of memory out of 5000000
+ 24496 strings out of 473190
+ 402279 string characters out of 5715801
+ 865532 words of memory out of 5000000
  46287 multiletter control sequences out of 15000+600000
- 790834 words of font info for 632 fonts, out of 8000000 for 9000
+ 791701 words of font info for 639 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
  90i,13n,131p,1401b,644s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/local/texlive/2025/texmf-dist/fonts/type1/public/inconsolata/Inconsolat
@@ -1817,7 +1810,7 @@ xmf-dist/fonts/type1/public/newtx/NewTXMI.pfb></usr/local/texlive/2025/texmf-di
 st/fonts/type1/public/newtx/txmiaX.pfb></usr/local/texlive/2025/texmf-dist/font
 s/type1/public/newtx/txsym.pfb></usr/local/texlive/2025/texmf-dist/fonts/type1/
 public/newtx/txsys.pfb>
-Output written on relatorio_final_asid.pdf (27 pages, 876094 bytes).
+Output written on relatorio_final_asid.pdf (27 pages, 876309 bytes).
 PDF statistics:
  942 PDF objects out of 1000 (max. 8388607)
  536 compressed objects within 6 object streams

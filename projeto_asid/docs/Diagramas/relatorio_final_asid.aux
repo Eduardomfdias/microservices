@@ -62,8 +62,8 @@
 \newlabel{tab:comparativos}{{8}{9}{Resultados comparativos C1, C2 e C3 (testes com locustfile realista). A carga de 25 utilizadores não satura nenhum cenário — o throughput é praticamente idêntico ($\approx $8~RPS)}{table.caption.9}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Distribuição de CPU por serviço e por réplica nos três cenários a 25 utilizadores (valores \texttt  {kubectl top}, em millicores). Evidencia a \textit  {connection affinity} gRPC (H6): réplicas novas ficam subutilizadas enquanto a original acumula carga.}}{9}{table.caption.10}\protected@file@percent }
 \newlabel{tab:cpu}{{9}{9}{Distribuição de CPU por serviço e por réplica nos três cenários a 25 utilizadores (valores \texttt {kubectl top}, em millicores). Evidencia a \textit {connection affinity} gRPC (H6): réplicas novas ficam subutilizadas enquanto a original acumula carga}{table.caption.10}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribuição de CPU entre as 3 réplicas do \texttt  {productcatalogservice} em C2 a 25u. A réplica original absorve 97,9\% do tráfego — evidência empírica da \textit  {connection affinity} gRPC/HTTP2 (H6).}}{10}{figure.caption.11}\protected@file@percent }
-\newlabel{fig:distrib-cpu}{{1}{10}{Distribuição de CPU entre as 3 réplicas do \texttt {productcatalogservice} em C2 a 25u. A réplica original absorve 97,9\% do tráfego — evidência empírica da \textit {connection affinity} gRPC/HTTP2 (H6)}{figure.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribuição de CPU entre as 3 réplicas do \texttt  {productcatalogservice} em C2 a 25u. A réplica original absorve 97,9\% do tráfego, servindo de evidência empírica da \textit  {connection affinity} gRPC/HTTP2 (H6).}}{10}{figure.caption.11}\protected@file@percent }
+\newlabel{fig:distrib-cpu}{{1}{10}{Distribuição de CPU entre as 3 réplicas do \texttt {productcatalogservice} em C2 a 25u. A réplica original absorve 97,9\% do tráfego, servindo de evidência empírica da \textit {connection affinity} gRPC/HTTP2 (H6)}{figure.caption.11}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {7}Resultados — Testes Exaustivos}{10}{section.7}\protected@file@percent }
 \newlabel{sec:exaustivos}{{7}{10}{Resultados — Testes Exaustivos}{section.7}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Resultados exaustivos C1 (1 réplica). Quebra a 75 utilizadores com 23,5\% de falhas.}}{10}{table.caption.13}\protected@file@percent }
@@ -133,9 +133,6 @@
 \bibcite{amdahl}{{10}{}{{}}{{}}}
 \bibcite{newman}{{11}{}{{}}{{}}}
 \bibcite{fowler}{{12}{}{{}}{{}}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Implicação Arquitetural Central}{21}{subsection.9.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}Limitações e Trabalho Futuro}{21}{subsection.9.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{Refer\^encias}{21}{section*.27}\protected@file@percent }
 \newlabel{tocindent-1}{0pt}
 \newlabel{tocindent0}{0pt}
 \newlabel{tocindent1}{6.95pt}
@@ -144,14 +141,17 @@
 \newlabel{tocindent4}{0pt}
 \newlabel{tocindent5}{0pt}
 \providecommand\NAT@force@numbers{}\NAT@force@numbers
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Implicação Arquitetural Central}{21}{subsection.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}Limitações e Trabalho Futuro}{21}{subsection.9.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Refer\^encias}{21}{section*.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Inventário dos Microserviços}{21}{appendix.A}\protected@file@percent }
+\newlabel{apx:inventario}{{A}{21}{Inventário dos Microserviços}{appendix.A}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {B}Diagrama de Dependências entre Serviços}{21}{appendix.B}\protected@file@percent }
+\newlabel{apx:dependencias}{{B}{21}{Diagrama de Dependências entre Serviços}{appendix.B}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {C}Diagramas de Sequência dos Workflows}{21}{appendix.C}\protected@file@percent }
+\newlabel{apx:sequencias}{{C}{21}{Diagramas de Sequência dos Workflows}{appendix.C}{}}
 \@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Inventário dos 11 microserviços do Online Boutique: linguagem de implementação, porta de comunicação, tipo e responsabilidade principal. O \texttt  {redis-cart} é o único componente \textit  {stateful}; todos os restantes são aplicacionalmente \textit  {stateless}.}}{22}{table.caption.28}\protected@file@percent }
 \newlabel{tab:inventario}{{19}{22}{Inventário dos 11 microserviços do Online Boutique: linguagem de implementação, porta de comunicação, tipo e responsabilidade principal. O \texttt {redis-cart} é o único componente \textit {stateful}; todos os restantes são aplicacionalmente \textit {stateless}}{table.caption.28}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Inventário dos Microserviços}{22}{appendix.A}\protected@file@percent }
-\newlabel{apx:inventario}{{A}{22}{Inventário dos Microserviços}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Diagrama de Dependências entre Serviços}{22}{appendix.B}\protected@file@percent }
-\newlabel{apx:dependencias}{{B}{22}{Diagrama de Dependências entre Serviços}{appendix.B}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {C}Diagramas de Sequência dos Workflows}{22}{appendix.C}\protected@file@percent }
-\newlabel{apx:sequencias}{{C}{22}{Diagramas de Sequência dos Workflows}{appendix.C}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Diagrama de dependências entre microserviços. Verde: \texttt  {frontend} (depende de 8 serviços, mais vulnerável a falhas em cascata). Vermelho: \texttt  {checkoutservice} (orquestrador de 6 serviços em série). Laranja: \texttt  {redis-cart} (único componente \textit  {stateful}). Folhas (verde claro) — \texttt  {paymentservice}, \texttt  {emailservice}, \texttt  {adservice}, \texttt  {shippingservice} — sem dependências externas. O \texttt  {productcatalogservice} e o \texttt  {redis-cart} são os candidatos principais a pontos de saturação: o primeiro por fan-out ×6 em W1; o segundo por contenção de estado partilhado em W2/W3.}}{23}{figure.caption.29}\protected@file@percent }
 \newlabel{fig:dependencias}{{7}{23}{Diagrama de dependências entre microserviços. Verde: \texttt {frontend} (depende de 8 serviços, mais vulnerável a falhas em cascata). Vermelho: \texttt {checkoutservice} (orquestrador de 6 serviços em série). Laranja: \texttt {redis-cart} (único componente \textit {stateful}). Folhas (verde claro) — \texttt {paymentservice}, \texttt {emailservice}, \texttt {adservice}, \texttt {shippingservice} — sem dependências externas. O \texttt {productcatalogservice} e o \texttt {redis-cart} são os candidatos principais a pontos de saturação: o primeiro por fan-out ×6 em W1; o segundo por contenção de estado partilhado em W2/W3}{figure.caption.29}{}}
 \@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces W1 — Browse Product (\texttt  {GET /product/\{id\}}). O \texttt  {frontend} realiza 6 chamadas gRPC sequenciais ao \texttt  {productcatalogservice} por pedido, mais chamadas ao \texttt  {currencyservice}, \texttt  {recommendationservice}, \texttt  {adservice} e \texttt  {cartservice}. Operação mais frequente no modelo de carga (peso 10).}}{24}{figure.caption.30}\protected@file@percent }
