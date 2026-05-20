@@ -1,0 +1,78 @@
+[20:13:37] ==============================================
+[20:13:37] C1 EXAUSTIVO — 1 réplica, locustfile 3 perfis
+[20:13:37] Níveis: 25 50 75 100 125 150
+[20:13:37] Resultados em: cenarios_ob_c1_exaustivo
+[20:13:37] ==============================================
+[20:13:37] A verificar pré-requisitos...
+[20:13:37] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[20:13:37] Pré-requisitos OK
+[20:13:37] loadgenerator pausado
+[20:13:37] === C1: a garantir 1 réplica em todos os serviços ===
+[20:13:38] Todos os serviços com 1 réplica
+[20:13:38] Baseline capturado em cenarios_ob_c1_exaustivo/baseline/
+[20:13:38] locustfile.py criado (3 perfis)
+[20:13:38] A iniciar monitorização contínua (10s) → cenarios_ob_c1_exaustivo/monitoring/pods_metrics.csv
+[20:13:38] Monitor PID: 33883
+[20:13:38] ========================================================
+[20:13:38] C1 Exaustivo — 25 users (warm-up 30s + medição 120s)
+[20:13:38] ========================================================
+[20:13:38]   Warm-up: 30s...
+[20:14:08]   Medição: 120s...
+[20:16:09]   RESULTADO: p50=9ms  p90=18ms  p99=610ms  falhas=0(0.0%)  rps=86.36809868577319  [Aviso]
+[20:16:09]   CPU/RAM após medição:
+    adservice-574bff445c-6mj7s                         CPU=33m      RAM=286Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=80m      RAM=171Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=12m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=124m     RAM=105Mi
+    emailservice-66944ff59-2lcjl                       CPU=8m       RAM=94Mi
+    frontend-7bd6f45654-s2s7z                          CPU=161m     RAM=51Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=6m       RAM=126Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=73m      RAM=43Mi
+    recommendationservice-7444754ff5-n8cbh             CPU=119m     RAM=81Mi
+    redis-cart-c8ff86559-kcf44                         CPU=6m       RAM=36Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=13m      RAM=31Mi
+[20:16:09] Cooldown: 60s antes de 50 users...
+[20:17:09] ========================================================
+[20:17:09] C1 Exaustivo — 50 users (warm-up 30s + medição 120s)
+[20:17:09] ========================================================
+[20:17:10]   Warm-up: 30s...
+[20:17:40]   Medição: 120s...
+[20:19:41]   RESULTADO: p50=91ms  p90=190ms  p99=890ms  falhas=0(0.0%)  rps=114.66085072849941  [Aviso]
+[20:19:41]   CPU/RAM após medição:
+    adservice-574bff445c-6mj7s                         CPU=53m      RAM=287Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=86m      RAM=174Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=26m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=163m     RAM=125Mi
+    emailservice-66944ff59-2lcjl                       CPU=13m      RAM=94Mi
+    frontend-7bd6f45654-s2s7z                          CPU=198m     RAM=53Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=11m      RAM=126Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=94m      RAM=43Mi
+    recommendationservice-7444754ff5-n8cbh             CPU=196m     RAM=81Mi
+    redis-cart-c8ff86559-kcf44                         CPU=9m       RAM=36Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=20m      RAM=31Mi
+[20:19:41] Cooldown: 60s antes de 75 users...
+[20:20:41] ========================================================
+[20:20:41] C1 Exaustivo — 75 users (warm-up 30s + medição 120s)
+[20:20:41] ========================================================
+[20:20:41]   Warm-up: 30s...
+[20:21:11]   Medição: 120s...
+[20:23:12]   RESULTADO: p50=120ms  p90=250ms  p99=1600ms  falhas=4051(23.4%)  rps=144.8375488466506  [QUEBRA]
+[20:23:12]   CPU/RAM após medição:
+    adservice-574bff445c-6mj7s                         CPU=3m       RAM=288Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=49m      RAM=176Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=1m       RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=101m     RAM=114Mi
+    emailservice-66944ff59-2lcjl                       CPU=3m       RAM=94Mi
+    frontend-7bd6f45654-s2s7z                          CPU=140m     RAM=55Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=1m       RAM=126Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=41m      RAM=43Mi
+    recommendationservice-7444754ff5-n8cbh             CPU=4m       RAM=81Mi
+    redis-cart-c8ff86559-kcf44                         CPU=5m       RAM=36Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=1m       RAM=31Mi
+[20:23:12] *** QUEBRA DETECTADA a 75 users — a terminar ***
+[20:23:12] Monitorização parada
+[20:23:12] Resumo: cenarios_ob_c1_exaustivo/RESUMO_C1_exaustivo.txt
+[20:23:12] 
+[20:23:12] ==============================================
+[20:23:12] C1 Exaustivo CONCLUÍDO — cenarios_ob_c1_exaustivo
+[20:23:12] ==============================================
