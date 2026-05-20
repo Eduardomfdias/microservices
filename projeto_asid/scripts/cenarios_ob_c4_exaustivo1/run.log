@@ -1,0 +1,109 @@
+[22:29:06] ==============================================
+[22:29:06] C4 EXAUSTIVO — frontend ×3, currencyservice ×3
+[22:29:06] Níveis: 100 200 300 400
+[22:29:06] Resultados em: cenarios_ob_c4_exaustivo
+[22:29:06] ==============================================
+[22:29:06] A verificar pré-requisitos...
+[22:29:06] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[22:29:06] Pré-requisitos OK
+[22:29:06] loadgenerator pausado
+[22:29:06] === C4: frontend ×3, currencyservice ×3, restantes ×1 ===
+[22:29:07] Réplicas C4 aplicadas
+[22:29:07] Baseline capturado em cenarios_ob_c4_exaustivo/baseline/
+[22:29:07] locustfile.py criado (3 perfis — idêntico ao C1/C2/C3 exaustivo)
+[22:29:07] A iniciar monitorização contínua (10s) → cenarios_ob_c4_exaustivo/monitoring/pods_metrics.csv
+[22:29:07] Monitor PID: 80751
+[22:29:07] ========================================================
+[22:29:07] C4 Exaustivo — 100 users (warm-up 30s + medição 120s)
+[22:29:07] ========================================================
+[22:29:07]   Warm-up: 30s...
+[22:29:38]   Medição: 120s...
+[22:31:38]   RESULTADO: p50=400ms  p90=500ms  p99=670ms  falhas=0(0.0%)  rps=129.82756945629845  [Aviso]
+[22:31:38]   CPU/RAM após medição:
+    adservice-574bff445c-qb9cj                         CPU=57m      RAM=268Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=118m     RAM=187Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=22m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=1m       RAM=88Mi
+    currencyservice-7c8fc8fc9c-5frj9                   CPU=104m     RAM=124Mi
+    currencyservice-7c8fc8fc9c-mgwx9                   CPU=132m     RAM=126Mi
+    emailservice-66944ff59-2lcjl                       CPU=12m      RAM=95Mi
+    frontend-7bd6f45654-przgb                          CPU=96m      RAM=35Mi
+    frontend-7bd6f45654-s2s7z                          CPU=122m     RAM=55Mi
+    frontend-7bd6f45654-vfxkp                          CPU=105m     RAM=35Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=8m       RAM=113Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=116m     RAM=44Mi
+    recommendationservice-7444754ff5-n8cbh             CPU=200m     RAM=82Mi
+    redis-cart-c8ff86559-kcf44                         CPU=8m       RAM=37Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=22m      RAM=33Mi
+[22:31:38] Cooldown: 60s antes de 200 users...
+[22:32:38] ========================================================
+[22:32:38] C4 Exaustivo — 200 users (warm-up 30s + medição 120s)
+[22:32:38] ========================================================
+[22:32:39]   Warm-up: 30s...
+[22:33:09]   Medição: 120s...
+[22:35:10]   RESULTADO: p50=320ms  p90=1200ms  p99=1400ms  falhas=0(0.0%)  rps=153.62125808642475  [Aviso]
+[22:35:10]   CPU/RAM após medição:
+    adservice-574bff445c-qb9cj                         CPU=106m     RAM=273Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=130m     RAM=187Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=37m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=1m       RAM=88Mi
+    currencyservice-7c8fc8fc9c-5frj9                   CPU=128m     RAM=124Mi
+    currencyservice-7c8fc8fc9c-mgwx9                   CPU=166m     RAM=126Mi
+    emailservice-66944ff59-2lcjl                       CPU=19m      RAM=95Mi
+    frontend-7bd6f45654-przgb                          CPU=128m     RAM=36Mi
+    frontend-7bd6f45654-s2s7z                          CPU=135m     RAM=56Mi
+    frontend-7bd6f45654-vfxkp                          CPU=138m     RAM=36Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=15m      RAM=114Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=118m     RAM=44Mi
+    redis-cart-c8ff86559-kcf44                         CPU=10m      RAM=37Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=28m      RAM=33Mi
+[22:35:10] Cooldown: 60s antes de 300 users...
+[22:36:10] ========================================================
+[22:36:10] C4 Exaustivo — 300 users (warm-up 30s + medição 120s)
+[22:36:10] ========================================================
+[22:36:10]   Warm-up: 30s...
+[22:36:40]   Medição: 120s...
+[22:38:41]   RESULTADO: p50=370ms  p90=1100ms  p99=1600ms  falhas=26(0.1%)  rps=148.58468250876024  [Aviso]
+[22:38:41]   CPU/RAM após medição:
+    adservice-574bff445c-qb9cj                         CPU=140m     RAM=277Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=172m     RAM=189Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=49m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=137m     RAM=118Mi
+    currencyservice-7c8fc8fc9c-5frj9                   CPU=176m     RAM=126Mi
+    currencyservice-7c8fc8fc9c-mgwx9                   CPU=2m       RAM=75Mi
+    emailservice-66944ff59-2lcjl                       CPU=26m      RAM=95Mi
+    frontend-7bd6f45654-przgb                          CPU=150m     RAM=38Mi
+    frontend-7bd6f45654-s2s7z                          CPU=143m     RAM=56Mi
+    frontend-7bd6f45654-vfxkp                          CPU=156m     RAM=38Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=18m      RAM=114Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=111m     RAM=44Mi
+    redis-cart-c8ff86559-kcf44                         CPU=13m      RAM=37Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=34m      RAM=33Mi
+[22:38:41] Cooldown: 60s antes de 400 users...
+[22:39:41] ========================================================
+[22:39:41] C4 Exaustivo — 400 users (warm-up 30s + medição 120s)
+[22:39:41] ========================================================
+[22:39:41]   Warm-up: 30s...
+[22:40:12]   Medição: 120s...
+[22:42:12]   RESULTADO: p50=320ms  p90=1100ms  p99=1400ms  falhas=0(0.0%)  rps=156.386645139535  [Aviso]
+[22:42:12]   CPU/RAM após medição:
+    adservice-574bff445c-qb9cj                         CPU=104m     RAM=274Mi
+    cartservice-7c84fdfb6-m5m6d                        CPU=138m     RAM=188Mi
+    checkoutservice-5b6d96c9b7-45rkr                   CPU=31m      RAM=38Mi
+    currencyservice-7c8fc8fc9c-4hm9g                   CPU=109m     RAM=121Mi
+    currencyservice-7c8fc8fc9c-5frj9                   CPU=162m     RAM=127Mi
+    currencyservice-7c8fc8fc9c-mgwx9                   CPU=1m       RAM=79Mi
+    emailservice-66944ff59-2lcjl                       CPU=16m      RAM=95Mi
+    frontend-7bd6f45654-przgb                          CPU=123m     RAM=37Mi
+    frontend-7bd6f45654-s2s7z                          CPU=130m     RAM=56Mi
+    frontend-7bd6f45654-vfxkp                          CPU=132m     RAM=37Mi
+    paymentservice-9bfb7bf5-kgd56                      CPU=11m      RAM=114Mi
+    productcatalogservice-65bbf699df-j2fmg             CPU=112m     RAM=44Mi
+    redis-cart-c8ff86559-kcf44                         CPU=10m      RAM=37Mi
+    shippingservice-f956b6d9f-w7n4b                    CPU=27m      RAM=33Mi
+[22:42:12] Monitorização parada
+[22:42:12] Resumo: cenarios_ob_c4_exaustivo/RESUMO_C4_exaustivo.txt
+[22:42:12] 
+[22:42:12] ==============================================
+[22:42:12] C4 Exaustivo CONCLUÍDO — cenarios_ob_c4_exaustivo
+[22:42:12] ==============================================

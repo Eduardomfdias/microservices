@@ -1,0 +1,17 @@
+NAME                                     READY   STATUS      RESTARTS        AGE     IP           NODE             NOMINATED NODE   READINESS GATES
+adservice-574bff445c-qb9cj               1/1     Running     1 (7m30s ago)   90m     10.1.1.187   docker-desktop   <none>           <none>
+cartservice-7c84fdfb6-m5m6d              1/1     Running     0               3h19m   10.1.1.170   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-45rkr         1/1     Running     0               3h19m   10.1.1.171   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-4hm9g         1/1     Running     9 (51m ago)     3h19m   10.1.1.172   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-5frj9         1/1     Running     2 (18m ago)     90m     10.1.1.193   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-mgwx9         1/1     Running     2 (26m ago)     90m     10.1.1.192   docker-desktop   <none>           <none>
+emailservice-66944ff59-2lcjl             1/1     Running     0               3h19m   10.1.1.173   docker-desktop   <none>           <none>
+frontend-7bd6f45654-przgb                1/1     Running     0               90m     10.1.1.199   docker-desktop   <none>           <none>
+frontend-7bd6f45654-s2s7z                1/1     Running     0               3h19m   10.1.1.174   docker-desktop   <none>           <none>
+frontend-7bd6f45654-vfxkp                1/1     Running     0               90m     10.1.1.196   docker-desktop   <none>           <none>
+loadgenerator-57fc5754d-79slz            0/1     Completed   0               11s     10.1.1.224   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-kgd56            1/1     Running     0               3h19m   10.1.1.176   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-j2fmg   1/1     Running     0               3h19m   10.1.1.177   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-n8cbh   1/1     Running     6 (26s ago)     3h19m   10.1.1.178   docker-desktop   <none>           <none>
+redis-cart-c8ff86559-kcf44               1/1     Running     0               3h20m   10.1.1.160   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-w7n4b          1/1     Running     0               3h19m   10.1.1.179   docker-desktop   <none>           <none>

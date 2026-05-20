@@ -183,6 +183,57 @@ A conclusão sobre frontend e currencyservice como bottleneck dominante deve ser
 
 ---
 
+## Feedback Final — Semana 16 (2026-05-20)
+
+### Apreciação geral
+
+Leitura breve da nova versão. No geral o trabalho está muito bem: linha experimental fechada, metodologia clara, C5 com Envoy reforça a mensagem arquitetural, CSVs publicados.
+
+### Quatro aspetos a fechar antes da entrega
+
+1. **Template** — confirmar se estão a usar o template indicado para o relatório/artigo final.
+2. **Secção 4 — Hipóteses** — secção assinalada mas não desenvolvida. As hipóteses têm de ficar explicitamente formuladas e depois retomadas na discussão e na conclusão (o que está confirmado, inconclusivo, ou fortemente suportado).
+3. **Estrutura** — seguir a proposta de estrutura enviada:
+   1. Introdução (problema, motivação, sistema, decisão, RQs, hipóteses)
+   2. Enquadramento teórico (breve, aplicado ao caso)
+   3. Contexto e arquitetura relevante (Online Boutique, workflows, bottlenecks plausíveis)
+   4. Decisão arquitetural em estudo (variantes comparadas, baseline vs. seletivo/coordenado/isolado/alta carga, justificação)
+   5. Desenho experimental (operacionalização das hipóteses, workflows, cargas, métricas, recolha, repetições, comparabilidade)
+   6. Resultados (tabelas e figuras compactas; consolidados vs. exploratórios; separar por workflow e cenário)
+   7. Discussão (interpretar à luz da arquitetura e hipóteses; onde réplicas ajudam, onde apenas localmente, onde bottleneck se desloca)
+   8. Conclusão (responder às RQs, mensagem arquitetural principal, ganho vs. limites vs. custo)
+4. **Escrita** — distinguir claramente *resultado observado*, *interpretação* e *implicação arquitetural*; prudência nas conclusões ("os resultados suportam fortemente..." ≠ "fica demonstrado que...").
+
+### Enquadramento teórico — 7 pontos a cobrir
+
+1. Arquiteturas de micro-serviços: serviços escaláveis independentemente, responsabilidade focada, comunicação remota, consequências em runtime
+2. Atributos de qualidade e trade-offs: Performance, Availability, Deployability, Cost
+3. Cloud-native, elasticidade, escalabilidade horizontal e custo marginal
+4. Comunicação síncrona, fan-out e impacto em runtime (acumulação de latência, propagação de falhas)
+5. Componentes stateful e limites da escalabilidade (CartService + redis-cart, contenção em recursos partilhados)
+6. Observabilidade como suporte à avaliação arquitetural (métricas, logs, traces)
+7. Custo operacional e custo proxy em sistemas cloud-native
+8. **Lei de Amdahl** — enquadrar aqui como suporte conceptual para rendimentos marginais decrescentes (não apenas nos resultados)
+
+### Separação a garantir
+
+- O que foi **efetivamente testado**
+- O que foi **observado** nos resultados
+- O que é **alternativa ou discussão arquitetural** (secção 3.1 "alternativas consideradas" — não estava claro a que se referia)
+
+### Drive — Anexos (organização obrigatória)
+
+Criar subdiretoria `Anexos/` no Drive. Uma pasta por teste com:
+
+- `README.txt` — objetivo, hipótese, workflow(s), data, configuração, réplicas, carga, duração, ferramenta
+- Script de carga usado
+- Resultados em formato processável (CSV, JSON, TXT)
+- Métricas de consumo de recursos (kubectl top, Prometheus/Grafana, k8s metrics)
+- Traces (exportação, referências ou capturas identificadas)
+- Capturas/notas complementares (bottleneck observado, endpoint mais afetado, conclusão principal)
+
+---
+
 ## Sumário dos pontos críticos para a versão final
 
 | Área | Ação necessária |
@@ -223,9 +274,19 @@ A conclusão sobre frontend e currencyservice como bottleneck dominante deve ser
 - [x] **Anexo B — Diagrama de dependências** adicionado: flowchart gerado com Mermaid CLI, PDF em `figuras/fig_dependencias.pdf`; caption explica candidatos a saturação (productcatalogservice por fan-out, redis-cart por contenção de estado)
 - [x] **Anexo C — Diagramas de sequência W1/W2/W3** adicionados: PDFs gerados em `figuras/fig_seq_w1/w2/w3.pdf`; referenciados na secção de Workflows
 
-### Tarefas ainda pendentes (por ordem de prioridade)
+### Tarefas do feedback de 2026-05-20 (por ordem de prioridade)
 
-- [ ] **Repetir C1/C2/C3 ×3 a 25/50/75u** para calcular média ± desvio-padrão (~80 min de testes) — necessário para robustez estatística
+- [ ] **Confirmar template ACM** — verificar se o documento usa o template indicado para o relatório final
+- [ ] **Escrever Secção 4 — Hipóteses** — formular H1–H6 explicitamente; retomá-las na Discussão e Conclusão (confirmado / inconclusivo / fortemente suportado)
+- [ ] **Reestruturar o documento** segundo a proposta da professora (8 secções: Intro → Enquadramento → Contexto → Decisão → Experimental → Resultados → Discussão → Conclusão)
+- [ ] **Enquadramento teórico** — cobrir os 7 pontos + Lei de Amdahl como suporte conceptual (não só nos resultados)
+- [ ] **Separar explicitamente** o que foi testado / observado / alternativa ou discussão arquitetural
+- [ ] **Clarificar Secção 3.1** "alternativas consideradas" — tornar evidente a que se refere
+- [ ] **Drive — Criar pasta Anexos/** com uma subpasta por cenário (README.txt + script + CSV + métricas + traces + notas)
+- [ ] **Repetir C1/C2/C3 ×3** para média ± desvio-padrão — **C1 concluído (2026-05-20): quebra aos 75u**; C2 e C3 em curso
+
+### Tarefas anteriores ainda pendentes
+
 - [x] **Submeter CSVs do Locust** junto com a entrega no Blackboard
 - [x] Confirmar ordem de chamadas em W3 — **payment ANTES de shipping** (confirmado no código `checkoutservice/main.go` linhas 252/258: `chargeCard` → `shipOrder`). O diagrama de sequência W3 já refletia esta ordem corretamente.
 - [ ] Preparar slides + demo funcional para apresentação oral (semana 16-17)

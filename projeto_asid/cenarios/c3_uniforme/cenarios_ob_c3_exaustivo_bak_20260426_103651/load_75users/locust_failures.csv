@@ -1,6 +1,0 @@
-Method,Name,Error,Occurrences
-POST,/cart [add],HTTPError('500 Server Error: Internal Server Error for url: /cart [add]'),2
-POST,/cart [add],"CatchResponseError('add falhou (500), skip checkout')",4
-GET,/,HTTPError('500 Server Error: Internal Server Error for url: /'),1
-GET,/cart,HTTPError('500 Server Error: Internal Server Error for url: /cart'),1
-GET,/product/[id],HTTPError('500 Server Error: Internal Server Error for url: /product/[id]'),5

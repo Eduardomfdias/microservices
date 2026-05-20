@@ -1,0 +1,15 @@
+adservice-574bff445c-qb9cj               62m    270Mi   
+cartservice-7c84fdfb6-m5m6d              92m    188Mi   
+checkoutservice-5b6d96c9b7-45rkr         19m    39Mi    
+currencyservice-7c8fc8fc9c-4hm9g         132m   125Mi   
+currencyservice-7c8fc8fc9c-5frj9         1m     83Mi    
+currencyservice-7c8fc8fc9c-mgwx9         99m    125Mi   
+emailservice-66944ff59-2lcjl             11m    95Mi    
+frontend-7bd6f45654-przgb                81m    37Mi    
+frontend-7bd6f45654-s2s7z                111m   57Mi    
+frontend-7bd6f45654-vfxkp                124m   39Mi    
+paymentservice-9bfb7bf5-kgd56            7m     115Mi   
+productcatalogservice-65bbf699df-j2fmg   113m   44Mi    
+recommendationservice-7444754ff5-n8cbh   200m   61Mi    
+redis-cart-c8ff86559-kcf44               8m     37Mi    
+shippingservice-f956b6d9f-w7n4b          18m    35Mi    

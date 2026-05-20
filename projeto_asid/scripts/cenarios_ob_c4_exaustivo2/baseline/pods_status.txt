@@ -1,0 +1,32 @@
+NAME                                     READY   STATUS        RESTARTS        AGE     IP           NODE             NOMINATED NODE   READINESS GATES
+adservice-574bff445c-ctfk9               1/1     Terminating   0               5m40s   10.1.1.208   docker-desktop   <none>           <none>
+adservice-574bff445c-gdrhm               1/1     Terminating   0               5m40s   10.1.1.209   docker-desktop   <none>           <none>
+adservice-574bff445c-qb9cj               1/1     Running       0               76m     10.1.1.187   docker-desktop   <none>           <none>
+cartservice-7c84fdfb6-m5m6d              1/1     Running       0               3h5m    10.1.1.170   docker-desktop   <none>           <none>
+cartservice-7c84fdfb6-ps4fg              0/1     Completed     0               5m40s   10.1.1.210   docker-desktop   <none>           <none>
+cartservice-7c84fdfb6-t6zbr              1/1     Terminating   0               5m40s   10.1.1.211   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-45rkr         1/1     Running       0               3h5m    10.1.1.171   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-qsmbm         0/1     Error         0               5m40s   10.1.1.213   docker-desktop   <none>           <none>
+checkoutservice-5b6d96c9b7-sdqld         0/1     Error         0               5m40s   10.1.1.212   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-4hm9g         1/1     Running       9 (38m ago)     3h5m    10.1.1.172   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-5frj9         1/1     Running       2 (4m43s ago)   76m     10.1.1.193   docker-desktop   <none>           <none>
+currencyservice-7c8fc8fc9c-mgwx9         1/1     Running       2 (13m ago)     76m     10.1.1.192   docker-desktop   <none>           <none>
+emailservice-66944ff59-2lcjl             1/1     Running       0               3h5m    10.1.1.173   docker-desktop   <none>           <none>
+emailservice-66944ff59-5fxsl             1/1     Terminating   0               5m39s   10.1.1.214   docker-desktop   <none>           <none>
+emailservice-66944ff59-tgb28             1/1     Terminating   0               5m39s   10.1.1.215   docker-desktop   <none>           <none>
+frontend-7bd6f45654-przgb                1/1     Running       0               76m     10.1.1.199   docker-desktop   <none>           <none>
+frontend-7bd6f45654-s2s7z                1/1     Running       0               3h5m    10.1.1.174   docker-desktop   <none>           <none>
+frontend-7bd6f45654-vfxkp                1/1     Running       0               76m     10.1.1.196   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-hwnsw            1/1     Terminating   0               5m39s   10.1.1.216   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-kgd56            1/1     Running       0               3h5m    10.1.1.176   docker-desktop   <none>           <none>
+paymentservice-9bfb7bf5-xht2h            1/1     Terminating   0               5m39s   10.1.1.220   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-j2fmg   1/1     Running       0               3h5m    10.1.1.177   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-m67js   0/1     Error         0               5m39s   10.1.1.218   docker-desktop   <none>           <none>
+productcatalogservice-65bbf699df-wggn9   0/1     Error         0               5m39s   10.1.1.217   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-lk6jf   1/1     Terminating   0               5m39s   10.1.1.223   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-n8cbh   1/1     Running       3 (9m35s ago)   3h5m    10.1.1.178   docker-desktop   <none>           <none>
+recommendationservice-7444754ff5-sn5zp   1/1     Terminating   0               5m39s   10.1.1.219   docker-desktop   <none>           <none>
+redis-cart-c8ff86559-kcf44               1/1     Running       0               3h7m    10.1.1.160   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-8bhnj          1/1     Terminating   0               5m39s   10.1.1.221   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-w7n4b          1/1     Running       0               3h5m    10.1.1.179   docker-desktop   <none>           <none>
+shippingservice-f956b6d9f-wjpfk          1/1     Terminating   0               5m39s   10.1.1.222   docker-desktop   <none>           <none>

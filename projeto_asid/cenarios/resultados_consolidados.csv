@@ -1,0 +1,21 @@
+cenario,users,p50,p90,p99,failpct,rps,estado,replicas_extra,notas
+C1,25,22,75,633,0.0,79.7,OK,0,media 3 runs
+C1,50,115,217,1043,0.0,106.5,OK,0,media 3 runs
+C1,75,200,373,1500,23.0,126.7,QUEBRA,0,media 3 runs — ponto de quebra
+C2,25,9,30,395,0.0,86.4,OK,2,media 3 runs
+C2,50,88,185,765,0.0,117.7,OK,2,media 3 runs
+C2,75,115,260,1010,33.6,151.2,QUEBRA,2,media 3 runs — ponto de quebra
+C3,100,89,270,850,0.0,194.3,Aviso,20,1 run (nao quebrou ate 400u)
+C3,200,130,780,1100,0.0,207.7,Aviso,20,1 run
+C3,300,230,650,1400,1.3,196.4,Aviso,20,1 run
+C3,400,250,670,1100,0.0,195.3,Aviso,20,1 run — sem quebra
+C4,100,410,563,947,0.0,123.8,Aviso,4,media 3 runs
+C4,200,433,1200,1433,0.0,142.4,Aviso,4,media 3 runs
+C4,300,373,1200,1667,0.0,147.0,Aviso,4,media 3 runs
+C4,400,357,1167,1533,0.0,149.6,Aviso,4,media 3 runs — sem quebra
+C5,25,12,19,45,0.0,89.1,OK,20+Envoy,1 run (Envoy L7 gRPC)
+C5,50,15,50,140,0.0,116.6,OK,20+Envoy,1 run
+C5,75,53,150,540,0.0,184.3,Aviso,20+Envoy,1 run
+C5,100,97,240,500,0.0,201.7,Aviso,20+Envoy,1 run
+C5,125,150,340,720,0.0,201.8,Aviso,20+Envoy,1 run
+C5,150,160,380,660,0.0,218.7,Aviso,20+Envoy,1 run — sem quebra
