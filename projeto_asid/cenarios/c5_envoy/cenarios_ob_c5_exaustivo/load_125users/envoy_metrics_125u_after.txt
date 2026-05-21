@@ -1,3 +1,0 @@
-=== Envoy stats (125u_after) === Tue May  5 17:01:48 WEST 2026
-
-=== Envoy clusters (125u_after) ===

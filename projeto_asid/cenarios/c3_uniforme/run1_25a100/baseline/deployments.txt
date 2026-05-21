@@ -1,0 +1,13 @@
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE     CONTAINERS   IMAGES                  SELECTOR
+adservice               1/3     3            1           2m38s   server       adservice               app=adservice
+cartservice             1/3     3            1           2m38s   server       cartservice             app=cartservice
+checkoutservice         3/3     3            3           2m38s   server       checkoutservice         app=checkoutservice
+currencyservice         1/3     3            1           2m38s   server       currencyservice         app=currencyservice
+emailservice            1/3     3            1           2m38s   server       emailservice            app=emailservice
+frontend                3/3     3            3           2m38s   server       frontend                app=frontend
+loadgenerator           0/0     0            0           2m38s   main         loadgenerator           app=loadgenerator
+paymentservice          1/3     3            1           2m37s   server       paymentservice          app=paymentservice
+productcatalogservice   3/3     3            3           2m37s   server       productcatalogservice   app=productcatalogservice
+recommendationservice   1/3     3            1           2m37s   server       recommendationservice   app=recommendationservice
+redis-cart              1/1     1            1           2m38s   redis        redis:alpine            app=redis-cart
+shippingservice         3/3     3            3           2m37s   server       shippingservice         app=shippingservice

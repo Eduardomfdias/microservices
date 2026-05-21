@@ -1,0 +1,14 @@
+======================================================================
+ASID 2025/2026 — C5 Exaustivo (Envoy L7 + todos stateless ×3)
+Critério de quebra: p99 > 2000ms  OU  falhas > 5%
+======================================================================
+ Users     p50     p90      p99   Falhas   Falhas%       RPS  Estado
+----------------------------------------------------------------------
+   100     190     380      730        0      0.0%  158.94631336026697  Aviso  ◄ aviso
+   200     320     750     1400     1192      5.7%  173.88420687223027  QUEBRA ◄ QUEBRA
+
+→ Ponto de quebra: 200 users
+
+Comparação esperada com C3 (kube-proxy L4, sem Envoy):
+  C3: saturação ~150u, RPS máx ~130
+  C5: se H6 resolvido → saturação >= 150u e distribuição uniforme

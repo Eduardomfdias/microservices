@@ -1,0 +1,15 @@
+Servico                            Replicas  CPU_req     CPU_lim     Mem_req     Mem_lim
+-----------------------------------------------------------------------------------------------
+adservice                          3         200m        300m        180Mi       300Mi
+cartservice                        3         200m        300m        64Mi        512Mi
+checkoutservice                    3         100m        200m        64Mi        128Mi
+currencyservice                    3         100m        200m        64Mi        128Mi
+emailservice                       3         100m        200m        64Mi        128Mi
+envoy-grpc-lb                      1         100m        500m        128Mi       256Mi
+frontend                           3         100m        200m        64Mi        128Mi
+loadgenerator                      0         300m        500m        256Mi       512Mi
+paymentservice                     3         100m        200m        64Mi        128Mi
+productcatalogservice              3         100m        200m        64Mi        128Mi
+recommendationservice              3         100m        200m        220Mi       450Mi
+redis-cart                         1         70m         125m        200Mi       256Mi
+shippingservice                    3         100m        200m        64Mi        128Mi

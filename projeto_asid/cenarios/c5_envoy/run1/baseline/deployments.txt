@@ -1,0 +1,14 @@
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES                          SELECTOR
+adservice               3/3     3            3           47m   server       adservice                       app=adservice
+cartservice             3/3     3            3           47m   server       cartservice                     app=cartservice
+checkoutservice         3/3     3            3           47m   server       checkoutservice                 app=checkoutservice
+currencyservice         3/3     3            3           47m   server       currencyservice                 app=currencyservice
+emailservice            3/3     3            3           47m   server       emailservice                    app=emailservice
+envoy-grpc-lb           1/1     1            1           55s   envoy        envoyproxy/envoy:v1.33-latest   app=envoy-grpc-lb
+frontend                3/3     3            3           47m   server       frontend                        app=frontend
+loadgenerator           0/0     0            0           47m   main         loadgenerator                   app=loadgenerator
+paymentservice          3/3     3            3           47m   server       paymentservice                  app=paymentservice
+productcatalogservice   3/3     3            3           47m   server       productcatalogservice           app=productcatalogservice
+recommendationservice   3/3     3            3           47m   server       recommendationservice           app=recommendationservice
+redis-cart              1/1     1            1           47m   redis        redis:alpine                    app=redis-cart
+shippingservice         3/3     3            3           47m   server       shippingservice                 app=shippingservice
