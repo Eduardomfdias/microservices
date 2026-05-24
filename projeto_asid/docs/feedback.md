@@ -277,13 +277,13 @@ Criar subdiretoria `Anexos/` no Drive. Uma pasta por teste com:
 ### Tarefas do feedback de 2026-05-20 (por ordem de prioridade)
 
 - [ ] **Confirmar template ACM** — verificar se o documento usa o template indicado para o relatório final
-- [ ] **Escrever Secção 4 — Hipóteses** — formular H1–H6 explicitamente; retomá-las na Discussão e Conclusão (confirmado / inconclusivo / fortemente suportado)
-- [ ] **Reestruturar o documento** segundo a proposta da professora (8 secções: Intro → Enquadramento → Contexto → Decisão → Experimental → Resultados → Discussão → Conclusão)
-- [ ] **Enquadramento teórico** — cobrir os 7 pontos + Lei de Amdahl como suporte conceptual (não só nos resultados)
-- [ ] **Separar explicitamente** o que foi testado / observado / alternativa ou discussão arquitetural
-- [ ] **Clarificar Secção 3.1** "alternativas consideradas" — tornar evidente a que se refere
+- [x] **Escrever Secção 4 — Hipóteses** — formular H1–H6 explicitamente; retomá-las na Discussão e Conclusão (confirmado / inconclusivo / fortemente suportado) *(feito 2026-05-24)*
+- [x] **Reestruturar o documento** segundo a proposta da professora (8 secções: Intro → Enquadramento → Contexto → Decisão → Experimental → Resultados → Discussão → Conclusão) *(feito 2026-05-24)*
+- [x] **Enquadramento teórico** — cobrir os 7 pontos + Lei de Amdahl como suporte conceptual (não só nos resultados) *(feito 2026-05-24: P/A/D/C + custo proxy adicionados)*
+- [x] **Separar explicitamente** o que foi testado / observado / alternativa ou discussão arquitetural *(feito 2026-05-24)*
+- [x] **Clarificar Secção 3.1** "alternativas consideradas" — tornar evidente a que se refere *(feito 2026-05-24: título e parágrafo introdutório adicionados)*
 - [ ] **Drive — Criar pasta Anexos/** com uma subpasta por cenário (README.txt + script + CSV + métricas + traces + notas)
-- [ ] **Repetir C1/C2/C3 ×3** para média ± desvio-padrão — **C1 concluído (2026-05-20): quebra aos 75u**; C2 e C3 em curso
+- [x] **Repetir C1/C2/C3 ×3** para média ± desvio-padrão — **C1 ✅ (3 runs, quebra 75u) · C2 ✅ (3 runs, quebra 50u) · C3 em curso**
 
 ### Tarefas anteriores ainda pendentes
 

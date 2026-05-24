@@ -115,6 +115,8 @@ As questões de investigação que orientam o estudo são:
   \item \textbf{RQ4:} Até que ponto a eficácia da escalabilidade horizontal é condicionada pela natureza \textit{stateless} vs.\ dependência de componentes \textit{stateful} partilhados?
 \end{itemize}
 
+Com base nestas questões e na análise arquitetural prévia, foram formuladas seis hipóteses (H1--H6) que operacionalizam as RQs em previsões testáveis, detalhadas na Secção~\ref{sec:hipoteses}. O estudo avalia cada hipótese através de cinco cenários experimentais controlados, comparando configurações de escalamento distintas sobre o mesmo sistema e carga.
+
 % ============================================================
 \section{Enquadramento Teórico}
 \label{sec:teoria}
@@ -130,10 +132,14 @@ As questões de investigação que orientam o estudo são:
 
 \textbf{Observabilidade.} A identificação de bottlenecks em sistemas distribuídos requer os três pilares de observabilidade: métricas agregadas (\texttt{kubectl top}), \textit{traces} distribuídos (Jaeger/OpenTelemetry) e \textit{logs}. Neste estudo, os traces Jaeger confirmaram o fan-out ×6 de W1 e a sequencialidade total de W3; sem observabilidade, a seleção do candidato a bottleneck teria de assentar em suposições arquiteturais, exatamente o que levou o C4 a falhar.
 
+\textbf{Atributos de qualidade e trade-offs arquiteturais.} A análise de decisões arquiteturais exige avaliar os impactos sobre múltiplos atributos de qualidade em simultâneo. Neste estudo, seguem-se quatro atributos centrais: \textbf{Performance} (throughput, latência, ponto de saturação), \textbf{Availability} (redundância, eliminação de pontos únicos de falha), \textbf{Deployability} (complexidade operacional, esforço de configuração e manutenção) e \textbf{Cost} (consumo de recursos, custo por pedido). Qualquer decisão de escalamento horizontal afeta estes quatro atributos de forma interdependente: adicionar réplicas pode melhorar Performance e Availability mas aumentar Cost e complexidade de Deployability~\cite{newman}.
+
+\textbf{Custo operacional e custo proxy em sistemas cloud-native.} Em ambientes cloud-native, o custo operacional de uma configuração é tipicamente proporcional ao consumo de CPU e memória ao longo do tempo. Na ausência de dados de faturação real (ambiente local), este estudo usa um \textit{proxy} analítico: $C_{proxy} = \alpha \cdot CPU_{time} + \beta \cdot RAM_{time}$, onde $CPU_{time}$ e $RAM_{time}$ são o consumo médio acumulado ao longo do teste. O custo marginal por pedido ($C_{proxy}/pedidos_{sucesso}$) permite comparar a eficiência de diferentes configurações de escalamento. Este índice é relativo e não representa grandeza monetária ou física absoluta — o seu valor está na comparação entre cenários, não no valor absoluto.
+
 \textbf{Comparação com sistemas de produção.} A \textbf{Netflix} resolveu o mesmo problema de \textit{connection affinity} com balanceamento do lado do cliente (Ribbon/Envoy). A \textbf{Twitter/X} enfrentou os mesmos limites de componentes stateful (Redis) ao migrar para microserviços, recorrendo a \textit{sharding} e separação de leituras/escritas. A \textbf{Amazon} opera com escalamento por serviço independente, mas enfatiza que o escalamento de um serviço aumenta a carga nos seus dependentes, reproduzindo exatamente o efeito cascata observado no C4 deste estudo.
 
 % ============================================================
-\section{Arquitetura do Sistema}
+\section{Contexto e Arquitetura Relevante}
 % ============================================================
 
 O \textit{Online Boutique} é composto por 11 microserviços e um componente \textit{stateful} (Redis). A arquitetura segue o padrão \textit{Database-per-Service}, onde apenas o \texttt{redis-cart} mantém estado persistente. Todos os serviços aplicacionais são \textit{stateless}. A comunicação interna é exclusivamente via gRPC sobre HTTP/2; o único ponto de entrada externo é o \texttt{frontend}, que expõe HTTP/1.1.
@@ -209,7 +215,9 @@ A motivação para estudar esta decisão decorre de uma tensão arquitetural rea
 
 Um fator arquitetural crítico condiciona ambas as estratégias: a \textit{connection affinity} do gRPC/HTTP2~\cite{grpcloadbalancing,k8sgrpc}. O gRPC usa conexões persistentes e multiplexadas. Uma vez estabelecida uma conexão a uma réplica, todos os pedidos nessa conexão continuam a ir para a mesma réplica. Novas réplicas só recebem tráfego quando novas conexões são abertas. Este comportamento, documentado na literatura técnica sobre balanceamento gRPC em Kubernetes~\cite{k8sgrpc}, limita estruturalmente a eficácia do escalamento horizontal simples (\texttt{kubectl scale}) em sistemas gRPC, independentemente da estratégia adotada.
 
-\subsection{Alternativas Consideradas}
+\subsection{Alternativas Consideradas à Decisão de Escalamento Estático}
+
+As alternativas seguintes foram analisadas e descartadas ou não implementadas no âmbito deste estudo. A sua discussão é relevante para contextualizar a decisão arquitetural tomada (escalamento estático por \texttt{kubectl scale}) e para identificar caminhos de evolução. Nenhuma destas alternativas foi objeto de teste experimental — a sua avaliação é baseada em análise arquitetural e literatura.
 
 \textbf{Auto-scaling horizontal (HPA por CPU/memória).} O Kubernetes \textit{Horizontal Pod Autoscaler}~\cite{k8shpa} ajusta o número de réplicas automaticamente com base em métricas. Melhora a \textbf{Performance} ao reagir à carga real; melhora a \textbf{Availability} sob carga variável; aumenta a complexidade de \textbf{Deployability} (requer configuração de métricas, limiares e políticas de \textit{cooldown}); o \textbf{Cost} é variável — potencialmente menor em períodos calmos, mas com risco de \textit{over-provisioning} em rajadas.
 
@@ -278,7 +286,7 @@ H6 & \textit{Connection affinity} gRPC/HTTP2 limita o scale-out sem L7 & C2; C3 
 \end{table}
 
 % ============================================================
-\section{Metodologia Experimental}
+\section{Desenho Experimental}
 \label{sec:metodologia}
 % ============================================================
 
@@ -384,7 +392,10 @@ C3 — Uniforme & +20 & 84{,}2 & 817\,320 & 408\,702 & 2300 & 177{,}7 & $+$130\%
 \textbf{Leitura:} o C2 adicionou 2 réplicas e aumentou o custo por pedido apenas 4\%, mas sem qualquer ganho de throughput ($CM_{tp}=-0{,}02$~RPS/réplica). O C3 adicionou 20 réplicas (+182\% de pods) e o custo por pedido subiu 130\%, com throughput marginalmente inferior ao C1 ($CM_{tp}=-0{,}003$~RPS/réplica). O RAM\_time domina o custo proxy porque a RAM alocada é proporcional ao número de réplicas, enquanto a CPU real consumida é condicionada pela \textit{connection affinity} (réplicas ociosas consomem pouca CPU mas continuam a ocupar RAM).
 
 % ============================================================
-\section{Resultados — Testes Comparativos}
+\section{Resultados}
+\label{sec:resultados}
+
+\subsection{Testes Comparativos}
 \label{sec:comparativos}
 % ============================================================
 
@@ -459,7 +470,7 @@ redis-cart (stateful) & 4m  & 5m (inalterado)             & 4m (inalterado) \\
 O \texttt{frontend} é o único serviço que distribui bem a carga em C3 ($\sim$16m+17m+16m), porque recebe conexões HTTP/1.1 externas, pelo que, sem persistência HTTP/2, cada pedido pode ser roteado independentemente. Todos os outros serviços exibem distribuição desigual entre réplicas, resultado consistente com a \textit{connection affinity} como fenómeno estrutural do gRPC/HTTP2 e não específico de um serviço em particular.
 
 % ============================================================
-\section{Resultados — Testes Exaustivos}
+\subsection{Testes Exaustivos}
 \label{sec:exaustivos}
 % ============================================================
 
@@ -775,7 +786,7 @@ Os testes foram executados num ambiente local de nó único (Docker Desktop), se
 A repetição de experiências com análise estatística (médias, desvios-padrão por nível de carga) seria necessária para separar o sinal de ruído ambiental e validar a estabilidade dos pontos de saturação — este é um ponto de melhoria prioritário para trabalho futuro. Os testes exaustivos foram executados uma vez por nível de carga; a variabilidade observada (ex: step-up vs.\ arranque a frio no C3 a 150u: p99 de 1500~ms vs.\ 2500~ms) ilustra que a repetição teria impacto relevante nas conclusões. As comparações entre cenários devem ser lidas como indicativas de tendências, não como valores estáveis.
 
 % ============================================================
-\section{Conclusões}
+\section{Conclusão}
 % ============================================================
 
 \subsection{Resultados por Cenário}
