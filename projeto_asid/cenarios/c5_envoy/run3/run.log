@@ -1,119 +1,207 @@
-[11:04:14] ==============================================
-[11:04:14] C5 EXAUSTIVO — Envoy L7 gRPC LB + todos stateless ×3
-[11:04:14] Níveis: 100 200 300 400
-[11:04:14] Resultados em: cenarios_ob_c5_exaustivo
-[11:04:14] ==============================================
-[11:04:14] A verificar pré-requisitos...
-[11:04:14] Locust: /Users/edias/Library/Python/3.9/bin/locust
-[11:04:14] Pré-requisitos OK
-[11:04:14] loadgenerator pausado
-[11:04:14] === C5: A fazer deploy do Envoy gRPC LB + headless services ===
-[11:04:14] A aguardar Envoy ficar Ready...
-[11:04:22] Envoy pronto
-[11:04:22] === C5: Todos stateless ×3, redis-cart ×1 (igual ao C3 + Envoy) ===
-[11:04:23] A aguardar rollouts...
-[11:05:03] Réplicas C5 aplicadas
-[11:05:03] A verificar smoke test (frontend)...
-[11:05:03] Smoke test OK (HTTP 200)
-[11:05:03] A capturar estado inicial do Envoy...
-[11:05:04] AVISO: não foi possível contactar admin Envoy
-[11:05:04] Baseline capturado em cenarios_ob_c5_exaustivo/baseline/
-[11:05:04] locustfile.py criado (3 perfis — idêntico ao C1/C2/C3 exaustivo)
-[11:05:04] A iniciar monitorização contínua (10s) → cenarios_ob_c5_exaustivo/monitoring/pods_metrics.csv
-[11:05:04] Monitor PID: 34499
-[11:05:04] ========================================================
-[11:05:04] C5 Exaustivo — 100 users (warm-up 30s + medição 120s)
-[11:05:04] ========================================================
-[11:05:06]   Warm-up: 30s...
-[11:05:36]   Medição: 120s...
-[11:07:38]   Distribuição CPU por réplica (productcatalogservice):
-    productcatalogservice-65bbf699df-8zzd2 CPU=112m RAM=44Mi
-    productcatalogservice-65bbf699df-qmltb CPU=109m RAM=22Mi
-    productcatalogservice-65bbf699df-rh24h CPU=109m RAM=23Mi
-[11:07:38]   RESULTADO: p50=190ms  p90=380ms  p99=730ms  falhas=0(0.0%)  rps=158.94631336026697  [Aviso]
-[11:07:38]   CPU/RAM após medição:
-    adservice-574bff445c-grt9z                         CPU=41m      RAM=246Mi
-    adservice-574bff445c-h47zv                         CPU=43m      RAM=246Mi
-    adservice-574bff445c-wppcl                         CPU=43m      RAM=281Mi
-    cartservice-7c84fdfb6-hsn24                        CPU=71m      RAM=162Mi
-    cartservice-7c84fdfb6-s4cp2                        CPU=87m      RAM=186Mi
-    cartservice-7c84fdfb6-sf94w                        CPU=90m      RAM=157Mi
-    checkoutservice-6f4dbd65bf-bxrff                   CPU=24m      RAM=18Mi
-    checkoutservice-6f4dbd65bf-clrtg                   CPU=24m      RAM=19Mi
-    checkoutservice-6f4dbd65bf-dgswm                   CPU=28m      RAM=18Mi
-    currencyservice-7c8fc8fc9c-dlzht                   CPU=199m     RAM=125Mi
-    currencyservice-7c8fc8fc9c-mvsgf                   CPU=199m     RAM=121Mi
-    currencyservice-7c8fc8fc9c-wqrfs                   CPU=199m     RAM=125Mi
-    emailservice-66944ff59-478c4                       CPU=10m      RAM=57Mi
-    emailservice-66944ff59-4fvm9                       CPU=13m      RAM=94Mi
-    emailservice-66944ff59-txwj8                       CPU=11m      RAM=59Mi
-    envoy-grpc-lb-648f879c96-6gbd8                     CPU=499m     RAM=37Mi
-    frontend-56d4848657-26n9r                          CPU=199m     RAM=27Mi
-    frontend-56d4848657-pgkv4                          CPU=197m     RAM=28Mi
-    frontend-56d4848657-qmnnw                          CPU=195m     RAM=27Mi
-    paymentservice-9bfb7bf5-46sq4                      CPU=8m       RAM=89Mi
-    paymentservice-9bfb7bf5-pktv4                      CPU=8m       RAM=87Mi
-    paymentservice-9bfb7bf5-snj4k                      CPU=7m       RAM=114Mi
-    productcatalogservice-65bbf699df-8zzd2             CPU=112m     RAM=44Mi
-    productcatalogservice-65bbf699df-qmltb             CPU=109m     RAM=22Mi
-    productcatalogservice-65bbf699df-rh24h             CPU=109m     RAM=23Mi
-    recommendationservice-7d7f9f7777-4fb6r             CPU=184m     RAM=54Mi
-    recommendationservice-7d7f9f7777-89rpc             CPU=190m     RAM=54Mi
-    recommendationservice-7d7f9f7777-dbfjw             CPU=182m     RAM=54Mi
-    redis-cart-c8ff86559-jrlvk                         CPU=16m      RAM=37Mi
-    shippingservice-f956b6d9f-2g46p                    CPU=14m      RAM=34Mi
-    shippingservice-f956b6d9f-4kzvq                    CPU=14m      RAM=19Mi
-    shippingservice-f956b6d9f-nmnfn                    CPU=14m      RAM=19Mi
-[11:07:38] Cooldown: 60s antes de 200 users...
-[11:08:38] ========================================================
-[11:08:38] C5 Exaustivo — 200 users (warm-up 30s + medição 120s)
-[11:08:38] ========================================================
-[11:08:39]   Warm-up: 30s...
-[11:09:09]   Medição: 120s...
-[11:11:11]   Distribuição CPU por réplica (productcatalogservice):
-    productcatalogservice-65bbf699df-8zzd2 CPU=108m RAM=44Mi
-    productcatalogservice-65bbf699df-qmltb CPU=104m RAM=22Mi
-    productcatalogservice-65bbf699df-rh24h CPU=105m RAM=23Mi
-[11:11:11]   RESULTADO: p50=320ms  p90=750ms  p99=1400ms  falhas=1192(5.7%)  rps=173.88420687223027  [QUEBRA]
-[11:11:11]   CPU/RAM após medição:
-    adservice-574bff445c-grt9z                         CPU=53m      RAM=247Mi
-    adservice-574bff445c-h47zv                         CPU=49m      RAM=246Mi
-    adservice-574bff445c-wppcl                         CPU=46m      RAM=281Mi
-    cartservice-7c84fdfb6-hsn24                        CPU=101m     RAM=162Mi
-    cartservice-7c84fdfb6-s4cp2                        CPU=93m      RAM=186Mi
-    cartservice-7c84fdfb6-sf94w                        CPU=86m      RAM=157Mi
-    checkoutservice-6f4dbd65bf-bxrff                   CPU=29m      RAM=21Mi
-    checkoutservice-6f4dbd65bf-clrtg                   CPU=25m      RAM=21Mi
-    checkoutservice-6f4dbd65bf-dgswm                   CPU=26m      RAM=18Mi
-    currencyservice-7c8fc8fc9c-dlzht                   CPU=198m     RAM=113Mi
-    currencyservice-7c8fc8fc9c-wqrfs                   CPU=198m     RAM=127Mi
-    emailservice-66944ff59-478c4                       CPU=12m      RAM=57Mi
-    emailservice-66944ff59-4fvm9                       CPU=14m      RAM=94Mi
-    emailservice-66944ff59-txwj8                       CPU=11m      RAM=59Mi
-    envoy-grpc-lb-648f879c96-6gbd8                     CPU=489m     RAM=41Mi
-    frontend-56d4848657-26n9r                          CPU=198m     RAM=32Mi
-    frontend-56d4848657-pgkv4                          CPU=198m     RAM=35Mi
-    frontend-56d4848657-qmnnw                          CPU=198m     RAM=37Mi
-    paymentservice-9bfb7bf5-46sq4                      CPU=8m       RAM=90Mi
-    paymentservice-9bfb7bf5-pktv4                      CPU=9m       RAM=87Mi
-    paymentservice-9bfb7bf5-snj4k                      CPU=9m       RAM=114Mi
-    productcatalogservice-65bbf699df-8zzd2             CPU=108m     RAM=44Mi
-    productcatalogservice-65bbf699df-qmltb             CPU=104m     RAM=22Mi
-    productcatalogservice-65bbf699df-rh24h             CPU=105m     RAM=23Mi
-    recommendationservice-7d7f9f7777-4fb6r             CPU=196m     RAM=55Mi
-    recommendationservice-7d7f9f7777-89rpc             CPU=196m     RAM=55Mi
-    recommendationservice-7d7f9f7777-dbfjw             CPU=197m     RAM=55Mi
-    redis-cart-c8ff86559-jrlvk                         CPU=18m      RAM=37Mi
-    shippingservice-f956b6d9f-2g46p                    CPU=17m      RAM=34Mi
-    shippingservice-f956b6d9f-4kzvq                    CPU=16m      RAM=19Mi
-    shippingservice-f956b6d9f-nmnfn                    CPU=16m      RAM=19Mi
-[11:11:11] *** QUEBRA DETECTADA a 200 users — a terminar ***
-[11:11:11] Monitorização parada
-[11:11:11] Resumo: cenarios_ob_c5_exaustivo/RESUMO_C5_exaustivo.txt
-[11:11:11] === A remover Envoy e restaurar routing original ===
-[11:11:13] Routing restaurado para K8s Services diretos
-[11:11:13] 
-[11:11:13] ==============================================
-[11:11:13] C5 Exaustivo CONCLUÍDO — cenarios_ob_c5_exaustivo
-[11:11:13] Routing original restaurado.
-[11:11:13] ==============================================
+[14:54:24] ==============================================
+[14:54:24] C5 EXAUSTIVO — Envoy L7 gRPC LB + todos stateless ×3
+[14:54:24] Níveis: 100 200 300 400
+[14:54:24] Resultados em: cenarios_ob_c5_exaustivo
+[14:54:24] ==============================================
+[14:54:24] A verificar pré-requisitos...
+[14:54:24] Locust: /Users/edias/Library/Python/3.9/bin/locust
+[14:54:24] Pré-requisitos OK
+[14:54:24] loadgenerator pausado
+[14:54:24] === C5: A fazer deploy do Envoy gRPC LB + headless services ===
+[14:54:24] A aguardar Envoy ficar Ready...
+[14:54:32] Envoy pronto
+[14:54:32] === C5: Todos stateless ×3, redis-cart ×1 (igual ao C3 + Envoy) ===
+[14:54:34] A aguardar rollouts...
+[14:55:10] Réplicas C5 aplicadas
+[14:55:10] A verificar smoke test (frontend)...
+[14:55:11] Smoke test OK (HTTP 200)
+[14:55:11] A capturar estado inicial do Envoy...
+[14:55:11] AVISO: não foi possível contactar admin Envoy
+[14:55:11] Baseline capturado em cenarios_ob_c5_exaustivo/baseline/
+[14:55:11] locustfile.py criado (3 perfis — idêntico ao C1/C2/C3 exaustivo)
+[14:55:11] A iniciar monitorização contínua (10s) → cenarios_ob_c5_exaustivo/monitoring/pods_metrics.csv
+[14:55:11] Monitor PID: 56451
+[14:55:11] ========================================================
+[14:55:11] C5 Exaustivo — 100 users (warm-up 30s + medição 120s)
+[14:55:11] ========================================================
+[14:55:13]   Warm-up: 30s...
+[14:55:43]   Medição: 120s...
+[14:57:45]   Distribuição CPU por réplica (productcatalogservice):
+    productcatalogservice-65bbf699df-hlwh8 CPU=107m RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl CPU=109m RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2 CPU=111m RAM=21Mi
+[14:57:45]   RESULTADO: p50=210ms  p90=420ms  p99=980ms  falhas=0(0.0%)  rps=149.1174999166638  [Aviso]
+[14:57:45]   CPU/RAM após medição:
+    adservice-574bff445c-jlcsd                         CPU=101m     RAM=266Mi
+    adservice-574bff445c-t4fs9                         CPU=86m      RAM=244Mi
+    adservice-574bff445c-zmjkn                         CPU=108m     RAM=238Mi
+    cartservice-7c84fdfb6-2zq5m                        CPU=94m      RAM=148Mi
+    cartservice-7c84fdfb6-9vg9m                        CPU=85m      RAM=147Mi
+    cartservice-7c84fdfb6-tz7d8                        CPU=93m      RAM=138Mi
+    checkoutservice-6f4dbd65bf-6rst2                   CPU=24m      RAM=19Mi
+    checkoutservice-6f4dbd65bf-gjtpl                   CPU=20m      RAM=19Mi
+    checkoutservice-6f4dbd65bf-gzr5s                   CPU=26m      RAM=19Mi
+    currencyservice-7c8fc8fc9c-p8hlf                   CPU=199m     RAM=106Mi
+    currencyservice-7c8fc8fc9c-ss7w5                   CPU=200m     RAM=91Mi
+    currencyservice-7c8fc8fc9c-vksqd                   CPU=199m     RAM=92Mi
+    emailservice-66944ff59-924vd                       CPU=13m      RAM=56Mi
+    emailservice-66944ff59-rspdn                       CPU=12m      RAM=56Mi
+    emailservice-66944ff59-ztv9n                       CPU=12m      RAM=56Mi
+    envoy-grpc-lb-648f879c96-b7d94                     CPU=501m     RAM=35Mi
+    frontend-56d4848657-465mj                          CPU=196m     RAM=27Mi
+    frontend-56d4848657-4s4hv                          CPU=200m     RAM=29Mi
+    frontend-56d4848657-8z4sk                          CPU=199m     RAM=27Mi
+    paymentservice-9bfb7bf5-dmwrc                      CPU=11m      RAM=71Mi
+    paymentservice-9bfb7bf5-mpf2j                      CPU=13m      RAM=71Mi
+    paymentservice-9bfb7bf5-n8v8z                      CPU=10m      RAM=98Mi
+    productcatalogservice-65bbf699df-hlwh8             CPU=107m     RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl             CPU=109m     RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2             CPU=111m     RAM=21Mi
+    recommendationservice-7d7f9f7777-6s2rv             CPU=188m     RAM=55Mi
+    recommendationservice-7d7f9f7777-mptll             CPU=193m     RAM=54Mi
+    recommendationservice-7d7f9f7777-pdnlv             CPU=188m     RAM=55Mi
+    redis-cart-c8ff86559-zwp6z                         CPU=16m      RAM=11Mi
+    shippingservice-f956b6d9f-bw9bp                    CPU=14m      RAM=16Mi
+    shippingservice-f956b6d9f-g9wg4                    CPU=14m      RAM=16Mi
+    shippingservice-f956b6d9f-hcwkr                    CPU=17m      RAM=16Mi
+[14:57:45] Cooldown: 60s antes de 200 users...
+[14:58:45] ========================================================
+[14:58:45] C5 Exaustivo — 200 users (warm-up 30s + medição 120s)
+[14:58:45] ========================================================
+[14:58:46]   Warm-up: 30s...
+[14:59:17]   Medição: 120s...
+[15:01:18]   Distribuição CPU por réplica (productcatalogservice):
+    productcatalogservice-65bbf699df-hlwh8 CPU=102m RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl CPU=103m RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2 CPU=105m RAM=22Mi
+[15:01:18]   RESULTADO: p50=370ms  p90=730ms  p99=1200ms  falhas=0(0.0%)  rps=167.04395654657523  [Aviso]
+[15:01:18]   CPU/RAM após medição:
+    adservice-574bff445c-jlcsd                         CPU=81m      RAM=265Mi
+    adservice-574bff445c-t4fs9                         CPU=100m     RAM=250Mi
+    adservice-574bff445c-zmjkn                         CPU=78m      RAM=239Mi
+    cartservice-7c84fdfb6-2zq5m                        CPU=117m     RAM=151Mi
+    cartservice-7c84fdfb6-9vg9m                        CPU=92m      RAM=154Mi
+    cartservice-7c84fdfb6-tz7d8                        CPU=87m      RAM=141Mi
+    checkoutservice-6f4dbd65bf-6rst2                   CPU=28m      RAM=19Mi
+    checkoutservice-6f4dbd65bf-gjtpl                   CPU=28m      RAM=21Mi
+    checkoutservice-6f4dbd65bf-gzr5s                   CPU=28m      RAM=19Mi
+    currencyservice-7c8fc8fc9c-p8hlf                   CPU=201m     RAM=111Mi
+    currencyservice-7c8fc8fc9c-ss7w5                   CPU=199m     RAM=100Mi
+    currencyservice-7c8fc8fc9c-vksqd                   CPU=199m     RAM=99Mi
+    emailservice-66944ff59-924vd                       CPU=14m      RAM=56Mi
+    emailservice-66944ff59-rspdn                       CPU=14m      RAM=56Mi
+    emailservice-66944ff59-ztv9n                       CPU=14m      RAM=56Mi
+    envoy-grpc-lb-648f879c96-b7d94                     CPU=500m     RAM=38Mi
+    frontend-56d4848657-465mj                          CPU=198m     RAM=33Mi
+    frontend-56d4848657-4s4hv                          CPU=198m     RAM=35Mi
+    frontend-56d4848657-8z4sk                          CPU=199m     RAM=31Mi
+    paymentservice-9bfb7bf5-dmwrc                      CPU=12m      RAM=73Mi
+    paymentservice-9bfb7bf5-mpf2j                      CPU=11m      RAM=72Mi
+    paymentservice-9bfb7bf5-n8v8z                      CPU=12m      RAM=102Mi
+    productcatalogservice-65bbf699df-hlwh8             CPU=102m     RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl             CPU=103m     RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2             CPU=105m     RAM=22Mi
+    recommendationservice-7d7f9f7777-6s2rv             CPU=199m     RAM=55Mi
+    recommendationservice-7d7f9f7777-mptll             CPU=200m     RAM=57Mi
+    recommendationservice-7d7f9f7777-pdnlv             CPU=199m     RAM=55Mi
+    redis-cart-c8ff86559-zwp6z                         CPU=18m      RAM=11Mi
+    shippingservice-f956b6d9f-bw9bp                    CPU=19m      RAM=16Mi
+    shippingservice-f956b6d9f-g9wg4                    CPU=16m      RAM=16Mi
+    shippingservice-f956b6d9f-hcwkr                    CPU=18m      RAM=16Mi
+[15:01:18] Cooldown: 60s antes de 300 users...
+[15:02:18] ========================================================
+[15:02:19] C5 Exaustivo — 300 users (warm-up 30s + medição 120s)
+[15:02:19] ========================================================
+[15:02:19]   Warm-up: 30s...
+[15:02:50]   Medição: 120s...
+[15:04:52]   Distribuição CPU por réplica (productcatalogservice):
+    productcatalogservice-65bbf699df-hlwh8 CPU=101m RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl CPU=103m RAM=20Mi
+    productcatalogservice-65bbf699df-t64z2 CPU=102m RAM=21Mi
+[15:04:52]   RESULTADO: p50=340ms  p90=720ms  p99=1100ms  falhas=0(0.0%)  rps=176.20391618201694  [Aviso]
+[15:04:52]   CPU/RAM após medição:
+    adservice-574bff445c-jlcsd                         CPU=65m      RAM=269Mi
+    adservice-574bff445c-t4fs9                         CPU=65m      RAM=243Mi
+    adservice-574bff445c-zmjkn                         CPU=69m      RAM=240Mi
+    cartservice-7c84fdfb6-2zq5m                        CPU=90m      RAM=152Mi
+    cartservice-7c84fdfb6-9vg9m                        CPU=108m     RAM=154Mi
+    cartservice-7c84fdfb6-tz7d8                        CPU=77m      RAM=141Mi
+    checkoutservice-6f4dbd65bf-6rst2                   CPU=31m      RAM=19Mi
+    checkoutservice-6f4dbd65bf-gjtpl                   CPU=26m      RAM=21Mi
+    checkoutservice-6f4dbd65bf-gzr5s                   CPU=27m      RAM=19Mi
+    currencyservice-7c8fc8fc9c-p8hlf                   CPU=200m     RAM=116Mi
+    currencyservice-7c8fc8fc9c-ss7w5                   CPU=199m     RAM=111Mi
+    currencyservice-7c8fc8fc9c-vksqd                   CPU=200m     RAM=108Mi
+    emailservice-66944ff59-924vd                       CPU=15m      RAM=56Mi
+    emailservice-66944ff59-rspdn                       CPU=12m      RAM=56Mi
+    emailservice-66944ff59-ztv9n                       CPU=13m      RAM=56Mi
+    envoy-grpc-lb-648f879c96-b7d94                     CPU=501m     RAM=39Mi
+    frontend-56d4848657-465mj                          CPU=199m     RAM=38Mi
+    frontend-56d4848657-4s4hv                          CPU=198m     RAM=35Mi
+    frontend-56d4848657-8z4sk                          CPU=200m     RAM=33Mi
+    paymentservice-9bfb7bf5-dmwrc                      CPU=11m      RAM=76Mi
+    paymentservice-9bfb7bf5-mpf2j                      CPU=11m      RAM=76Mi
+    paymentservice-9bfb7bf5-n8v8z                      CPU=11m      RAM=106Mi
+    productcatalogservice-65bbf699df-hlwh8             CPU=101m     RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl             CPU=103m     RAM=20Mi
+    productcatalogservice-65bbf699df-t64z2             CPU=102m     RAM=21Mi
+    recommendationservice-7d7f9f7777-6s2rv             CPU=198m     RAM=55Mi
+    recommendationservice-7d7f9f7777-mptll             CPU=201m     RAM=57Mi
+    recommendationservice-7d7f9f7777-pdnlv             CPU=199m     RAM=55Mi
+    redis-cart-c8ff86559-zwp6z                         CPU=17m      RAM=11Mi
+    shippingservice-f956b6d9f-bw9bp                    CPU=17m      RAM=17Mi
+    shippingservice-f956b6d9f-g9wg4                    CPU=16m      RAM=16Mi
+    shippingservice-f956b6d9f-hcwkr                    CPU=19m      RAM=16Mi
+[15:04:52] Cooldown: 60s antes de 400 users...
+[15:05:52] ========================================================
+[15:05:52] C5 Exaustivo — 400 users (warm-up 30s + medição 120s)
+[15:05:52] ========================================================
+[15:05:53]   Warm-up: 30s...
+[15:06:24]   Medição: 120s...
+[15:08:26]   Distribuição CPU por réplica (productcatalogservice):
+    productcatalogservice-65bbf699df-hlwh8 CPU=100m RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl CPU=101m RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2 CPU=102m RAM=21Mi
+[15:08:26]   RESULTADO: p50=330ms  p90=710ms  p99=1200ms  falhas=0(0.0%)  rps=176.7824718766428  [Aviso]
+[15:08:26]   CPU/RAM após medição:
+    adservice-574bff445c-jlcsd                         CPU=61m      RAM=270Mi
+    adservice-574bff445c-t4fs9                         CPU=54m      RAM=243Mi
+    adservice-574bff445c-zmjkn                         CPU=57m      RAM=241Mi
+    cartservice-7c84fdfb6-2zq5m                        CPU=110m     RAM=152Mi
+    cartservice-7c84fdfb6-9vg9m                        CPU=98m      RAM=155Mi
+    cartservice-7c84fdfb6-tz7d8                        CPU=101m     RAM=143Mi
+    checkoutservice-6f4dbd65bf-6rst2                   CPU=33m      RAM=21Mi
+    checkoutservice-6f4dbd65bf-gjtpl                   CPU=29m      RAM=22Mi
+    checkoutservice-6f4dbd65bf-gzr5s                   CPU=29m      RAM=21Mi
+    currencyservice-7c8fc8fc9c-p8hlf                   CPU=199m     RAM=124Mi
+    currencyservice-7c8fc8fc9c-ss7w5                   CPU=200m     RAM=116Mi
+    currencyservice-7c8fc8fc9c-vksqd                   CPU=201m     RAM=116Mi
+    emailservice-66944ff59-924vd                       CPU=13m      RAM=56Mi
+    emailservice-66944ff59-rspdn                       CPU=15m      RAM=56Mi
+    emailservice-66944ff59-ztv9n                       CPU=15m      RAM=56Mi
+    envoy-grpc-lb-648f879c96-b7d94                     CPU=501m     RAM=40Mi
+    frontend-56d4848657-465mj                          CPU=198m     RAM=36Mi
+    frontend-56d4848657-4s4hv                          CPU=199m     RAM=34Mi
+    frontend-56d4848657-8z4sk                          CPU=200m     RAM=34Mi
+    paymentservice-9bfb7bf5-dmwrc                      CPU=12m      RAM=77Mi
+    paymentservice-9bfb7bf5-mpf2j                      CPU=9m       RAM=79Mi
+    paymentservice-9bfb7bf5-n8v8z                      CPU=13m      RAM=109Mi
+    productcatalogservice-65bbf699df-hlwh8             CPU=100m     RAM=22Mi
+    productcatalogservice-65bbf699df-lw2bl             CPU=101m     RAM=19Mi
+    productcatalogservice-65bbf699df-t64z2             CPU=102m     RAM=21Mi
+    recommendationservice-7d7f9f7777-6s2rv             CPU=199m     RAM=55Mi
+    recommendationservice-7d7f9f7777-mptll             CPU=199m     RAM=57Mi
+    recommendationservice-7d7f9f7777-pdnlv             CPU=198m     RAM=55Mi
+    redis-cart-c8ff86559-zwp6z                         CPU=19m      RAM=11Mi
+    shippingservice-f956b6d9f-bw9bp                    CPU=18m      RAM=17Mi
+    shippingservice-f956b6d9f-g9wg4                    CPU=18m      RAM=16Mi
+    shippingservice-f956b6d9f-hcwkr                    CPU=18m      RAM=16Mi
+[15:08:26] Monitorização parada
+[15:08:26] Resumo: cenarios_ob_c5_exaustivo/RESUMO_C5_exaustivo.txt
+[15:08:26] === A remover Envoy e restaurar routing original ===
+[15:08:28] Routing restaurado para K8s Services diretos
+[15:08:28] 
+[15:08:28] ==============================================
+[15:08:28] C5 Exaustivo CONCLUÍDO — cenarios_ob_c5_exaustivo
+[15:08:28] Routing original restaurado.
+[15:08:28] ==============================================

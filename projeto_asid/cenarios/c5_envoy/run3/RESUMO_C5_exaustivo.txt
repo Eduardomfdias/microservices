@@ -4,10 +4,12 @@ Critério de quebra: p99 > 2000ms  OU  falhas > 5%
 ======================================================================
  Users     p50     p90      p99   Falhas   Falhas%       RPS  Estado
 ----------------------------------------------------------------------
-   100     190     380      730        0      0.0%  158.94631336026697  Aviso  ◄ aviso
-   200     320     750     1400     1192      5.7%  173.88420687223027  QUEBRA ◄ QUEBRA
+   100     210     420      980        0      0.0%  149.1174999166638  Aviso  ◄ aviso
+   200     370     730     1200        0      0.0%  167.04395654657523  Aviso  ◄ aviso
+   300     340     720     1100        0      0.0%  176.20391618201694  Aviso  ◄ aviso
+   400     330     710     1200        0      0.0%  176.7824718766428  Aviso  ◄ aviso
 
-→ Ponto de quebra: 200 users
+→ Sistema estável até ao máximo testado
 
 Comparação esperada com C3 (kube-proxy L4, sem Envoy):
   C3: saturação ~150u, RPS máx ~130

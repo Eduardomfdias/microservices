@@ -1,0 +1,13 @@
+NAME                    READY   UP-TO-DATE   AVAILABLE   AGE    CONTAINERS   IMAGES                  SELECTOR
+adservice               1/1     1            1           3d6h   server       adservice               app=adservice
+cartservice             1/1     1            1           3d6h   server       cartservice             app=cartservice
+checkoutservice         1/1     1            1           3d6h   server       checkoutservice         app=checkoutservice
+currencyservice         1/1     1            1           3d6h   server       currencyservice         app=currencyservice
+emailservice            1/1     1            1           3d6h   server       emailservice            app=emailservice
+frontend                1/1     1            1           3d6h   server       frontend                app=frontend
+loadgenerator           0/0     0            0           3d6h   main         loadgenerator           app=loadgenerator
+paymentservice          1/1     1            1           3d6h   server       paymentservice          app=paymentservice
+productcatalogservice   3/3     3            3           3d6h   server       productcatalogservice   app=productcatalogservice
+recommendationservice   1/1     1            1           3d6h   server       recommendationservice   app=recommendationservice
+redis-cart              1/1     1            1           3d6h   redis        redis:alpine            app=redis-cart
+shippingservice         1/1     1            1           3d6h   server       shippingservice         app=shippingservice

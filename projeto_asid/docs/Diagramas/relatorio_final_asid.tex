@@ -116,7 +116,7 @@ As questões de investigação que orientam o estudo são:
 \end{itemize}
 
 % ============================================================
-\subsection{Enquadramento Teórico}
+\section{Enquadramento Teórico}
 \label{sec:teoria}
 % ============================================================
 
@@ -243,21 +243,36 @@ A evidência experimental mostra que o escalamento seletivo (C2) é a decisão d
 
 % ============================================================
 \section{Hipóteses}
+\label{sec:hipoteses}
 % ============================================================
 
+As hipóteses seguintes foram formuladas antes da execução dos testes, com base na análise arquitetural dos \textit{workflows} e nas propriedades conhecidas do sistema. Cada hipótese está associada a uma ou mais questões de investigação (RQ) e a cenários específicos que permitem testá-la. Os resultados experimentais permitem classificar cada hipótese como confirmada, inconclusiva ou fortemente suportada, conforme detalhado na Secção~\ref{sec:hipoteses-discussao}.
+
+\textbf{H1 — Escalamento seletivo com melhoria parcial.} Escalar seletivamente o \texttt{productcatalogservice} (C2) melhora parcialmente o desempenho global a carga baixa, mas não desloca o ponto de saturação se outro serviço se tornar o bottleneck dominante sob carga severa. Esta hipótese operacionaliza a RQ2: o serviço mais chamado em W1 é o candidato natural a escalamento seletivo, mas a sua aceleração pode expor outros bottlenecks. Testa-se comparando C1 e C2 nos testes comparativos (latência mediana) e exaustivos (ponto de quebra).
+
+\textbf{H2 — Redis-cart como limitação emergente.} Após aliviar a pressão sobre o \texttt{productcatalogservice}, o \texttt{redis-cart} tende a emergir como a limitação mais visível nos \textit{workflows} W2 (\textit{add-to-cart}) e W3 (\textit{checkout}), dado que é o único componente \textit{stateful} e \textit{single-threaded} do sistema. Esta hipótese operacionaliza a RQ4 e é observável via métricas de CPU/RAM do \texttt{redis-cart} nos cenários com maior carga sobre W2/W3.
+
+\textbf{H3 — Rendimentos marginais decrescentes.} O ganho de \textit{throughput} por réplica adicional tende a diminuir progressivamente à medida que o bottleneck se desloca para outras dependências não escaladas. Esta hipótese operacionaliza a RQ3 e é quantificada pelo indicador $CM_{throughput}$ comparado entre C2 ($+$2~réplicas) e C3 ($+$20~réplicas).
+
+\textbf{H4 — Custo marginal crescente.} O custo marginal por pedido com sucesso tende a aumentar quando as réplicas adicionais deixam de produzir ganhos proporcionais de \textit{throughput}. Esta hipótese distingue-se de H3 por focar no custo ($C_{proxy}$/pedido): mesmo com ganho de \textit{throughput} positivo, o custo por pedido pode crescer se as réplicas consumirem recursos sem proporcional aumento de capacidade útil. Operacionaliza a RQ3.
+
+\textbf{H5 — Eficácia diferenciada entre stateless e stateful.} A eficácia do escalamento horizontal é maior nos serviços \textit{stateless} do que nos cenários com dependência de um componente \textit{stateful} partilhado. Escalar o \texttt{cartservice} (stateless aplicacional) não alivia a pressão no \texttt{redis-cart} (stateful), pelo que o limite do escalamento horizontal está na capacidade do backend stateful. Operacionaliza a RQ4.
+
+\textbf{H6 — \textit{Connection affinity} como limitação estrutural.} O mecanismo de \textit{connection affinity} do gRPC/HTTP2 em Kubernetes limita estruturalmente a eficácia do escalamento horizontal sem balanceamento ao nível de pedido: as réplicas novas recebem tráfego mínimo porque as conexões HTTP/2 existentes permanecem nas réplicas originais. Esta hipótese operacionaliza as RQ1 e RQ2, sendo testada pela distribuição de CPU entre réplicas em C2 (assimetria esperada) e pela comparação C3 vs.\ C5 com Envoy L7 (resolução esperada).
+
 \begin{table}[h]
-\caption{Hipóteses formuladas, cenários de teste e estado após experimentação.}
+\caption{Síntese das hipóteses, cenário principal de teste e estado após experimentação. Detalhe na Secção~\ref{sec:hipoteses-discussao}.}
 \label{tab:hipoteses}
-\begin{tabularx}{\columnwidth}{lXp{1.8cm}p{2cm}}
+\begin{tabularx}{\columnwidth}{lXp{1.8cm}p{2.3cm}}
 \toprule
-\textbf{H} & \textbf{Hipótese} & \textbf{Cenário} & \textbf{Estado} \\
+\textbf{H} & \textbf{Hipótese (síntese)} & \textbf{Cenário} & \textbf{Estado} \\
 \midrule
-H1 & Escalar seletivamente melhora parcialmente, mas pode não deslocar o ponto de quebra se outro bottleneck dominar & C1 vs.\ C2 & \checkmark\ Confirmada \\
-H2 & Após aliviar o productcatalog, o redis-cart emerge como limitação em W2/W3 & C2 obs. & $\circ$\ Inconclusiva \\
-H3 & Ganho por réplica diminui com o deslocamento do bottleneck & C1→C2→C3 & \checkmark\ Confirmada \\
-H4 & Custo marginal cresce quando réplicas deixam de produzir ganhos proporcionais & C2 vs.\ C3 & \checkmark\ Confirmada \\
-H5 & Escalamento horizontal é mais eficaz em stateless do que com dependência stateful & C2/C3 vs.\ redis & $\circ$\ Inconclusiva \\
-H6 & Connection affinity gRPC/HTTP2 limita a eficácia do escalamento horizontal & C2 CPU/répl. & \checkmark\ Confirmada \\
+H1 & Seletivo melhora parcialmente mas pode não deslocar o ponto de quebra & C1 vs.\ C2 & \checkmark\ Confirmada \\
+H2 & Redis-cart emerge como limitação após alívio do productcatalog & C2/C3 obs. & $\circ$\ Inconclusiva \\
+H3 & Rendimentos marginais decrescentes por réplica adicional & C1$\to$C2$\to$C3 & \checkmark\ Confirmada \\
+H4 & Custo marginal cresce quando réplicas não geram ganho proporcional & C2 vs.\ C3 & \checkmark\ Confirmada \\
+H5 & Escalamento mais eficaz em stateless do que com dependência stateful & C3 vs.\ redis & $\circ$\ Inconclusiva \\
+H6 & \textit{Connection affinity} gRPC/HTTP2 limita o scale-out sem L7 & C2; C3 vs.\ C5 & \checkmark\checkmark\ Fort.\ sup. \\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -672,6 +687,21 @@ A Tabela~\ref{tab:amdahl} revela duas fracções seriais efectivas experimentalm
 \label{sec:discussao}
 % ============================================================
 
+\subsection{Retoma das Hipóteses}
+\label{sec:hipoteses-discussao}
+
+\textbf{H1 — Confirmada.} O C2 melhorou a latência mediana em $-22\%$ a 25u nos testes comparativos, evidenciando melhoria parcial a carga baixa. Contudo, nos testes exaustivos, o C2 atingiu saturação a 50u — antes do C1 (75u) —, confirmando que o escalamento seletivo não deslocou o ponto de quebra; pelo contrário, agravou-o. A hipótese foi formulada com cautela ("pode não deslocar") e os resultados confirmam o cenário mais pessimista.
+
+\textbf{H2 — Inconclusiva.} O \texttt{redis-cart} manteve-se abaixo de 18m de CPU em todos os cenários, incluindo no C5 a 150u. Não foi observada qualquer sinalização de saturação ou contenção no componente stateful nas cargas testadas. Para validar ou refutar H2 seriam necessárias cargas superiores a 150u, o que está fora do âmbito dos testes realizados.
+
+\textbf{H3 — Confirmada.} O $CM_{throughput}$ calculado para cada cenário confirma a tendência decrescente: C2 apresenta $CM_{tp}=-12{,}15$~RPS/réplica (rendimento negativo); C3 apresenta $CM_{tp}=+0{,}44$~RPS/réplica (rendimento positivo mas ínfimo). Apenas o C5, com balanceamento L7, inverte este padrão ($CM_{tp}=+5{,}63$~RPS/componente), suportando a interpretação de que os rendimentos marginais decrescentes são uma consequência da \textit{connection affinity} e não uma propriedade intrínseca do escalamento horizontal.
+
+\textbf{H4 — Confirmada.} O custo por pedido aumentou em todos os cenários sem Envoy: $+30\%$ no C2, $+67\%$ no C3 e $+498\%$ no C4 (face ao C1). O C5 é o único cenário com custo por pedido abaixo do C1 ($-18\%$), demonstrando que o custo marginal crescente é consequência da ineficiência do balanceamento, não do escalamento em si.
+
+\textbf{H5 — Inconclusiva.} Os serviços stateless escalaram com alguma eficácia em C3 (saturação a $\sim$150u vs.\ 75u no C1), mas o \texttt{redis-cart} nunca se tornou fator limitante nas cargas testadas. Não é possível concluir, com os dados disponíveis, que a distinção stateless/stateful foi o fator condicionante — o fator dominante observado foi a \textit{connection affinity} (H6), não a natureza stateful do redis-cart.
+
+\textbf{H6 — Fortemente suportada.} Esta é a hipótese com evidência mais robusta. Três observações independentes convergem: (1) a distribuição de CPU no C2 a 25u foi 91\%/6\%/3\% entre as três réplicas do \texttt{productcatalogservice}; (2) o C2 quebrou a 50u, antes do C1 a 75u — as réplicas extras consumiram recursos sem receber tráfego; (3) o C5, com Envoy LEAST\_REQUEST, atingiu distribuição 121m/121m/122m e 218{,}7~RPS a 150u sem falhas. A comparação C3 vs.\ C5 (configuração idêntica de réplicas, routing diferente) isola o efeito do balanceamento L7 e constitui a evidência mais direta disponível.
+
 \subsection{Resposta às Questões de Investigação}
 
 \textbf{RQ1 — Que serviços dominam a degradação?} Nas condições testadas (ambiente local, Docker Desktop, perfil de carga exaustivo), os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O \texttt{productcatalogservice} é muito chamado (×6 por browse) mas é rápido; os seus chamadores acumulam CPU porque processam cada pedido HTTP de entrada. Esta observação, consistente com a hipótese H6, tem implicações diretas para a estratégia de escalamento, mas não deve ser generalizada como verdade absoluta sobre a aplicação — em configurações ou cargas distintas, a distribuição de pressão pode ser diferente.
@@ -760,15 +790,15 @@ A repetição de experiências com análise estatística (médias, desvios-padr�
 
 \textbf{C5 — Escalamento uniforme ×3 + Envoy L7.} Único cenário sem quebra a 150u: 218,7~RPS, 0\% de falhas. O custo por pedido de 5,34 unidades é 18\% \emph{abaixo} do C1, porque o throughput elevado dilui o custo total. A fracção serial efectiva (Lei de Amdahl) baixou de 65\% (C3) para 19\% (C5), elevando o tecto teórico de 1,53$\times$ para 5,32$\times$. O C5 confirma que a \textit{connection affinity} era o factor limitante dominante, e não a capacidade de computação agregada.
 
-\subsection{Resposta às Questões de Investigação}
+\subsection{Resposta às Questões de Investigação e Hipóteses}
 
-\textbf{RQ1} — Nas condições testadas, os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O fan-out ×6 cria volume mas não saturação; os serviços de entrada acumulam CPU por processarem cada pedido HTTP.
+\textbf{RQ1} — Nas condições testadas, os serviços mais pressionados são o \texttt{frontend} e o \texttt{currencyservice}, não o \texttt{productcatalogservice}. O fan-out ×6 cria volume mas não saturação; os serviços de entrada acumulam CPU por processarem cada pedido HTTP. \textit{H6 confirmada: a \textit{connection affinity} é o principal condicionante da distribuição de carga entre réplicas.}
 
-\textbf{RQ2} — Sem Envoy, não: C2 e C4 degradaram o sistema. Com Envoy (C5), as mesmas 20 réplicas do C3 atingiram 218,7~RPS sem falhas — 68\% mais do que o C3. A questão relevante não é qual serviço escalar, mas como garantir que as réplicas recebem tráfego.
+\textbf{RQ2} — Sem Envoy, não: C2 e C4 degradaram o sistema (\textit{H1 confirmada: melhoria parcial mas ponto de quebra piorou}). Com Envoy (C5), as mesmas 20 réplicas do C3 atingiram 218{,}7~RPS sem falhas — 68\% mais do que o C3. A questão relevante não é qual serviço escalar, mas como garantir que as réplicas recebem tráfego (\textit{H6 fortemente suportada}).
 
-\textbf{RQ3} — O ganho não justifica o custo sem balanceamento L7. C2: $CM_{tp}=-12{,}15$~RPS/réplica; C4: $CM_{tp}=-8{,}40$~RPS/réplica; C3: $CM_{tp}=+0{,}44$~RPS/réplica (+67\% custo/req). Com Envoy: C5 tem $CM_{tp}=+5{,}63$~RPS/componente e custo/req 18\% abaixo do C1, demonstrando que o balanceamento L7 inverte o sinal dos rendimentos marginais.
+\textbf{RQ3} — O ganho não justifica o custo sem balanceamento L7 (\textit{H3 e H4 confirmadas}): C2 tem $CM_{tp}=-12{,}15$~RPS/réplica; C3 tem $CM_{tp}=+0{,}44$~RPS/réplica com custo/req $+67\%$. Com Envoy, C5 inverte o padrão: $CM_{tp}=+5{,}63$~RPS/componente e custo/req $18\%$ abaixo do C1.
 
-\textbf{RQ4} — O \texttt{redis-cart} não foi fator limitante nas cargas testadas (máx.\ 18~m CPU a 150u no C5). H2 e H5 permanecem inconclusivas, dado que cargas superiores seriam necessárias para observar a limitação stateful.
+\textbf{RQ4} — O \texttt{redis-cart} não foi fator limitante nas cargas testadas (máx.\ 18~m CPU a 150u). \textit{H2 e H5 permanecem inconclusivas}: cargas superiores a 150u seriam necessárias para observar a limitação stateful.
 
 \subsection{Leitura pelos Atributos de Qualidade}
 
