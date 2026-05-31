@@ -37,8 +37,27 @@ ok "Cluster disponível: $(kubectl config current-context)"
 
 # ─── 3. Aplicar manifests ─────────────────────────────────────────────────────
 info "A aplicar manifests do Online Boutique..."
-kubectl apply -f kubernetes-manifests/ > /dev/null
+kubectl apply -k kubernetes-manifests/ > /dev/null
+kubectl apply -f kubernetes-manifests/loadgenerator.yaml > /dev/null
 ok "Manifests aplicados"
+
+# ─── 3b. Forçar imagePullPolicy=Never (usar imagens locais) ──────────────────
+info "A definir imagePullPolicy=Never para usar imagens locais..."
+for svc in adservice checkoutservice currencyservice emailservice \
+           frontend paymentservice productcatalogservice recommendationservice shippingservice; do
+  kubectl patch deployment/$svc \
+    -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"server\",\"imagePullPolicy\":\"Never\"}]}}}}" \
+    > /dev/null 2>&1 || true
+done
+# cartservice tem dois containers; só o server usa imagem local
+kubectl patch deployment/cartservice \
+  -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"server\",\"imagePullPolicy\":\"Never\"}]}}}}" \
+  > /dev/null 2>&1 || true
+# loadgenerator usa container chamado "main"
+kubectl patch deployment/loadgenerator \
+  -p "{\"spec\":{\"template\":{\"spec\":{\"containers\":[{\"name\":\"main\",\"imagePullPolicy\":\"Never\"}]}}}}" \
+  > /dev/null 2>&1 || true
+ok "imagePullPolicy definido"
 
 # ─── 4. Parar loadgenerator nativo ───────────────────────────────────────────
 info "A parar loadgenerator nativo (para não misturar carga com Locust)..."
