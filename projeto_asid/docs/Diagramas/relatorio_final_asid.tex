@@ -111,6 +111,10 @@ As questões de investigação que orientam o estudo são:
 
 Com base nestas questões e na análise arquitetural prévia, foram formuladas seis hipóteses (H1--H6) que operacionalizam as RQs em previsões testáveis, descritas em detalhe abaixo. O estudo avalia cada hipótese através de cinco cenários experimentais controlados, comparando configurações de escalamento distintas sobre o mesmo sistema e carga.
 
+\vspace{0.3cm}
+\noindent\textbf{Repositório do Projeto:} O código fonte, \textit{scripts} de automação e registos brutos de métricas (CSV) estão integralmente disponíveis no repositório público do GitHub: \url{https://github.com/Eduardomfdias/microservices.git}
+\vspace{0.3cm}
+
 \subsection{Hipóteses de Investigação}
 \label{subsec:hipoteses}
 
@@ -886,7 +890,14 @@ Em sistemas gRPC/HTTP2, o \texttt{kubectl scale} simples é uma ferramenta de ef
 
 \subsection{Trabalho Futuro}
 
-Trabalho futuro prioritário: (1) carga agressiva até colapsar o \texttt{redis-cart} (H2/H5 inconclusivas, cargas $>$400u); (2) comparação directa C3 vs.\ C5 ao mesmo nível de carga em execuções a frio para isolar rigorosamente o efeito do Envoy; (3) avaliação de HPA nativo (Horizontal Pod Autoscaler) combinado com proxy L7 para ajuste autónomo ao tráfego real; (4) medição do overhead do Envoy com múltiplas instâncias para eliminar o ponto único de falha.
+Os resultados obtidos, embora conclusivos no que toca às hipóteses principais, abrem novas avenidas de investigação. Para futuros trabalhos, propomos as seguintes linhas de ação prioritárias:
+
+\begin{itemize}
+    \item \textbf{Carga Extrema no Componente \textit{Stateful}:} Dado que as hipóteses H2 e H5 ficaram inconclusivas por não ter sido possível saturar o \texttt{redis-cart} com 400 utilizadores, planeia-se a injeção de cargas muito superiores (na ordem dos milhares de utilizadores simulados) para encontrar o verdadeiro limite de rutura deste componente e estudar metodologias de escalamento de bases de dados em memória (\textit{e.g.}, Redis Cluster).
+    \item \textbf{Isolamento do Overhead do Proxy L7:} Realizar uma comparação direta e isolada entre o C3 (força bruta) e o C5 (Envoy L7) sob cargas rigorosamente idênticas e execuções \textit{a frio}. Isto permitirá quantificar com exatidão matemática o \textit{overhead} imposto pelo Envoy e o seu impacto no custo marginal.
+    \item \textbf{Escalabilidade Automática (HPA):} Avaliar a implementação do \textit{Horizontal Pod Autoscaler} (HPA) nativo do Kubernetes, configurado com limiares de CPU/RAM em conjunto com um proxy L7. O objetivo será observar como o sistema reage autonomamente a picos de tráfego irregulares em tempo real, em vez de depender de configurações de réplicas estáticas (como aplicado nestes testes).
+    \item \textbf{Eliminação de \textit{Single Points of Failure}:} Expandir a infraestrutura L7 para incluir múltiplas instâncias do Envoy atrás de um balanceador L4 da provedora \textit{cloud}, analisando a latência introduzida por duas camadas de abstração de rede.
+\end{itemize}
 
 % ============================================================
 % REFERÊNCIAS
